@@ -1,0 +1,30 @@
+{
+  "name": "rbtv.ts.youtube",
+  "version": "0.0.1",
+  "description": "rbtv.youtube with react + ts",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Schkalee <david.schkalee@magicline.de>",
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "mobx": "^3.2.2",
+    "mobx-react": "^4.2.2",
+    "react": "^16.0.0-beta.1",
+    "react-dom": "^16.0.0-beta.2",
+    "react-select": "^1.0.0-rc.5",
+    "styled-components": "^2.1.1"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.71",
+    "@types/react": "^15.6.0",
+    "@types/react-dom": "^15.5.1",
+    "@types/react-select": "^1.0.48",
+    "fuse-box": "^2.2.1",
+    "tslib": "^1.7.1",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.2"
+  }
+}
