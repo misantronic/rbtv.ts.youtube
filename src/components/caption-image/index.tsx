@@ -1,7 +1,9 @@
 import * as React from 'react';
+import * as moment from 'moment'
 import styled from 'styled-components';
 import { Badge } from '../badge';
 import { DateFormat } from '../date-format';
+import { humanizeDuration } from '../../utils/time';
 
 interface CaptionImageProps {
     image: string;
@@ -10,18 +12,19 @@ interface CaptionImageProps {
     duration?: string;
 }
 
-const StyledDiv = styled.div`
+const Div = styled.div`
     position: relative;
 `;
 
-const StyledLink = styled.a`
+const Link = styled.a`
     display: block;
     overflow: hidden;
 `;
 
-const StyledImage = styled.img`
+const Image = styled.img`
     max-width: 100%;
-    margin: -35px 0 -39px;
+    margin: -34px 0 -38px;
+    height: 237px;
 `
 
 const DurationBadge = styled(Badge)`
@@ -38,22 +41,23 @@ const DateBadge = styled(Badge)`
 
 export class CaptionImage extends React.PureComponent<CaptionImageProps> {
     render(): JSX.Element {
-        const { image, href, publishedAt, duration } = this.props;
+        const { image, href, publishedAt } = this.props; 
+        const duration = moment.duration(this.props.duration);
 
         return (
-            <StyledDiv>
-                <StyledLink href={href}>
-                    <StyledImage src={image} alt="" />
-                </StyledLink>
+            <Div>
+                <Link href={href}>
+                    <Image src={image} alt="" />
+                </Link>
                 <DurationBadge>
-                    {duration}
+                    {humanizeDuration(duration)}
                 </DurationBadge>
                 <DateBadge>
                     <DateFormat>
                         {publishedAt}
                     </DateFormat>
                 </DateBadge>
-            </StyledDiv>
+            </Div>
         );
     }
 }

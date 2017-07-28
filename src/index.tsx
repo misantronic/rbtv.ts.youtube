@@ -9,7 +9,7 @@ const App = styled.div`
     font-size: 14px;
     width: 1024px;
     max-width: 100%;
-    margin: 0 auto;
+    margin: 25px auto;
 
     * {
         box-sizing: border-box;

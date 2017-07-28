@@ -6,9 +6,9 @@ import { ActivityItem } from './activity-item';
 import { InputText } from '../../components/input-text';
 import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
-import { Channel, getChannelName } from '../../utils/channels';
+import { channel, getChannelName } from '../../utils/channels';
 
-const store = new ActivitiesStore();
+const store = new ActivitiesStore(channel.RBTV);
 
 const ActivitiesWrapper = styled.div`
     display: flex;
@@ -46,7 +46,7 @@ export class Activities extends React.Component {
             <div>
                 {this.renderSearch()}
                 <ActivitiesWrapper>
-                    {isLoading && this.renderLoader()}
+                    {isLoading && <Spinner />}
                     {!isLoading &&
                         items.map((item: ActivitiyItem) => {
                             return (
@@ -68,9 +68,9 @@ export class Activities extends React.Component {
 
     private renderSearch(): JSX.Element {
         const placeholder = `Search ${getChannelName(store.channelId)}...`;
-        const options = Object.keys(Channel).map((key: Channel) => ({
-            value: Channel[key],
-            label: getChannelName(Channel[key])
+        const options = Object.keys(channel).map((key: channel) => ({
+            value: channel[key],
+            label: getChannelName(channel[key])
         }));
 
         return (
@@ -80,6 +80,7 @@ export class Activities extends React.Component {
                     value={store.channelId}
                     options={options}
                     simpleValue
+                    searchable={false}
                     clearable={false}
                     onChange={this.onChangeChannel as any}
                 />
@@ -87,16 +88,11 @@ export class Activities extends React.Component {
         );
     }
 
-    private renderLoader(): JSX.Element {
-        return <Spinner />;
-    }
-
     private onSearch = (val: string): void => {
         store.q = val;
     };
 
-    private onChangeChannel = (val: Channel): void => {
+    private onChangeChannel = (val: channel): void => {
         store.channelId = val;
-        store.q = '';
     };
 }

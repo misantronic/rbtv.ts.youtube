@@ -1,6 +1,6 @@
 import { observable, reaction } from 'mobx';
 import * as debounce from 'lodash/debounce';
-import { Channel } from '../../utils/channels';
+import { channel } from '../../utils/channels';
 import { fetchUtil } from '../../utils/ajax';
 
 interface Thumbnail {
@@ -19,7 +19,7 @@ export interface ActivitiyItem {
     id: string;
     kind: 'youtube#activity' | 'youtube#searchResult';
     snippet: {
-        channelId: Channel;
+        channelId: channel;
         channelTitle: string;
         description: string;
         publishedAt: Date;
@@ -37,13 +37,17 @@ export interface ActivitiyItem {
 }
 
 export class ActivitiesStore {
-    @observable channelId: Channel = Channel.RBTV;
+    @observable channelId: channel;
     @observable q = '';
     @observable pageToken = '';
     @observable items: ActivitiyItem[] = [];
     @observable isLoading = false;
 
-    constructor() {
+    constructor(channel?: channel) {
+        if (channel) {
+            this.channelId = channel;
+        }
+
         reaction(() => this.q, this.reload, { fireImmediately: true });
         reaction(() => this.channelId, this.reload);
     }
@@ -114,21 +118,20 @@ export class ActivitiesStore {
         });
 
         this.items = this.items.map((item: ActivitiyItem) => {
-            const needle = videoItems.find(videoItem => videoItem.id === item.id);
+            const videoItem = videoItems.find(videoItem => videoItem.id === item.id);
 
-            if (needle) {
-                item.duration = needle.contentDetails.duration;
+            if (videoItem) {
+                item.duration = videoItem.contentDetails.duration;
             }
 
             return item;
         });
-        
     }
 
     private reload = () => {
         if (this.q) {
             this.searchDebounced();
-        } else {
+        } else if (this.channelId) {
             this.loadActivities();
         }
     };
