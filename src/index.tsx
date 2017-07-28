@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { Activities } from './containers/activities';
+import { Router } from './router';
+import { AppStore } from './store';
 import styled from 'styled-components';
 
 const App = styled.div`
     background: #fcfcfc;
-    font-family: Raleway,Arial,sans-serif;
+    font-family: Raleway, Arial, sans-serif;
     font-size: 14px;
     width: 1024px;
     max-width: 100%;
@@ -15,7 +16,8 @@ const App = styled.div`
         box-sizing: border-box;
     }
 
-    a, a:link {
+    a,
+    a:link {
         color: #337ab7;
         text-decoration: none;
 
@@ -25,9 +27,11 @@ const App = styled.div`
     }
 `;
 
+const store = new AppStore();
+
 render(
     <App>
-        <Activities />
+        <Router appStore={store} />
     </App>,
     document.getElementById('app')
 );

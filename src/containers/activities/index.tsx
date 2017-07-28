@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import { ActivitiesStore, ActivitiyItem } from './store';
+import { AppStore } from '../../store';
 import { ActivityItem } from './activity-item';
 import { InputText } from '../../components/input-text';
 import { Select } from '../../components/select';
@@ -9,6 +10,10 @@ import { Spinner } from '../../components/spinner';
 import { channel, getChannelName } from '../../utils/channels';
 
 const store = new ActivitiesStore(channel.RBTV);
+
+interface ActivitiesStoreProps {
+    appStore: AppStore;
+}
 
 const ActivitiesWrapper = styled.div`
     display: flex;
@@ -38,7 +43,7 @@ const StyledSelect = styled(Select)`
 `;
 
 @observer
-export class Activities extends React.Component {
+export class Activities extends React.Component<ActivitiesStoreProps> {
     render(): JSX.Element {
         const { items, isLoading } = store;
 
@@ -54,10 +59,10 @@ export class Activities extends React.Component {
                                     key={item.id}
                                     title={item.snippet.title}
                                     description={item.snippet.description}
-                                    id={item.id}
                                     duration={item.duration}
                                     publishedAt={item.snippet.publishedAt}
                                     image={item.snippet.thumbnails.high.url}
+                                    onClick={() => this.onClickActivity(item.id)}
                                 />
                             );
                         })}
@@ -94,5 +99,9 @@ export class Activities extends React.Component {
 
     private onChangeChannel = (val: channel): void => {
         store.channelId = val;
+    };
+
+    private onClickActivity = (id: string) => {
+        this.props.appStore.redirect('video/:id', { id });
     };
 }

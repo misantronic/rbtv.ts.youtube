@@ -2,8 +2,8 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 interface CaptionTitleProps {
-    href?: string;
     children: string;
+    onClick(): void;
 }
 
 const H3 = styled.h3`
@@ -29,14 +29,19 @@ const Link = styled.a`
 
 export class CaptionTitle extends React.Component<CaptionTitleProps> {
     render(): JSX.Element {
-        const { href, children } = this.props;
+        const { children } = this.props;
 
         return (
             <H3>
-                <Link href={href} title={children}>
+                <Link href="#" title={children} onClick={this.onClick}>
                     {children}
                 </Link>
             </H3>
         );
+    }
+
+    onClick = (e: any) => {
+        e.preventDefault();
+        this.props.onClick();
     }
 }

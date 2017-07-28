@@ -7,9 +7,9 @@ import { humanizeDuration } from '../../utils/time';
 
 interface CaptionImageProps {
     image: string;
-    href: string;
     publishedAt: Date;
     duration?: string;
+    onClick(): void;
 }
 
 const Div = styled.div`
@@ -41,12 +41,12 @@ const DateBadge = styled(Badge)`
 
 export class CaptionImage extends React.PureComponent<CaptionImageProps> {
     render(): JSX.Element {
-        const { image, href, publishedAt } = this.props; 
+        const { image, publishedAt } = this.props; 
         const duration = moment.duration(this.props.duration);
 
         return (
             <Div>
-                <Link href={href}>
+                <Link href="#" onClick={this.onClick}>
                     <Image src={image} alt="" />
                 </Link>
                 <DurationBadge>
@@ -59,5 +59,10 @@ export class CaptionImage extends React.PureComponent<CaptionImageProps> {
                 </DateBadge>
             </Div>
         );
+    }
+
+    onClick = (e: any) => {
+        e.preventDefault();
+        this.props.onClick();
     }
 }
