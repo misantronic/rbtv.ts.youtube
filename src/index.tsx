@@ -16,6 +16,11 @@ const App = styled.div`
         box-sizing: border-box;
     }
 
+    input {
+        font-family: Raleway, Arial, sans-serif;
+        font-size: 14px;
+    }
+
     a,
     a:link {
         color: #337ab7;
@@ -29,9 +34,13 @@ const App = styled.div`
 
 const store = new AppStore();
 
-render(
-    <App>
-        <Router appStore={store} />
-    </App>,
-    document.getElementById('app')
-);
+function main() {
+    render(
+        <App>
+            <Router appStore={store} />
+        </App>,
+        document.getElementById('app')
+    );
+}
+
+(window as any).onGoogleClientLoad = main;
