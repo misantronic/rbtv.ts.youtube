@@ -1,13 +1,14 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
-import { ActivitiesStore, ActivitiyItem } from './store';
+import { ActivitiesStore } from './store';
 import { AppStore } from '../../store';
 import { ActivityItem } from './activity-item';
-import { InputText } from '../../components/input-text';
+import { InputAutocomplete } from '../../components/input-autocomplete';
 import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
 import { channel, getChannelName } from '../../utils/channels';
+import { shows } from '../../utils/shows';
 
 const store = new ActivitiesStore(channel.RBTV);
 
@@ -34,7 +35,7 @@ const SearchWrapper = styled.div`
     margin-bottom: 25px;
 `;
 
-const SearchInput = styled(InputText)``;
+const StyledAutocomplete = styled(InputAutocomplete)``;
 
 const StyledSelect = styled(Select)`
     .Select-control {
@@ -53,7 +54,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                 <ActivitiesWrapper>
                     {isLoading && <Spinner />}
                     {!isLoading &&
-                        items.map((item: ActivitiyItem) => {
+                        items.map((item: yt.ActivitiyItem) => {
                             return (
                                 <StyledActivityItem
                                     key={item.id}
@@ -80,7 +81,13 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
 
         return (
             <SearchWrapper>
-                <SearchInput value={store.q} onChange={this.onSearch} placeholder={placeholder} />
+                <StyledAutocomplete
+                    value={store.q}
+                    onChange={this.onSearch}
+                    onKeyDown={this.onKeyDown}
+                    placeholder={placeholder}
+                    autofocus
+                />
                 <StyledSelect
                     value={store.channelId}
                     options={options}
@@ -94,7 +101,19 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     }
 
     private onSearch = (val: string): void => {
+        const show = shows.find(show => show.title === val);
+
+        if (show && show.channel) {
+            this.onChangeChannel(show.channel);
+        }
+
         store.q = val;
+    };
+
+    private onKeyDown = (e: any): void => {
+        if (e.keyCode === 13) {
+            store.search();
+        }
     };
 
     private onChangeChannel = (val: channel): void => {
@@ -105,3 +124,5 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
         this.props.appStore.redirect('video/:id', { id });
     };
 }
+
+export default Activities;
