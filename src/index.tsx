@@ -8,9 +8,11 @@ const App = styled.div`
     background: #fcfcfc;
     font-family: Raleway, Arial, sans-serif;
     font-size: 14px;
-    width: 1024px;
+    width: 1074px;
     max-width: 100%;
     margin: 25px auto;
+    padding: 0 25px;
+    box-sizing: border-box;
 
     * {
         box-sizing: border-box;

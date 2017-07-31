@@ -5,6 +5,7 @@ import { ActivitiesStore } from './store';
 import { AppStore } from '../../store';
 import { ActivityItem } from './activity-item';
 import { InputAutocomplete } from '../../components/input-autocomplete';
+import { ResponsiveTile } from '../../components/responsive-tile';
 import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
 import { channel, getChannelName } from '../../utils/channels';
@@ -19,15 +20,6 @@ interface ActivitiesStoreProps {
 const ActivitiesWrapper = styled.div`
     display: flex;
     flex-wrap: wrap;
-`;
-
-const StyledActivityItem = styled(ActivityItem)`
-    width: calc(33.3% - 17px);
-    margin: 0 25px 25px 0;
-
-    &:nth-child(3n + 3) {
-        margin-right: 0;
-    }
 `;
 
 const SearchWrapper = styled.div`
@@ -56,15 +48,16 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                     {!isLoading &&
                         items.map((item: youtube.ActivitiyItem) => {
                             return (
-                                <StyledActivityItem
-                                    key={item.id}
-                                    title={item.snippet.title}
-                                    description={item.snippet.description}
-                                    duration={item.duration}
-                                    publishedAt={item.snippet.publishedAt}
-                                    image={item.snippet.thumbnails.high.url}
-                                    onClick={() => this.onClickActivity(item.id)}
-                                />
+                                <ResponsiveTile key={item.id}>
+                                    <ActivityItem
+                                        title={item.snippet.title}
+                                        description={item.snippet.description}
+                                        duration={item.duration}
+                                        publishedAt={item.snippet.publishedAt}
+                                        image={item.snippet.thumbnails.high.url}
+                                        onClick={() => this.onClickActivity(item.id)}
+                                    />
+                                </ResponsiveTile>
                             );
                         })}
                 </ActivitiesWrapper>
@@ -83,6 +76,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
             <SearchWrapper>
                 <StyledAutocomplete
                     value={store.q}
+                    items={shows}
                     onChange={this.onSearch}
                     onKeyDown={this.onKeyDown}
                     placeholder={placeholder}

@@ -1,12 +1,18 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { InputText, InputTextProps } from '../input-text';
-import { shows, Show } from '../../utils/shows';
 
-interface InputAutocompleteProps extends InputTextProps {}
+export interface AutocompleteItem {
+    title: string;
+}
+
+interface InputAutocompleteProps extends InputTextProps {
+    items: AutocompleteItem[]
+}
+
 interface InputAutocompleteState {
     valueWidth: number;
-    autocompleteShows: Show[];
+    filteredItems: AutocompleteItem[];
     autocompleteIndex: number;
 }
 
@@ -31,7 +37,7 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
         this.state = {
             valueWidth: 0,
-            autocompleteShows: [],
+            filteredItems: [],
             autocompleteIndex: 0
         };
     }
@@ -47,15 +53,15 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
     private renderAutocomplete(): JSX.Element | null {
         const { value } = this.props;
-        const { autocompleteShows, autocompleteIndex } = this.state;
-        const showTitle = autocompleteShows.length
-            ? autocompleteShows[autocompleteIndex].title.substr(value.length)
+        const { filteredItems, autocompleteIndex } = this.state;
+        const title = filteredItems.length
+            ? filteredItems[autocompleteIndex].title.substr(value.length)
             : '';
 
         return (
             <div>
                 <Autocomplete style={{ left: this.state.valueWidth }}>
-                    {showTitle}
+                    {title}
                 </Autocomplete>
                 <canvas width="700" height="30" ref={this.onCanvas} style={{ display: 'none' }} />
             </div>
@@ -68,11 +74,11 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
     private onChange = (value: string): void => {
         if (this.el) {
-            let autocompleteShows: Show[] = [];
+            let filteredItems: AutocompleteItem[] = [];
             const ctx = this.el.getContext('2d');
 
             if (value) {
-                autocompleteShows = shows.filter(show => new RegExp('^' + value, 'i').test(show.title));
+                filteredItems = this.props.items.filter(item => new RegExp('^' + value, 'i').test(item.title));
             }
 
             if (ctx) {
@@ -82,7 +88,7 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
                 const valueWidth = ctx.measureText(value).width + 13;
 
-                this.setState({ valueWidth, autocompleteShows });
+                this.setState({ valueWidth, filteredItems });
             }
         }
 
@@ -91,14 +97,14 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
     private onKeyDown = (e: any): void => {
         const { onKeyDown, onChange } = this.props;
-        const { autocompleteShows, autocompleteIndex } = this.state;
+        const { filteredItems, autocompleteIndex } = this.state;
         const { keyCode } = e;
 
-        if (keyCode === 9 && autocompleteShows.length) {
+        if (keyCode === 9 && filteredItems.length) {
             // TAB
             e.preventDefault();
 
-            const show = autocompleteShows[autocompleteIndex];
+            const show = filteredItems[autocompleteIndex];
 
             onChange(show.title);
             this.onKeyDown({ keyCode: 13 });
@@ -106,20 +112,20 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
             return;
         }
 
-        if (keyCode === 40 && autocompleteShows.length) {
+        if (keyCode === 40 && filteredItems.length) {
             // ARROW DOWN
             e.preventDefault();
 
-            if (this.state.autocompleteShows[autocompleteIndex + 1]) {
+            if (this.state.filteredItems[autocompleteIndex + 1]) {
                 this.setState({ autocompleteIndex: autocompleteIndex + 1 });
             }
         }
 
-        if (keyCode === 38 && autocompleteShows.length) {
+        if (keyCode === 38 && filteredItems.length) {
             // ARROW UP
             e.preventDefault();
 
-            if (this.state.autocompleteShows[autocompleteIndex - 1]) {
+            if (this.state.filteredItems[autocompleteIndex - 1]) {
                 this.setState({ autocompleteIndex: autocompleteIndex - 1 });
             }
         }
