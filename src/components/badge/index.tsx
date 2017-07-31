@@ -10,7 +10,6 @@ const Span = styled.span`
     background-color: #777;
     display: inline;
     padding: .2em .6em .2em;
-    font-size: 75%;
     font-weight: 700;
     line-height: 1;
     color: #fff;

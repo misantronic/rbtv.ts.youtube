@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import 'react-select/dist/react-select.css';
 
 export const Select = styled(ReactSelect)`
-    flex: 0 0 200px;
+    flex: 0 0 160px;
 
     &:focus {
         outline: none;
