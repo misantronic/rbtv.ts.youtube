@@ -20,6 +20,16 @@
 </head>
 <body>
     <div id="app"></div>
-    <script type="text/javascript" src="./app.js"></script>
+    $bundles
+    
+    <script src="//www.youtube.com/iframe_api"></script>
+    <script src="//apis.google.com/js/client.js"></script>
+    <script>
+        gapi.load('client', function () {
+            if (window['onGoogleClientLoad']) {
+                window['onGoogleClientLoad']();
+            }
+        });
+    </script>
 </body>
 </html>
