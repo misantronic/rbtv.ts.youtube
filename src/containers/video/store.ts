@@ -3,14 +3,14 @@ import { fetchUtil } from '../../utils/ajax';
 
 export class VideoStore {
     @observable id: string | null;
-    @observable video: yt.VideoItem | null;
+    @observable video: youtube.VideoItem | null;
     @observable videoIsLoading = false;
 
     constructor() {
         reaction(() => this.id, id => id && this.loadVideo(id));
     }
 
-    static parseVideo(item: yt.VideoItem): yt.VideoItem {
+    static parseVideo(item: youtube.VideoItem): youtube.VideoItem {
         item.snippet.publishedAt = new Date(item.snippet.publishedAt);
 
         return item;
@@ -19,7 +19,7 @@ export class VideoStore {
     public async loadVideo(id: string) {
         this.videoIsLoading = true;
 
-        const videoItems: yt.VideoItem[] = await fetchUtil.get('/api/videos', {
+        const videoItems: youtube.VideoItem[] = await fetchUtil.get('/api/videos', {
             id
         });
 

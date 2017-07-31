@@ -54,7 +54,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                 <ActivitiesWrapper>
                     {isLoading && <Spinner />}
                     {!isLoading &&
-                        items.map((item: yt.ActivitiyItem) => {
+                        items.map((item: youtube.ActivitiyItem) => {
                             return (
                                 <StyledActivityItem
                                     key={item.id}

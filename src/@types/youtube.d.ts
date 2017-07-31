@@ -7,7 +7,7 @@ declare class Player {
     cueVideoById(id: string, seconds: number): void;
 }
 
-declare namespace yt {
+declare namespace youtube {
     interface Thumbnail {
         width: number;
         height: number;
@@ -20,6 +20,8 @@ declare namespace yt {
         standard: Thumbnail;
         high: Thumbnail;
     }
+
+    // type ActivitiyItem = GoogleApiYouTubeActivityResource;
 
     interface ActivitiyItem {
         contentDetails: {
@@ -41,6 +43,8 @@ declare namespace yt {
         };
         duration?: string;
     }
+
+    // type VideoItem = GoogleApiYouTubeVideoResource;
 
     interface VideoItem {
         kind: 'youtube#video';

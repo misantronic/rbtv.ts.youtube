@@ -17,7 +17,7 @@ interface VideoPlayerState {
     isReady: boolean;
 }
 
-let YT: yt.YT;
+let YT: youtube.YT;
 
 const containerId = 'yt-video-container';
 

@@ -6,7 +6,7 @@ export class ActivitiesStore {
     @observable channelId: channel;
     @observable q = '';
     @observable pageToken = '';
-    @observable items: yt.ActivitiyItem[] = [];
+    @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
 
     constructor(channel?: channel) {
@@ -18,8 +18,8 @@ export class ActivitiesStore {
         reaction(() => this.channelId, this.reload);
     }
 
-    static parseActivities(items: yt.ActivitiyItem[]): yt.ActivitiyItem[] {
-        return items.map((item: yt.ActivitiyItem) => {
+    static parseActivities(items: youtube.ActivitiyItem[]): youtube.ActivitiyItem[] {
+        return items.map((item: youtube.ActivitiyItem) => {
             item.snippet = Object.assign({}, item.snippet, {
                 publishedAt: new Date(item.snippet.publishedAt)
             });
@@ -83,7 +83,7 @@ export class ActivitiesStore {
             id: videos.join(',')
         });
 
-        this.items = this.items.map((item: yt.ActivitiyItem) => {
+        this.items = this.items.map((item: youtube.ActivitiyItem) => {
             const videoItem = videoItems.find(videoItem => videoItem.id === item.id);
 
             if (videoItem) {
