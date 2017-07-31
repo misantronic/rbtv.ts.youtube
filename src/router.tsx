@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { AppStore } from './store';
-import { Activities } from './containers/activities';
-import { Video } from './containers/video';
+import { AppStore, Route } from './store';
 import { observer } from 'mobx-react';
 
 interface RouterProps {
@@ -13,13 +11,59 @@ export class Router extends React.Component<RouterProps> {
     render(): JSX.Element | null {
         const { appStore } = this.props;
 
-        switch (appStore.route) {
-            case 'activities':
-                return <Activities appStore={appStore} />;
-            case 'video/:id':
-                return <Video appStore={appStore} id={appStore.params.id} />;
-            default:
-                return null;
+        return <LazyComponent bundle={appStore.route} store={appStore} />;
+    }
+}
+
+interface LazyComponentProps {
+    bundle: Route;
+    store: AppStore;
+}
+
+interface LazyComponentState {
+    Component: React.ComponentClass<{ appStore: AppStore }> | null;
+}
+
+class LazyComponent extends React.Component<LazyComponentProps, LazyComponentState> {
+    constructor(props) {
+        super(props);
+        this.state = {
+            Component: null
+        };
+    }
+
+    componentWillReceiveProps(nextProps: LazyComponentProps) {
+        let name = nextProps.bundle;
+
+        if (name) {
+            this.route(name);
         }
+    }
+
+    componentDidMount() {
+        this.componentWillReceiveProps(this.props);
+    }
+
+    async route(name) {
+        let target;
+
+        if (name === 'activities') {
+            target = await import('./containers/activities');
+        }
+        if (name === 'video/:id') {
+            target = await import('./containers/video');
+        }
+
+        this.setState({ Component: target.default });
+    }
+
+    render(): JSX.Element | null {
+        const { Component } = this.state;
+
+        if (Component) {
+            return <Component appStore={this.props.store} {...this.props.store.params} />;
+        }
+
+        return null;
     }
 }
