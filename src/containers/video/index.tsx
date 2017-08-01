@@ -4,28 +4,44 @@ import styled from 'styled-components';
 import { AppStore } from '../../store';
 import { VideoStore } from './store';
 import { VideoPlayer } from '../../components/video-player';
-
-const store = new VideoStore();
+import { H1, H3 } from '../../components/headline';
+import { Caption } from '../../components/caption';
+import { DateFormat } from '../../components/date-format';
+import { Column, ColumnContainer } from '../../components/responsive-column';
 
 interface VideoProps {
     appStore: AppStore;
     id: string;
 }
 
-const H1 = styled.h1``;
+interface VideoState {
+    store: VideoStore;
+}
+
+const StyledVideoPlayer = styled(VideoPlayer)`
+    margin-bottom: 30px;
+`
 
 @observer
-export class Video extends React.Component<VideoProps> {
+export class Video extends React.Component<VideoProps, VideoState> {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            store: new VideoStore()
+        };
+    }
+
     componentDidMount() {
-        store.id = this.props.id;
+        this.state.store.id = this.props.id;
     }
 
     componentWillUnmount() {
-        store.resetVideo();
+        this.state.store.resetVideo();
     }
 
     render(): JSX.Element | null {
-        const { video } = store;
+        const { video } = this.state.store;
 
         if (!video) {
             return null;
@@ -33,10 +49,26 @@ export class Video extends React.Component<VideoProps> {
 
         return (
             <div>
-                <VideoPlayer id={video.id} />
+                <StyledVideoPlayer id={video.id} />
                 <H1>
                     {video.snippet.title}
                 </H1>
+                <ColumnContainer>
+                    <Column sm={12} md={8}>
+                        <H3>
+                            <span>Published at </span>
+                            <DateFormat format="LL">
+                                {video.snippet.publishedAt}
+                            </DateFormat>
+                        </H3>
+                        <Caption>
+                            {video.snippet.description}
+                        </Caption>
+                    </Column>
+                    <Column sm={12} md={4}>
+                        Text
+                    </Column>
+                </ColumnContainer>
             </div>
         );
     }
