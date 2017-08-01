@@ -7,6 +7,7 @@ interface VideoPlayerProps {
     autoplay?: boolean;
     currentTime?: number;
     seekTo?: moment.Duration;
+    className?: string;
     onEnded?(id: string): void;
 }
 
@@ -43,8 +44,10 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     render() {
         const { playerWidth, playerHeight } = this.state;
+        const { className } = this.props;
+
         return (
-            <div style={{ width: playerWidth, height: playerHeight }}>
+            <div className={className} style={{ width: playerWidth, height: playerHeight }}>
                 <div id={containerId} />
             </div>
         );
@@ -52,7 +55,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     componentDidMount() {
         YT = (window as any).YT;
-        
+
         if (typeof YT === 'undefined' || !YT.Player) {
             (window as any).onYouTubeIframeAPIReady = this.onYT;
         } else {
