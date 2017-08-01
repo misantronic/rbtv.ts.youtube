@@ -110,7 +110,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     };
 
     private onClickActivity = (id: string) => {
-        this.props.appStore.redirect('video/:id', { id });
+        this.props.appStore.setRoute('video', { id });
     };
 }
 

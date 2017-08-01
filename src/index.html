@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <title>$title</title>
-    <link href="//www.rocketbeans.tv/wp-content/themes/rocket-beans/assets/img/favicon.ico" rel="shortcut icon">   
+    <link href="//www.rocketbeans.tv/wp-content/themes/rocket-beans/assets/img/favicon.ico" rel="shortcut icon">
     <link href="//fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
     <style>
@@ -11,6 +12,7 @@
             overflow-x: hidden;
             margin: 0;
             padding: 0;
+            background: #fcfcfc;
         }
 
         #app {
@@ -19,18 +21,16 @@
         }
     </style>
 </head>
+
 <body>
     <div id="app"></div>
     $bundles
-    
+
     <script src="//www.youtube.com/iframe_api"></script>
     <script src="//apis.google.com/js/client.js"></script>
     <script>
-        gapi.load('client', function () {
-            if (window['onGoogleClientLoad']) {
-                window['onGoogleClientLoad']();
-            }
-        });
+        gapi.load('client', window.onGoogleClientLoad);
     </script>
 </body>
+
 </html>

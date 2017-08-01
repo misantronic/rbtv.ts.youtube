@@ -1,41 +1,35 @@
-import { observable, reaction } from 'mobx';
+import { observable } from 'mobx';
+import { Router, RouterConfig, RouteEnterEvent } from 'yester';
 
-export type Route = 'activities' | 'video/:id';
+export type Route = 'activities' | 'video';
 
 export class AppStore {
     @observable route: Route;
     @observable params: any;
 
+    private router: Router;
+
     constructor() {
-        reaction(() => this.route, changed => changed && this.changeHash());
+        const config: RouterConfig = {
+            type: 'browser'
+        };
 
-        window.onhashchange = this.onhashchange.bind(this);
+        this.router = new Router(
+            [
+                { $: '/', beforeEnter: () => Promise.resolve({ redirect: '/activities' }) },
+                { $: '/activities', enter: (e: RouteEnterEvent) => this.setRoute('activities', e.params) },
+                { $: '/video/:id', enter: (e: RouteEnterEvent) => this.setRoute('video', e.params) }
+            ],
+            config
+        );
 
-        this.onhashchange();
+        this.router.init();
     }
 
-    private onhashchange() {
-        const hash = location.hash.substr(1) || 'activities';
-
-        if (hash === 'activities') {
-            this.redirect('activities');
-        }
-
-        if (/video\/(\w+)/i.test(hash)) {
-            const parts = hash.split('/');
-
-            this.redirect('video/:id', { id: parts[1] });
-        }
-    }
-
-    private changeHash(): void {
-        const parsedRoute = this.route.replace(/(?:\:(\w+)*)/, (str, $1) => str && this.params[$1]);
-
-        location.hash = parsedRoute;
-    }
-
-    public redirect(route: Route, params: any = {}): void {
+    public setRoute(route: Route, params: any = {}): void {
         this.params = params;
         this.route = route;
+
+        console.log('redirect', route, params);
     }
 }

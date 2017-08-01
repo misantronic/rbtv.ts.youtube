@@ -5,7 +5,6 @@ import { AppStore } from './store';
 import styled from 'styled-components';
 
 const App = styled.div`
-    background: #fcfcfc;
     font-family: Raleway, Arial, sans-serif;
     font-size: 14px;
     width: 1074px;
@@ -39,7 +38,7 @@ const store = new AppStore();
 function main() {
     render(
         <App>
-            <Router appStore={store} />
+            <Router store={store} />
         </App>,
         document.getElementById('app')
     );
