@@ -5,7 +5,7 @@ import { ActivitiesStore } from './store';
 import { AppStore } from '../../store';
 import { ActivityItem } from './activity-item';
 import { InputAutocomplete } from '../../components/input-autocomplete';
-import { ResponsiveTile } from '../../components/responsive-tile';
+import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
 import { channel, getChannelName } from '../../utils/channels';
@@ -16,11 +16,6 @@ const store = new ActivitiesStore(channel.RBTV);
 interface ActivitiesStoreProps {
     appStore: AppStore;
 }
-
-const ActivitiesWrapper = styled.div`
-    display: flex;
-    flex-wrap: wrap;
-`;
 
 const SearchWrapper = styled.div`
     display: flex;
@@ -43,12 +38,12 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
         return (
             <div>
                 {this.renderSearch()}
-                <ActivitiesWrapper>
+                <ColumnContainer>
                     {isLoading && <Spinner />}
                     {!isLoading &&
                         items.map((item: youtube.ActivitiyItem) => {
                             return (
-                                <ResponsiveTile key={item.id}>
+                                <Column sm={12} md={6} lg={4} key={item.id}>
                                     <ActivityItem
                                         title={item.snippet.title}
                                         description={item.snippet.description}
@@ -57,10 +52,10 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                                         image={item.snippet.thumbnails.high.url}
                                         onClick={() => this.onClickActivity(item.id)}
                                     />
-                                </ResponsiveTile>
+                                </Column>
                             );
                         })}
-                </ActivitiesWrapper>
+                </ColumnContainer>
             </div>
         );
     }
