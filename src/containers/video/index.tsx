@@ -8,6 +8,7 @@ import { H1, H3 } from '../../components/headline';
 import { Caption } from '../../components/caption';
 import { DateFormat } from '../../components/date-format';
 import { Column, ColumnContainer } from '../../components/responsive-column';
+import { Likes, Dislikes } from '../../components/likes';
 
 interface VideoProps {
     appStore: AppStore;
@@ -20,6 +21,16 @@ interface VideoState {
 
 const StyledVideoPlayer = styled(VideoPlayer)`
     margin-bottom: 30px;
+`;
+
+const LikesColumn = styled(Column)`
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+`
+
+const StyledLikes = styled(Likes)`
+    margin-right: 15px;
 `
 
 @observer
@@ -55,12 +66,24 @@ export class Video extends React.Component<VideoProps, VideoState> {
                 </H1>
                 <ColumnContainer>
                     <Column sm={12} md={8}>
-                        <H3>
-                            <span>Published at </span>
-                            <DateFormat format="LL">
-                                {video.snippet.publishedAt}
-                            </DateFormat>
-                        </H3>
+                        <ColumnContainer>
+                            <Column sm={6}>
+                                <H3>
+                                    <span>Published at </span>
+                                    <DateFormat format="LL">
+                                        {video.snippet.publishedAt}
+                                    </DateFormat>
+                                </H3>
+                            </Column>
+                            <LikesColumn sm={6}>
+                                <StyledLikes>
+                                    {video.statistics.likeCount}
+                                </StyledLikes>
+                                <Dislikes>
+                                    {video.statistics.dislikeCount}
+                                </Dislikes>
+                            </LikesColumn>
+                        </ColumnContainer>
                         <Caption>
                             {video.snippet.description}
                         </Caption>

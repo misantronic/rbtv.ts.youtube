@@ -7,6 +7,7 @@ interface ColumnProps {
     sm?: sizes;
     md?: sizes;
     lg?: sizes;
+    className?: string;
 }
 
 const calcSizes = (props: ColumnProps): string => {
@@ -35,10 +36,10 @@ const Col = styled.div`${calcSizes};`;
 
 export class Column extends React.PureComponent<ColumnProps> {
     render() {
-        const { children, sm, md, lg } = this.props;
+        const { children, className, sm, md, lg } = this.props;
 
         return (
-            <Col sm={sm} md={md} lg={lg}>
+            <Col sm={sm} md={md} lg={lg} className={className}>
                 {children}
             </Col>
         );
