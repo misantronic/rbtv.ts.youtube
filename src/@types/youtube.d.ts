@@ -5,6 +5,7 @@ declare class Player {
     getCurrentTime(): number;
     loadVideoById(id: string, seconds: number): void;
     cueVideoById(id: string, seconds: number): void;
+    getVideoData(): { author: string; title: string; video_id: string };
 }
 
 declare namespace youtube {

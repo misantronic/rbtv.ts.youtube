@@ -100,10 +100,15 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
         if (!isReady) return;
 
+        const { player } = this;
+        const { video_id } = player.getVideoData();
+
+        if (video_id === id) return;
+
         if (autoplay) {
-            this.player.loadVideoById(id, currentTime);
+            player.loadVideoById(id, currentTime);
         } else {
-            this.player.cueVideoById(id, currentTime);
+            player.cueVideoById(id, currentTime);
         }
     }
 
