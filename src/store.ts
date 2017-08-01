@@ -26,10 +26,21 @@ export class AppStore {
         this.router.init();
     }
 
-    public setRoute(route: Route, params: any = {}): void {
+    private setRoute(route: Route, params: any = {}): void {
         this.params = params;
         this.route = route;
+    }
 
-        console.log('redirect', route, params);
+    public navigate(route: Route, params: any = {}): void {
+        const { router } = this;
+
+        this.setRoute(route, params);
+
+        switch (route) {
+            case 'activities':
+                return router.navigate(route);
+            case 'video':
+                return router.navigate(route + '/' + params.id);
+        }
     }
 }
