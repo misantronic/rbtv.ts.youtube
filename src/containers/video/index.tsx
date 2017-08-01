@@ -9,6 +9,7 @@ import { Caption } from '../../components/caption';
 import { DateFormat } from '../../components/date-format';
 import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Likes, Dislikes } from '../../components/likes';
+import { NumberFormat } from '../../components/number-format';
 
 interface VideoProps {
     appStore: AppStore;
@@ -23,10 +24,10 @@ const StyledVideoPlayer = styled(VideoPlayer)`
     margin-bottom: 30px;
 `;
 
-const LikesColumn = styled(Column)`
+const ViewsColumn = styled(Column)`
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
 `;
 
 const StyledLikes = styled(Likes)`
@@ -75,14 +76,22 @@ export class Video extends React.Component<VideoProps, VideoState> {
                                     </DateFormat>
                                 </H3>
                             </Column>
-                            <LikesColumn sm={6}>
-                                <StyledLikes>
-                                    {video.statistics.likeCount}
-                                </StyledLikes>
-                                <Dislikes>
-                                    {video.statistics.dislikeCount}
-                                </Dislikes>
-                            </LikesColumn>
+                            <ViewsColumn sm={6}>
+                                <H3>
+                                    <NumberFormat>
+                                        {video.statistics.viewCount}
+                                    </NumberFormat>
+                                    <span> views</span>
+                                </H3>
+                                <div>
+                                    <StyledLikes>
+                                        {video.statistics.likeCount}
+                                    </StyledLikes>
+                                    <Dislikes>
+                                        {video.statistics.dislikeCount}
+                                    </Dislikes>
+                                </div>
+                            </ViewsColumn>
                         </ColumnContainer>
                         <Caption>
                             {video.snippet.description}
