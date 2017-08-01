@@ -1,25 +1,11 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { H3 } from '../headline';
 
 interface CaptionTitleProps {
     children: string;
     onClick(): void;
 }
-
-const H3 = styled.h3`
-    display: flex;
-    margin: 5px 0 6px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-    position: relative;
-    padding-right: 5px;
-    margin-top: 10px;
-    font-size: 17px;
-    height: 20px;
-    font-weight: 500;
-    line-height: 1.1;
-`;
 
 const Link = styled.a`
     width: 100%;
@@ -43,5 +29,5 @@ export class CaptionTitle extends React.Component<CaptionTitleProps> {
     onClick = (e: any) => {
         e.preventDefault();
         this.props.onClick();
-    }
+    };
 }
