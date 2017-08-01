@@ -2,22 +2,21 @@ import * as React from 'react';
 import styled from 'styled-components';
 
 interface CaptionProps {
-    children: string;
+    lineClamp?: number;
 }
 
 const P = styled.p`
-    max-height: 58px;
     overflow: hidden;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: ${(props: CaptionProps) => props.lineClamp || 0};
     -webkit-box-orient: vertical;
     display: -webkit-box;
 `;
 
 export class Caption extends React.Component<CaptionProps> {
     render(): JSX.Element {
-        const { children } = this.props;
+        const { children, lineClamp } = this.props;
 
-        return <P dangerouslySetInnerHTML={{ __html: children.replace(/\n/g, '<br/>') }} />;
+        return <P lineClamp={lineClamp} dangerouslySetInnerHTML={{ __html: (children as string).replace(/\n/g, '<br/>') }} />;
     }
 }

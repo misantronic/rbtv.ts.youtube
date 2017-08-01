@@ -15,8 +15,7 @@ interface ActivityItemProps {
 }
 
 const StyledDiv = styled.div`
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 20px;
 `;
 
 export class ActivityItem extends React.Component<ActivityItemProps> {
@@ -29,7 +28,7 @@ export class ActivityItem extends React.Component<ActivityItemProps> {
                 <CaptionTitle onClick={onClick}>
                     {title}
                 </CaptionTitle>
-                <Caption>
+                <Caption lineClamp={3}>
                     {description}
                 </Caption>
             </StyledDiv>
