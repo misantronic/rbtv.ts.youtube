@@ -26,7 +26,16 @@ export class Router extends React.Component<RouterProps, RouterState> {
     }
 
     async route(name: Route) {
-        const target = await import('./containers/' + name);
+        let target;
+
+        switch (name) {
+            case 'activities':
+                target = await import('./containers/activities');
+                break;
+            case 'video':
+                target = await import('./containers/video');
+                break;
+        }
 
         this.setState({ Component: target.default });
     }
