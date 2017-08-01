@@ -27,11 +27,11 @@ const LikesColumn = styled(Column)`
     display: flex;
     align-items: center;
     justify-content: flex-end;
-`
+`;
 
 const StyledLikes = styled(Likes)`
     margin-right: 15px;
-`
+`;
 
 @observer
 export class Video extends React.Component<VideoProps, VideoState> {
