@@ -12,6 +12,7 @@ Sparky.task('build', () => {
         target: 'browser',
         experimentalFeatures: true,
         cache: !production,
+        sourceMaps: !production,
         hash: production,
         plugins: [
             EnvPlugin({ NODE_ENV: production ? 'production' : 'development' }),
