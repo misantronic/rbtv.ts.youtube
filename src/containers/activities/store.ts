@@ -8,6 +8,7 @@ export class ActivitiesStore {
     @observable pageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
+    @observable error: ErrorEvent;
 
     constructor(channel?: channel) {
         if (channel) {
@@ -45,37 +46,47 @@ export class ActivitiesStore {
     public async loadActivities() {
         this.isLoading = true;
 
-        const response = await fetchUtil.get('/api/activities', {
-            q: '',
-            channelId: this.channelId,
-            pageToken: ''
-        });
+        try {
+            const response = await fetchUtil.get('/api/activities', {
+                q: '',
+                channelId: this.channelId,
+                pageToken: ''
+            });
 
-        const items = ActivitiesStore.parseActivities(response.items);
+            const items = ActivitiesStore.parseActivities(response.items);
 
-        this.pageToken = response.nextPageToken;
-        this.items = items;
-        this.isLoading = false;
+            this.pageToken = response.nextPageToken;
+            this.items = items;
 
-        this.loadVideos(items.map(item => item.id));
+            this.loadVideos(items.map(item => item.id));
+        } catch (e) {
+            this.error = e;
+        } finally {
+            this.isLoading = false;
+        }
     }
 
     public async search() {
         this.isLoading = true;
 
-        const response = await fetchUtil.get('/api/search', {
-            q: this.q,
-            channelId: this.channelId,
-            pageToken: ''
-        });
+        try {
+            const response = await fetchUtil.get('/api/search', {
+                q: this.q,
+                channelId: this.channelId,
+                pageToken: ''
+            });
 
-        const items = ActivitiesStore.parseActivities(response.items);
+            const items = ActivitiesStore.parseActivities(response.items);
 
-        this.pageToken = response.nextPageToken;
-        this.items = items;
-        this.isLoading = false;
+            this.pageToken = response.nextPageToken;
+            this.items = items;
 
-        this.loadVideos(items.map(item => item.id));
+            this.loadVideos(items.map(item => item.id));
+        } catch (e) {
+            this.error = e;
+        } finally {
+            this.isLoading = false;
+        }
     }
 
     private async loadVideos(videos: string[]) {

@@ -8,6 +8,7 @@ import { InputAutocomplete } from '../../components/input-autocomplete';
 import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
+import { Error } from '../../components/error';
 import { channel, getChannelName } from '../../utils/channels';
 import { shows } from '../../utils/shows';
 
@@ -33,13 +34,14 @@ const StyledSelect = styled(Select)`
 @observer
 export class Activities extends React.Component<ActivitiesStoreProps> {
     render(): JSX.Element {
-        const { items, isLoading } = store;
+        const { items, isLoading, error } = store;
 
         return (
             <div>
                 {this.renderSearch()}
                 <ColumnContainer>
                     {isLoading && <Spinner />}
+                    {error && this.renderError()}
                     {!isLoading &&
                         items.map((item: youtube.ActivitiyItem) => {
                             return (
@@ -86,6 +88,18 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                     onChange={this.onChangeChannel as any}
                 />
             </SearchWrapper>
+        );
+    }
+
+    private renderError() {
+        const { error } = store;
+
+        return (
+            <Column>
+                <Error>
+                    {error}
+                </Error>
+            </Column>
         );
     }
 
