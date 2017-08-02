@@ -43,6 +43,7 @@ declare namespace youtube {
             type: 'upload';
         };
         duration?: string;
+        tags?: string[];
     }
 
     // type VideoItem = GoogleApiYouTubeVideoResource;

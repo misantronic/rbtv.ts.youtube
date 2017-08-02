@@ -1,5 +1,6 @@
 import { observable, reaction } from 'mobx';
 import { channel } from '../../utils/channels';
+import { beans } from '../../utils/beans';
 import { fetchUtil } from '../../utils/ajax';
 
 export class ActivitiesStore {
@@ -95,10 +96,13 @@ export class ActivitiesStore {
         });
 
         this.items = this.items.map((item: youtube.ActivitiyItem) => {
-            const videoItem = videoItems.find(videoItem => videoItem.id === item.id);
+            const videoItem: youtube.VideoItem = videoItems.find(videoItem => videoItem.id === item.id);
 
             if (videoItem) {
                 item.duration = videoItem.contentDetails.duration;
+                item.tags = beans
+                    .filter(bean => videoItem.snippet.tags.find(tag => bean.title.toLowerCase() === tag.split(' ')[0].toLowerCase()))
+                    .map(bean => bean.title);
             }
 
             return item;

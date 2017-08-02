@@ -13,10 +13,19 @@ const P = styled.p`
     display: -webkit-box;
 `;
 
+const parseLinks = (html: string): string => {
+    return html
+        .replace(
+            /(?:https*:\/\/(?:www\.)*)*[a-z0-9-]+(\.\w{2})+(?:[/a-z0-9.-_])*/gi,
+            url => `<a href="${url}" target="_blank">${url}</a>`
+        )
+        .replace(/\n/g, '<br/>');
+};
+
 export class Caption extends React.Component<CaptionProps> {
     render(): JSX.Element {
         const { children, lineClamp } = this.props;
 
-        return <P lineClamp={lineClamp} dangerouslySetInnerHTML={{ __html: (children as string).replace(/\n/g, '<br/>') }} />;
+        return <P lineClamp={lineClamp} dangerouslySetInnerHTML={{ __html: parseLinks(children as string) }} />;
     }
 }

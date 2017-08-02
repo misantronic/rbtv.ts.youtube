@@ -52,7 +52,9 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                                         duration={item.duration}
                                         publishedAt={item.snippet.publishedAt}
                                         image={item.snippet.thumbnails.high.url}
+                                        tags={item.tags}
                                         onClick={() => this.onClickActivity(item.id)}
+                                        onClickTag={this.onClickTag}
                                     />
                                 </Column>
                             );
@@ -126,6 +128,11 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     private onClickActivity = (id: string) => {
         this.props.appStore.navigate('video', { id });
     };
+
+    private onClickTag = (tag: string): void => {
+        store.q = tag;
+        store.search();
+    }
 }
 
 export default Activities;
