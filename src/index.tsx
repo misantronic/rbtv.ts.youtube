@@ -45,7 +45,7 @@ function main() {
         <App>
             <NavWrapper>
                 <Nav store={store}>
-                    <NavItem href="/activities">Home</NavItem>
+                    <NavItem href="/">Home</NavItem>
                     <NavItem href="/playlists">Playlists</NavItem>
                 </Nav>
             </NavWrapper>

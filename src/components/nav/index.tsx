@@ -59,7 +59,7 @@ export class NavItem extends React.PureComponent<NavItemProps> {
         if (store) {
             e.preventDefault();
 
-            console.log(href);            
+            store.navigate(href);
         }
     };
 }

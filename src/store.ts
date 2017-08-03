@@ -1,25 +1,35 @@
 import { observable } from 'mobx';
-import { Router, RouterConfig, RouteEnterEvent } from 'yester';
+import { Router, RouterConfig, RouteEnterEvent, match } from 'yester';
 
-export type Route = 'activities' | 'video' | 'playlists';
+export type Route = '/activities' | '/video/:id' | '/playlists';
+type RouteObj = { id: string; route: Route };
+
+const routes: RouteObj[] = [
+    { id: 'activities', route: '/activities' },
+    { id: 'playlists', route: '/playlists' },
+    { id: 'video', route: '/video/:id' }
+];
 
 export class AppStore {
     @observable route: Route;
     @observable params: any;
 
-    public router: Router;
+    private router: Router;
 
     constructor() {
         const config: RouterConfig = {
             type: 'browser'
         };
 
+        const yesterRoutes = routes.map(routeObj => ({
+            $: routeObj.route,
+            enter: (e: RouteEnterEvent) => this.setRoute(routeObj.route, e.params)
+        }));
+
         this.router = new Router(
             [
-                { $: '/', beforeEnter: () => Promise.resolve({ redirect: '/activities' }) },
-                { $: '/activities', enter: (e: RouteEnterEvent) => this.setRoute('activities', e.params) },
-                { $: '/playlists', enter: (e: RouteEnterEvent) => this.setRoute('playlists', e.params) },
-                { $: '/video/:id', enter: (e: RouteEnterEvent) => this.setRoute('video', e.params) }
+                { $: '/', beforeEnter: () => Promise.resolve({ redirect: routes[0].route }) },
+                ...yesterRoutes
             ],
             config
         );
@@ -36,13 +46,13 @@ export class AppStore {
         let target;
 
         switch (name) {
-            case 'activities':
+            case '/activities':
                 target = await import('./containers/activities');
                 break;
-            case 'playlists':
+            case '/playlists':
                 target = await import('./containers/playlists');
                 break;
-            case 'video':
+            case '/video/:id':
                 target = await import('./containers/video');
                 break;
         }
@@ -58,19 +68,27 @@ export class AppStore {
         return target.default;
     }
 
-    public navigate(route: Route, params: any = {}): void {
-        console.log('navigate', route, params);        
+    public navigate(path: string): void {
+        const result = routes.reduce((result, routeObj: RouteObj) => {
+            if (result) return result;
 
-        const { router } = this;
+            const pattern = routeObj.route;
+            const matchResult = match({ path, pattern });
 
-        this.setRoute(route, params);
+            if (matchResult) {
+                return {
+                    pattern,
+                    params: matchResult.params
+                };
+            }
 
-        switch (route) {
-            case 'activities':
-            case 'playlists':
-                return router.navigate(route);
-            case 'video':
-                return router.navigate(route + '/' + params.id);
+            return null;
+        }, null);
+
+        if (result) {
+            this.setRoute(result.pattern, result.params);
         }
+
+        this.router.navigate(path);
     }
 }

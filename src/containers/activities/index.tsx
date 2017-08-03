@@ -135,7 +135,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     };
 
     private onClickActivity = (id: string) => {
-        this.props.appStore.navigate('video', { id });
+        this.props.appStore.navigate(`/video/${id}`);
     };
 
     private onClickTag = (tag: string): void => {
