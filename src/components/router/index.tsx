@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { AppStore, Route } from './store';
+import { AppStore, Route } from '../../store';
 import { reaction } from 'mobx';
 import { observer } from 'mobx-react';
 
@@ -22,22 +22,17 @@ export class Router extends React.Component<RouterProps, RouterState> {
     }
 
     componentDidMount() {
-        reaction(() => this.props.store.route, (name: Route) => this.route(name), { fireImmediately: true });
-    }
+        const { store } = this.props;
 
-    async route(name: Route) {
-        let target;
+        reaction(
+            () => store.route,
+            async (name: Route) => {
+                const Component = await store.loadBundle(name);
 
-        switch (name) {
-            case 'activities':
-                target = await import('./containers/activities');
-                break;
-            case 'video':
-                target = await import('./containers/video');
-                break;
-        }
-
-        this.setState({ Component: target.default });
+                this.setState({ Component });
+            },
+            { fireImmediately: true }
+        );
     }
 
     render(): JSX.Element | null {

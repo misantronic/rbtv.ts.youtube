@@ -6,7 +6,7 @@ import { fetchUtil } from '../../utils/ajax';
 export class ActivitiesStore {
     @observable channelId: channel;
     @observable q = '';
-    @observable pageToken = '';
+    @observable nextPageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
     @observable error: ErrorEvent;
@@ -44,19 +44,19 @@ export class ActivitiesStore {
         });
     }
 
-    public async loadActivities() {
+    public async loadActivities(nextPageToken: string = '') {
         this.isLoading = true;
 
         try {
             const response = await fetchUtil.get('/api/activities', {
                 q: '',
                 channelId: this.channelId,
-                pageToken: ''
+                pageToken: nextPageToken
             });
 
             const items = ActivitiesStore.parseActivities(response.items);
 
-            this.pageToken = response.nextPageToken;
+            this.nextPageToken = response.nextPageToken;
             this.items = items;
 
             this.loadVideos(items.map(item => item.id));
@@ -79,7 +79,7 @@ export class ActivitiesStore {
 
             const items = ActivitiesStore.parseActivities(response.items);
 
-            this.pageToken = response.nextPageToken;
+            this.nextPageToken = response.nextPageToken;
             this.items = items;
 
             this.loadVideos(items.map(item => item.id));

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import debounce = require('lodash/debounce');
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import { ActivitiesStore } from './store';
@@ -33,6 +34,14 @@ const StyledSelect = styled(Select)`
 
 @observer
 export class Activities extends React.Component<ActivitiesStoreProps> {
+    componentDidMount() {
+        addEventListener('scroll', this.onScroll);
+    }
+
+    componentWillUnmount() {
+        removeEventListener('scroll', this.onScroll);
+    }
+
     render(): JSX.Element {
         const { items, isLoading, error } = store;
 
@@ -132,7 +141,13 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     private onClickTag = (tag: string): void => {
         store.q = tag;
         store.search();
-    }
+    };
+
+    private onScroll = debounce(() => {
+        if(scrollY === document.body.scrollHeight - innerHeight) {
+            store.loadActivities(store.nextPageToken);
+        }
+    }, 16);
 }
 
 export default Activities;

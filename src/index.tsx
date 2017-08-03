@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { Router } from './router';
 import { AppStore } from './store';
 import styled from 'styled-components';
+import { Router } from './components/router';
+import { Nav, NavItem } from './components/nav';
 
 const App = styled.div`
     font-family: Raleway, Arial, sans-serif;
@@ -33,11 +34,21 @@ const App = styled.div`
     }
 `;
 
+const NavWrapper = styled.div`
+    margin-bottom: 20px;
+`;
+
 const store = new AppStore();
 
 function main() {
     render(
         <App>
+            <NavWrapper>
+                <Nav store={store}>
+                    <NavItem href="/activities">Home</NavItem>
+                    <NavItem href="/playlists">Playlists</NavItem>
+                </Nav>
+            </NavWrapper>
             <Router store={store} />
         </App>,
         document.getElementById('app')

@@ -56,6 +56,7 @@ Sparky.task('build', () => {
         .splitConfig({ browser: '/static/', dest: 'bundles/' })
         .split('containers/activities/**', 'activities > containers/activities/index.tsx')
         .split('containers/video/**', 'video > containers/video/index.tsx')
+        .split('containers/playlists/**', 'playlists > containers/playlists/index.tsx')
         .instructions(`> [index.tsx] + [containers/**/**.{ts, tsx}]`);
 
     if (!production) {
