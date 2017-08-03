@@ -3,8 +3,8 @@ declare class Player {
     seekTo(seconds: number): void;
     playVideo(): void;
     getCurrentTime(): number;
-    loadVideoById(id: string, seconds: number): void;
-    cueVideoById(id: string, seconds: number): void;
+    loadVideoById(id: string, seconds?: number): void;
+    cueVideoById(id: string, seconds?: number): void;
     getVideoData(): { author: string; title: string; video_id: string };
 }
 

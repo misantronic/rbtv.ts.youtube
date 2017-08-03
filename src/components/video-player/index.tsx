@@ -5,7 +5,6 @@ import { updateStorage } from '../../utils/storage';
 interface VideoPlayerProps {
     id: string;
     autoplay?: boolean;
-    currentTime?: number;
     seekTo?: moment.Duration;
     className?: string;
     onEnded?(id: string): void;
@@ -14,20 +13,16 @@ interface VideoPlayerProps {
 interface VideoPlayerState {
     playerWidth: '100%' | number;
     playerHeight: number;
-    currentTime: number;
     isReady: boolean;
 }
 
 let YT: youtube.YT;
-
 const containerId = 'yt-video-container';
 
 export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlayerState> {
     private player: Player;
-    private interval: NodeJS.Timer;
 
     static defaultProps = {
-        currentTime: 0,
         autoplay: false
     };
 
@@ -37,8 +32,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         this.state = {
             playerWidth: '100%',
             playerHeight: 450,
-            isReady: false,
-            currentTime: 0
+            isReady: false
         };
     }
 
@@ -76,7 +70,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
     }
 
     private createPlayer() {
-        const { id, currentTime } = this.props;
+        const { id } = this.props;
         const { playerWidth, playerHeight } = this.state;
 
         this.player = new YT.Player(containerId, {
@@ -88,15 +82,13 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
                 onReady: this.onReady,
                 onStateChange: this.onStateChange
             },
-            playerVars: {
-                start: currentTime
-            }
+            playerVars: {}
         });
     }
 
     private updatePlayer() {
         const { id, autoplay } = this.props;
-        const { currentTime, isReady } = this.state;
+        const { isReady } = this.state;
 
         if (!isReady) return;
 
@@ -106,9 +98,9 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         if (video_id === id) return;
 
         if (autoplay) {
-            player.loadVideoById(id, currentTime);
+            player.loadVideoById(id);
         } else {
-            player.cueVideoById(id, currentTime);
+            player.cueVideoById(id);
         }
     }
 
@@ -127,7 +119,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
     private setWatched() {
         const videoId = this.props.id;
 
-        updateStorage(`${videoId}.info`, { watched: true, currentTime: 0 });
+        updateStorage(`${videoId}.info`, { watched: true });
     }
 
     /**
@@ -144,29 +136,10 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     private onStateChange = (e: any) => {
         switch (e.data) {
-            case YT.PlayerState.PLAYING:
-                this.onPlaying();
-                break;
             case YT.PlayerState.ENDED:
                 this.onEnded();
                 break;
         }
-    };
-
-    private onPlaying = () => {
-        const { id } = this.props;
-
-        // Store player-status
-        clearInterval(this.interval);
-
-        const updateTime = () => {
-            const currentTime = Math.round(this.player.getCurrentTime());
-
-            updateStorage(`${id}.info`, { currentTime });
-        };
-
-        updateTime();
-        this.interval = setInterval(updateTime, 8000);
     };
 
     private onEnded() {
