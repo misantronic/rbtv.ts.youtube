@@ -34,19 +34,23 @@ const App = styled.div`
     }
 `;
 
-const NavWrapper = styled.div`
-    margin-bottom: 20px;
-`;
+const NavWrapper = styled.div`margin-bottom: 20px;`;
 
 const store = new AppStore();
+
+const onNavItemClick = (href: string) => store.navigate(href);
 
 function main() {
     render(
         <App>
             <NavWrapper>
-                <Nav store={store}>
-                    <NavItem href="/">Home</NavItem>
-                    <NavItem href="/playlists">Playlists</NavItem>
+                <Nav>
+                    <NavItem href="/" onClick={onNavItemClick}>
+                        Home
+                    </NavItem>
+                    <NavItem href="/playlists" onClick={onNavItemClick}>
+                        Playlists
+                    </NavItem>
                 </Nav>
             </NavWrapper>
             <Router store={store} />

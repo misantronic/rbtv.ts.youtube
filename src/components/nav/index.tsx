@@ -1,10 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { AppStore } from '../../store';
 
 interface NavProps {
     className?: string;
-    store: AppStore;
     children: /*React.ReactElement<any>*/ any[];
 }
 
@@ -18,12 +16,12 @@ const Ul = styled.ul`
 
 export class Nav extends React.PureComponent<NavProps> {
     render() {
-        const { className, children, store } = this.props;
+        const { className, children } = this.props;
 
         return (
             <nav className={className}>
                 <Ul>
-                    {children.map((child, key) => React.cloneElement(child, { ...child.props, store, key }))}
+                    {children}
                 </Ul>
             </nav>
         );
@@ -32,21 +30,24 @@ export class Nav extends React.PureComponent<NavProps> {
 
 interface NavItemProps {
     href: string;
-    store?: AppStore;
+    active?: boolean;
+    onClick(href: string): void;
 }
 
 const A = styled.a`
     display: block;
     padding: 8px 12px;
+
+    font-weight: ${(props: NavItemProps) => (props.active ? 'bold' : 'normal')};
 `;
 
 export class NavItem extends React.PureComponent<NavItemProps> {
     render() {
-        const { href, children } = this.props;
+        const { href, children, active = false } = this.props;
 
         return (
             <li>
-                <A href={href} onClick={this.onClick}>
+                <A href={href} active={active} onClick={this.onClick}>
                     {children}
                 </A>
             </li>
@@ -54,12 +55,10 @@ export class NavItem extends React.PureComponent<NavItemProps> {
     }
 
     private onClick = e => {
-        const { store, href } = this.props;
-
-        if (store) {
-            e.preventDefault();
-
-            store.navigate(href);
-        }
+        e.preventDefault();
+        
+        const { href, onClick } = this.props;
+        
+        onClick(href);
     };
 }
