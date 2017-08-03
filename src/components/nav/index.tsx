@@ -38,7 +38,8 @@ const A = styled.a`
     display: block;
     padding: 8px 12px;
 
-    font-weight: ${(props: NavItemProps) => (props.active ? 'bold' : 'normal')};
+    background-color: ${(props: NavItemProps) => (props.active ? '#eee' : 'transparent')};
+    pointer-events: ${(props: NavItemProps) => (props.active ? 'none' : 'auto')};
 `;
 
 export class NavItem extends React.PureComponent<NavItemProps> {

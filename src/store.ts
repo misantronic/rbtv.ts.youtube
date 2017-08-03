@@ -4,7 +4,7 @@ import { Router, RouterConfig, RouteEnterEvent, match } from 'yester';
 export type Route = '/activities' | '/video/:id' | '/playlists';
 type RouteObj = { id: string; route: Route };
 
-const routes: RouteObj[] = [
+export const routes: RouteObj[] = [
     { id: 'activities', route: '/activities' },
     { id: 'playlists', route: '/playlists' },
     { id: 'video', route: '/video/:id' }

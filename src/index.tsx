@@ -3,7 +3,9 @@ import { render } from 'react-dom';
 import { AppStore } from './store';
 import styled from 'styled-components';
 import { Router } from './components/router';
-import { Nav, NavItem } from './components/nav';
+import { MainNav } from './containers/main-nav'
+
+const store = new AppStore();
 
 const App = styled.div`
     font-family: Raleway, Arial, sans-serif;
@@ -34,25 +36,10 @@ const App = styled.div`
     }
 `;
 
-const NavWrapper = styled.div`margin-bottom: 20px;`;
-
-const store = new AppStore();
-
-const onNavItemClick = (href: string) => store.navigate(href);
-
 function main() {
     render(
         <App>
-            <NavWrapper>
-                <Nav>
-                    <NavItem href="/" onClick={onNavItemClick}>
-                        Home
-                    </NavItem>
-                    <NavItem href="/playlists" onClick={onNavItemClick}>
-                        Playlists
-                    </NavItem>
-                </Nav>
-            </NavWrapper>
+            <MainNav store={store} />
             <Router store={store} />
         </App>,
         document.getElementById('app')
