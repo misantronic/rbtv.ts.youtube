@@ -11,17 +11,17 @@ interface MainNavProps {
 }
 
 @observer
-export class MainNav extends React.PureComponent<MainNavProps> {
+export class MainNav extends React.Component<MainNavProps> {
     render() {
         const { store } = this.props;
 
         return (
             <NavWrapper>
                 <Nav>
-                    <NavItem href="/" active={store.route === '/activities'} onClick={this.onNavItemClick}>
+                    <NavItem href="/" active={store.isRouteActivities} onClick={this.onNavItemClick}>
                         Home
                     </NavItem>
-                    <NavItem href="/playlists" active={store.route === '/playlists'} onClick={this.onNavItemClick}>
+                    <NavItem href="/playlists" active={store.isRoutePlaylists} onClick={this.onNavItemClick}>
                         Playlists
                     </NavItem>
                 </Nav>

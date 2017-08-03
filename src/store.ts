@@ -1,4 +1,4 @@
-import { observable } from 'mobx';
+import { observable, computed } from 'mobx';
 import { Router, RouterConfig, RouteEnterEvent, match } from 'yester';
 
 export type Route = '/activities' | '/video/:id' | '/playlists';
@@ -27,19 +27,21 @@ export class AppStore {
         }));
 
         this.router = new Router(
-            [
-                { $: '/', beforeEnter: () => Promise.resolve({ redirect: routes[0].route }) },
-                ...yesterRoutes
-            ],
+            [{ $: '/', beforeEnter: () => Promise.resolve({ redirect: routes[0].route }) }, ...yesterRoutes],
             config
         );
 
         this.router.init();
     }
 
-    private setRoute(route: Route, params: any = {}): void {
-        this.params = params;
-        this.route = route;
+    @computed
+    public get isRouteActivities() {
+        return this.route === (routes.find(routeObj => routeObj.id === 'activities') as RouteObj).route;
+    }
+
+    @computed
+    public get isRoutePlaylists() {
+        return this.route === (routes.find(routeObj => routeObj.id === 'playlists') as RouteObj).route;
     }
 
     public async loadBundle(name: Route): Promise<React.ComponentClass<any>> {
@@ -90,5 +92,10 @@ export class AppStore {
         }
 
         this.router.navigate(path);
+    }
+
+    private setRoute(route: Route, params: any = {}): void {
+        this.params = params;
+        this.route = route;
     }
 }
