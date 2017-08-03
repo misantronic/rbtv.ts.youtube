@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { AppStore, Route } from '../../store';
 import { reaction } from 'mobx';
-import { observer } from 'mobx-react';
 
 interface RouterProps {
     store: AppStore;
@@ -11,7 +10,6 @@ interface RouterState {
     Component: React.ComponentClass<{ appStore: AppStore }> | null;
 }
 
-@observer
 export class Router extends React.Component<RouterProps, RouterState> {
     constructor(props) {
         super(props);
