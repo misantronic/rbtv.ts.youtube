@@ -103,9 +103,15 @@ export class ActivitiesStore {
 
             if (videoItem) {
                 item.duration = videoItem.contentDetails.duration;
-                item.tags = beans
-                    .filter(bean => videoItem.snippet.tags.find(tag => bean.title.toLowerCase() === tag.split(' ')[0].toLowerCase()))
-                    .map(bean => bean.title);
+                item.tags = videoItem.snippet.tags
+                    ? beans
+                          .filter(bean =>
+                              videoItem.snippet.tags.find(
+                                  tag => bean.title.toLowerCase() === tag.split(' ')[0].toLowerCase()
+                              )
+                          )
+                          .map(bean => bean.title)
+                    : [];
             }
 
             return item;

@@ -12,9 +12,11 @@ import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
 import { Error } from '../../components/error';
 import { channel, getChannelName } from '../../utils/channels';
-import { shows } from '../../utils/shows';
+import { shows, Show } from '../../utils/shows';
+import { beans } from '../../utils/beans';
 
 const store = new ActivitiesStore(channel.RBTV);
+const autocompleteItems = ([] as Show[]).concat(shows, beans);
 
 interface ActivitiesStoreProps {}
 
@@ -86,7 +88,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
             <SearchWrapper>
                 <StyledAutocomplete
                     value={store.q}
-                    items={shows}
+                    items={autocompleteItems}
                     onChange={this.onSearch}
                     onKeyDown={this.onKeyDown}
                     placeholder={placeholder}
@@ -117,7 +119,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     }
 
     private onSearch = (val: string): void => {
-        const show = shows.find(show => show.title === val);
+        const show = autocompleteItems.find(show => show.title === val);
 
         if (show && show.channel) {
             this.onChangeChannel(show.channel);

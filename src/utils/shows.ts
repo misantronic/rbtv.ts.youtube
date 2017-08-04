@@ -2,7 +2,7 @@ import {channel} from './channels'
 
 export interface Show {
     title: string;
-    channel: channel,
+    channel?: channel,
     playlistId?: string
 };
 

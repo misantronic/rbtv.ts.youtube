@@ -54,7 +54,7 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
     private renderAutocomplete(): JSX.Element | null {
         const { value } = this.props;
         const { filteredItems, autocompleteIndex } = this.state;
-        const title = filteredItems.length
+        const title = filteredItems.length && filteredItems[autocompleteIndex]
             ? filteredItems[autocompleteIndex].title.substr(value.length)
             : '';
 
@@ -88,7 +88,7 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
                 const valueWidth = ctx.measureText(value).width + 13;
 
-                this.setState({ valueWidth, filteredItems });
+                this.setState({ valueWidth, filteredItems, autocompleteIndex: 0 });
             }
         }
 
