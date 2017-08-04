@@ -1,27 +1,27 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
+import { External, Inject } from 'tsdi';
 import { AppStore } from '../../store';
 import { Nav, NavItem } from '../../components/nav';
 
 const NavWrapper = styled.div`margin-bottom: 20px;`;
 
-interface MainNavProps {
-    store: AppStore;
-}
+interface MainNavProps {}
 
 @observer
+@External()
 export class MainNav extends React.Component<MainNavProps> {
+    @Inject() private appStore: AppStore;
+    
     render() {
-        const { store } = this.props;
-
         return (
             <NavWrapper>
                 <Nav>
-                    <NavItem href="/" active={store.isRouteActivities} onClick={this.onNavItemClick}>
+                    <NavItem href="/" active={this.appStore.isRouteActivities || this.appStore.isRouteVideo} onClick={this.onNavItemClick}>
                         Home
                     </NavItem>
-                    <NavItem href="/playlists" active={store.isRoutePlaylists} onClick={this.onNavItemClick}>
+                    <NavItem href="/playlists" active={this.appStore.isRoutePlaylists} onClick={this.onNavItemClick}>
                         Playlists
                     </NavItem>
                 </Nav>
@@ -29,5 +29,5 @@ export class MainNav extends React.Component<MainNavProps> {
         );
     }
 
-    private onNavItemClick = (href: string) => this.props.store.navigate(href);
+    private onNavItemClick = (href: string) => this.appStore.navigate(href);
 }

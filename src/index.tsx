@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { render } from 'react-dom';
-import { AppStore } from './store';
+import { TSDI } from 'tsdi';
 import styled from 'styled-components';
+import { AppStore } from './store';
 import { Router } from './components/router';
-import { MainNav } from './containers/main-nav'
-
-const store = new AppStore();
+import { MainNav } from './containers/main-nav';
 
 const App = styled.div`
     font-family: Raleway, Arial, sans-serif;
@@ -37,10 +36,15 @@ const App = styled.div`
 `;
 
 function main() {
+    const tsdi = new TSDI();
+
+    tsdi.enableComponentScanner();
+    tsdi.get(AppStore);
+
     render(
         <App>
-            <MainNav store={store} />
-            <Router store={store} />
+            <MainNav />
+            <Router />
         </App>,
         document.getElementById('app')
     );

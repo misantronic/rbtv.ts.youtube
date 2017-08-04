@@ -1,6 +1,7 @@
 import * as React from 'react';
 import debounce = require('lodash/debounce');
 import { observer } from 'mobx-react';
+import { External, Inject } from 'tsdi';
 import styled from 'styled-components';
 import { ActivitiesStore } from './store';
 import { AppStore } from '../../store';
@@ -15,9 +16,7 @@ import { shows } from '../../utils/shows';
 
 const store = new ActivitiesStore(channel.RBTV);
 
-interface ActivitiesStoreProps {
-    appStore: AppStore;
-}
+interface ActivitiesStoreProps {}
 
 const SearchWrapper = styled.div`
     display: flex;
@@ -33,7 +32,10 @@ const StyledSelect = styled(Select)`
 `;
 
 @observer
+@External()
 export class Activities extends React.Component<ActivitiesStoreProps> {
+    @Inject() private appStore: AppStore;
+
     componentDidMount() {
         addEventListener('scroll', this.onScroll);
     }
@@ -134,8 +136,8 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
         store.channelId = val;
     };
 
-    private onClickActivity = (id: string) => {
-        this.props.appStore.navigate(`/video/${id}`);
+    private onClickActivity = (id: string) => {        
+        this.appStore.navigate(`/video/${id}`);
     };
 
     private onClickTag = (tag: string): void => {
@@ -144,7 +146,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     };
 
     private onScroll = debounce(() => {
-        if(scrollY === document.body.scrollHeight - innerHeight) {
+        if (scrollY === document.body.scrollHeight - innerHeight) {
             store.loadActivities(store.nextPageToken);
         }
     }, 16);

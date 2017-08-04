@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
-import { AppStore } from '../../store';
 import { VideoStore } from './store';
 import { VideoPlayer } from '../../components/video-player';
 import { H1, H3 } from '../../components/headline';
@@ -12,7 +11,6 @@ import { Likes, Dislikes } from '../../components/likes';
 import { NumberFormat } from '../../components/number-format';
 
 interface VideoProps {
-    appStore: AppStore;
     id: string;
 }
 

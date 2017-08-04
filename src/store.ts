@@ -1,4 +1,5 @@
 import { observable, computed } from 'mobx';
+import { Component as injectable } from 'tsdi';
 import { Router, RouterConfig, RouteEnterEvent, match } from 'yester';
 
 export type Route = '/activities' | '/video/:id' | '/playlists';
@@ -10,6 +11,7 @@ export const routes: RouteObj[] = [
     { id: 'video', route: '/video/:id' }
 ];
 
+@injectable()
 export class AppStore {
     @observable route: Route;
     @observable params: any;
@@ -42,6 +44,11 @@ export class AppStore {
     @computed
     public get isRoutePlaylists() {
         return this.route === (routes.find(routeObj => routeObj.id === 'playlists') as RouteObj).route;
+    }
+
+    @computed
+    public get isRouteVideo() {
+        return this.route === (routes.find(routeObj => routeObj.id === 'video') as RouteObj).route;
     }
 
     public async loadBundle(name: Route): Promise<React.ComponentClass<any>> {

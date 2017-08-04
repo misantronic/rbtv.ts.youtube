@@ -1,16 +1,18 @@
 import * as React from 'react';
+import { External, Inject } from 'tsdi';
 import { AppStore, Route } from '../../store';
 import { reaction } from 'mobx';
 
-interface RouterProps {
-    store: AppStore;
-}
+interface RouterProps {}
 
 interface RouterState {
-    Component: React.ComponentClass<{ appStore: AppStore }> | null;
+    Component: React.ComponentClass<{}> | null;
 }
 
+@External()
 export class Router extends React.Component<RouterProps, RouterState> {
+    @Inject() private appStore: AppStore;
+
     constructor(props) {
         super(props);
 
@@ -20,12 +22,10 @@ export class Router extends React.Component<RouterProps, RouterState> {
     }
 
     componentDidMount() {
-        const { store } = this.props;
-
         reaction(
-            () => store.route,
+            () => this.appStore.route,
             async (name: Route) => {
-                const Component = await store.loadBundle(name);
+                const Component = await this.appStore.loadBundle(name);
 
                 this.setState({ Component });
             },
@@ -37,7 +37,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
         const { Component } = this.state;
 
         if (Component) {
-            return <Component appStore={this.props.store} {...this.props.store.params} />;
+            return <Component {...this.appStore.params} />;
         }
 
         return null;

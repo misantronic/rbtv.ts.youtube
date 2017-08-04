@@ -21,7 +21,8 @@
         "paths": {
             "components/*": ["src/components/*"]
         },
-        "experimentalDecorators": true
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
     },
     "include": ["./src/", "./components/"],
     "exclude": ["node_modules"]
