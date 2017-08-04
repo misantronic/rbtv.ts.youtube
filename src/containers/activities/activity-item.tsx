@@ -14,7 +14,7 @@ interface ActivityItemProps {
     className?: string;
     tags?: string[];
     onClick(): void;
-    onClickTag?(tag: string): void;
+    onClickTag(tag: string): void;
 }
 
 const StyledDiv = styled.div`margin-bottom: 20px;`;

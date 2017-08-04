@@ -51,9 +51,8 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
             <div>
                 {this.renderSearch()}
                 <ColumnContainer>
-                    {isLoading && <Spinner />}
                     {error && this.renderError()}
-                    {!isLoading &&
+                    {!store.isSearching &&
                         items.map((item: youtube.ActivitiyItem) => {
                             return (
                                 <Column sm={12} md={6} lg={4} key={item.id}>
@@ -70,6 +69,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                                 </Column>
                             );
                         })}
+                    {isLoading && <Spinner />}
                 </ColumnContainer>
             </div>
         );
@@ -136,7 +136,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
         store.channelId = val;
     };
 
-    private onClickActivity = (id: string) => {        
+    private onClickActivity = (id: string) => {
         this.appStore.navigate(`/video/${id}`);
     };
 
@@ -146,10 +146,16 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     };
 
     private onScroll = debounce(() => {
-        if (scrollY === document.body.scrollHeight - innerHeight) {
-            store.loadActivities(store.nextPageToken);
+        const maxY = document.body.scrollHeight - window.innerHeight - 800;
+
+        if (!store.isLoading && store.nextPageToken && scrollY >= maxY) {
+            if (store.q) {
+                store.search(store.nextPageToken);
+            } else {
+                store.loadActivities(store.nextPageToken);
+            }
         }
-    }, 16);
+    }, 0);
 }
 
 export default Activities;

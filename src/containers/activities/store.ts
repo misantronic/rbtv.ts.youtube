@@ -9,6 +9,7 @@ export class ActivitiesStore {
     @observable nextPageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
+    @observable isSearching = false;
     @observable error: ErrorEvent;
 
     constructor(channel?: channel) {
@@ -57,7 +58,7 @@ export class ActivitiesStore {
             const items = ActivitiesStore.parseActivities(response.items);
 
             this.nextPageToken = response.nextPageToken;
-            this.items = items;
+            this.items = nextPageToken ? this.items.concat(items) : items;
 
             this.loadVideos(items.map(item => item.id));
         } catch (e) {
@@ -67,26 +68,28 @@ export class ActivitiesStore {
         }
     }
 
-    public async search() {
+    public async search(nextPageToken: string = '') {
         this.isLoading = true;
+        this.isSearching = true;
 
         try {
             const response = await fetchUtil.get('/api/search', {
                 q: this.q,
                 channelId: this.channelId,
-                pageToken: ''
+                pageToken: nextPageToken
             });
 
             const items = ActivitiesStore.parseActivities(response.items);
 
             this.nextPageToken = response.nextPageToken;
-            this.items = items;
+            this.items = nextPageToken ? this.items.concat(items) : items;
 
             this.loadVideos(items.map(item => item.id));
         } catch (e) {
             this.error = e;
         } finally {
             this.isLoading = false;
+            this.isSearching = false;
         }
     }
 
