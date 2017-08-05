@@ -15,6 +15,7 @@ export class ActivitiesStore {
 
     static parseActivities(items: youtube.ActivitiyItem[]): youtube.ActivitiyItem[] {
         return items.map((item: youtube.ActivitiyItem) => {
+            item = Object.assign({}, item);
             item.snippet = Object.assign({}, item.snippet, {
                 publishedAt: new Date(item.snippet.publishedAt)
             });
