@@ -1,5 +1,4 @@
 import * as React from 'react';
-import debounce = require('lodash/debounce');
 import { observer } from 'mobx-react';
 import { External, Inject } from 'tsdi';
 import styled from 'styled-components';
@@ -11,14 +10,18 @@ import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
 import { Error } from '../../components/error';
+import { Button } from '../../components/button';
 import { channel, getChannelName } from '../../utils/channels';
 import { shows, Show } from '../../utils/shows';
 import { beans } from '../../utils/beans';
 
-const store = new ActivitiesStore(channel.RBTV);
 const autocompleteItems = ([] as Show[]).concat(shows, beans);
 
 interface ActivitiesStoreProps {}
+interface ActivitiesStoreState {
+    store: ActivitiesStore;
+    showBtnToTop: boolean;
+}
 
 const SearchWrapper = styled.div`
     display: flex;
@@ -33,10 +36,25 @@ const StyledSelect = styled(Select)`
     }
 `;
 
+const BtnToTop = styled(Button)`
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+`;
+
 @observer
 @External()
-export class Activities extends React.Component<ActivitiesStoreProps> {
+export class Activities extends React.Component<ActivitiesStoreProps, ActivitiesStoreState> {
     @Inject() private appStore: AppStore;
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            store: new ActivitiesStore(channel.RBTV),
+            showBtnToTop: false
+        };
+    }
 
     componentDidMount() {
         addEventListener('scroll', this.onScroll);
@@ -47,14 +65,15 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     }
 
     render(): JSX.Element {
-        const { items, isLoading, error } = store;
+        const { items, showLoader } = this.state.store;
+        const { showBtnToTop } = this.state;
 
         return (
             <div>
                 {this.renderSearch()}
                 <ColumnContainer>
-                    {error && this.renderError()}
-                    {!store.isSearching &&
+                    {this.renderError()}
+                    {!showLoader &&
                         items.map((item: youtube.ActivitiyItem) => {
                             return (
                                 <Column sm={12} md={6} lg={4} key={item.id}>
@@ -71,14 +90,16 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                                 </Column>
                             );
                         })}
-                    {isLoading && <Spinner />}
+                    {showLoader && <Spinner />}
                 </ColumnContainer>
+                {showBtnToTop && <BtnToTop onClick={this.onScrollToTop}>To Top</BtnToTop>}
             </div>
         );
     }
 
     private renderSearch(): JSX.Element {
-        const placeholder = `Search ${getChannelName(store.channelId)}...`;
+        const { store } = this.state;
+        const placeholder = `Search ${getChannelName(store.channelId || channel.RBTV)}...`;
         const options = Object.keys(channel).map((key: channel) => ({
             value: channel[key],
             label: getChannelName(channel[key])
@@ -89,9 +110,10 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
                 <StyledAutocomplete
                     value={store.q}
                     items={autocompleteItems}
+                    placeholder={placeholder}
                     onChange={this.onSearch}
                     onKeyDown={this.onKeyDown}
-                    placeholder={placeholder}
+                    onClear={this.onAutocompleteClear}
                     autofocus
                 />
                 <StyledSelect
@@ -107,7 +129,9 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     }
 
     private renderError() {
-        const { error } = store;
+        const { error } = this.state.store;
+
+        if (!error) return null;
 
         return (
             <Column>
@@ -119,6 +143,7 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     }
 
     private onSearch = (val: string): void => {
+        const { store } = this.state;
         const show = autocompleteItems.find(show => show.title === val);
 
         if (show && show.channel) {
@@ -129,35 +154,51 @@ export class Activities extends React.Component<ActivitiesStoreProps> {
     };
 
     private onKeyDown = (e: any): void => {
+        const { store } = this.state;
+
         if (e.keyCode === 13) {
             store.search();
         }
     };
 
     private onChangeChannel = (val: channel): void => {
-        store.channelId = val;
+        this.state.store.channelId = val;
     };
 
     private onClickActivity = (id: string) => {
         this.appStore.navigate(`/video/${id}`);
     };
 
+    private onAutocompleteClear = () => {
+        this.state.store.q = '';
+    };
+
     private onClickTag = (tag: string): void => {
+        const { store } = this.state;
+
         store.q = tag;
         store.search();
     };
 
-    private onScroll = debounce(() => {
-        const maxY = document.body.scrollHeight - window.innerHeight - 800;
+    private onScrollToTop = () => {
+        scrollTo(0, 0);
+    };
 
-        if (!store.isLoading && store.nextPageToken && scrollY >= maxY) {
+    private onScroll = () => {
+        const { store } = this.state;
+        const { isLoading, nextPageToken } = store;
+        const maxY = document.body.scrollHeight - innerHeight - 800;
+
+        if (!isLoading && nextPageToken && scrollY >= maxY) {
             if (store.q) {
                 store.search(store.nextPageToken);
             } else {
                 store.loadActivities(store.nextPageToken);
             }
         }
-    }, 0);
+
+        this.setState({ showBtnToTop: scrollY > innerHeight });
+    };
 }
 
 export default Activities;

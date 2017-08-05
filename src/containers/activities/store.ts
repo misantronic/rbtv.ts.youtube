@@ -4,22 +4,14 @@ import { beans } from '../../utils/beans';
 import { fetchUtil } from '../../utils/ajax';
 
 export class ActivitiesStore {
-    @observable channelId: channel;
+    @observable channelId?: channel;
     @observable q = '';
+    @observable fetchedQ = 'initial_dummy_value';
     @observable nextPageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
-    @observable isSearching = false;
-    @observable error: ErrorEvent;
-
-    constructor(channel?: channel) {
-        if (channel) {
-            this.channelId = channel;
-        }
-
-        reaction(() => this.q, this.reload, { fireImmediately: true });
-        reaction(() => this.channelId, this.reload);
-    }
+    @observable showLoader = false;
+    @observable error?: ErrorEvent;
 
     static parseActivities(items: youtube.ActivitiyItem[]): youtube.ActivitiyItem[] {
         return items.map((item: youtube.ActivitiyItem) => {
@@ -45,7 +37,41 @@ export class ActivitiesStore {
         });
     }
 
+    constructor(channel?: channel) {
+        if (channel) {
+            this.channelId = channel;
+        }
+
+        reaction(
+            () => this.channelId && !this.q && this.fetchedQ !== this.q,
+            requireReload => {
+                if (requireReload) {
+                    this.loadActivities();
+                }
+            },
+            {
+                fireImmediately: true
+            }
+        );
+
+        reaction(
+            () => this.channelId,
+            () => {
+                if (this.channelId) {
+                    if (this.q) {
+                        this.search();
+                    } else {
+                        this.loadActivities();
+                    }
+                }
+            }
+        );
+    }
+
     public async loadActivities(nextPageToken: string = '') {
+        if (!nextPageToken) {
+            this.showLoader = true;
+        }
         this.isLoading = true;
 
         try {
@@ -55,22 +81,21 @@ export class ActivitiesStore {
                 pageToken: nextPageToken
             });
 
-            const items = ActivitiesStore.parseActivities(response.items);
-
-            this.nextPageToken = response.nextPageToken;
-            this.items = nextPageToken ? this.items.concat(items) : items;
-
-            this.loadVideos(items.map(item => item.id));
+            this.fetchedQ = '';
+            this.processResponse(response, nextPageToken);
         } catch (e) {
             this.error = e;
         } finally {
             this.isLoading = false;
+            this.showLoader = false;
         }
     }
 
     public async search(nextPageToken: string = '') {
+        if (!nextPageToken) {
+            this.showLoader = true;
+        }
         this.isLoading = true;
-        this.isSearching = true;
 
         try {
             const response = await fetchUtil.get('/api/search', {
@@ -79,18 +104,34 @@ export class ActivitiesStore {
                 pageToken: nextPageToken
             });
 
-            const items = ActivitiesStore.parseActivities(response.items);
-
-            this.nextPageToken = response.nextPageToken;
-            this.items = nextPageToken ? this.items.concat(items) : items;
-
-            this.loadVideos(items.map(item => item.id));
+            this.fetchedQ = this.q;
+            this.processResponse(response, nextPageToken);
         } catch (e) {
             this.error = e;
         } finally {
             this.isLoading = false;
-            this.isSearching = false;
+            this.showLoader = false;
         }
+    }
+
+    public reset(): void {
+        this.channelId = undefined;
+        this.q = '';
+        this.fetchedQ = 'initial_dummy_value';
+        this.nextPageToken = '';
+        this.items = [];
+        this.isLoading = false;
+        this.showLoader = false;
+        this.error = undefined;
+    }
+
+    private processResponse(response, nextPageToken = '') {
+        const items = ActivitiesStore.parseActivities(response.items);
+
+        this.items = nextPageToken ? this.items.concat(items) : items;
+        this.nextPageToken = items.length ? response.nextPageToken : undefined;
+
+        this.loadVideos(items.map(item => item.id));
     }
 
     private async loadVideos(videos: string[]) {
@@ -117,10 +158,4 @@ export class ActivitiesStore {
             return item;
         });
     }
-
-    private reload = () => {
-        if (this.channelId && !this.q) {
-            this.loadActivities();
-        }
-    };
 }
