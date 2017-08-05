@@ -24,6 +24,7 @@ const Link = styled.a`
 const Image = styled.img`
     width: 100%;
     margin: -34px 0 -38px;
+    min-height: 246px;
 `
 
 const DurationBadge = styled(Badge)`
