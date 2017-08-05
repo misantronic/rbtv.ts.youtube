@@ -7,7 +7,8 @@ export interface AutocompleteItem {
 }
 
 interface InputAutocompleteProps extends InputTextProps {
-    items: AutocompleteItem[]
+    items: AutocompleteItem[];
+    onClear?(): void;
 }
 
 interface InputAutocompleteState {
@@ -21,12 +22,30 @@ const Wrapper = styled.div`
     flex: 1;
 `;
 
-const Autocomplete = styled.div`
+const AutocompleteContainer = styled.div`
     position: absolute;
     top: 10px;
     pointer-events: none;
     color: grey;
     white-space: pre;
+`;
+
+const Clearer = styled.button`
+    position: absolute;
+    top: 1px;
+    right: 0;
+    padding: 0 10px;
+    font-size: 30px;
+    cursor: pointer;
+    color: #aaa;
+    line-height: 1;
+    background: none;
+    border: none;
+    font-weight: lighter;
+
+    &:hover {
+        color: #777;
+    }
 `;
 
 export class InputAutocomplete extends React.PureComponent<InputAutocompleteProps, InputAutocompleteState> {
@@ -43,9 +62,13 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
     }
 
     public render(): JSX.Element {
+        const { value, onClear } = this.props;
+        const showClearer = !!value && !!onClear;
+
         return (
             <Wrapper>
                 <InputText {...this.props} onChange={this.onChange} onKeyDown={this.onKeyDown} />
+                {showClearer && <Clearer onClick={this.onClear}>×</Clearer>}
                 {this.renderAutocomplete()}
             </Wrapper>
         );
@@ -54,15 +77,16 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
     private renderAutocomplete(): JSX.Element | null {
         const { value } = this.props;
         const { filteredItems, autocompleteIndex } = this.state;
-        const title = filteredItems.length && filteredItems[autocompleteIndex]
-            ? filteredItems[autocompleteIndex].title.substr(value.length)
-            : '';
+        const title =
+            filteredItems.length && filteredItems[autocompleteIndex]
+                ? filteredItems[autocompleteIndex].title.substr(value.length)
+                : '';
 
         return (
             <div>
-                <Autocomplete style={{ left: this.state.valueWidth }}>
+                <AutocompleteContainer style={{ left: this.state.valueWidth }}>
                     {title}
-                </Autocomplete>
+                </AutocompleteContainer>
                 <canvas width="700" height="30" ref={this.onCanvas} style={{ display: 'none' }} />
             </div>
         );
@@ -93,6 +117,13 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
         }
 
         this.props.onChange(value);
+    };
+
+    private onClear = (): void => {
+        const { onClear } = this.props;
+
+        this.setState({ valueWidth: 0, filteredItems: [], autocompleteIndex: 0 });
+        onClear && onClear();
     };
 
     private onKeyDown = (e: any): void => {
