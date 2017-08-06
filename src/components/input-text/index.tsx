@@ -3,6 +3,11 @@ import styled from 'styled-components';
 
 type Border = 'default' | 'none' | 'error';
 
+export const font = {
+    size: '14px',
+    family: 'Raleway, Arial, sans-serif'
+}
+
 export interface InputTextProps {
     value: string;
     className?: string;
@@ -32,6 +37,8 @@ const Input = styled.input`
     height: 36px;
     padding: 8px 12px;
     border: ${styles.border};
+    font-family: ${font.family};
+    font-size: ${font.size};
 
     &:focus {
         outline: none;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
-import { InputText, InputTextProps } from '../input-text';
+import { InputText, InputTextProps, font } from '../input-text';
 
 export interface AutocompleteItem {
     title: string;
@@ -14,7 +14,7 @@ interface InputAutocompleteProps extends InputTextProps {
 interface InputAutocompleteState {
     valueWidth: number;
     filteredItems: AutocompleteItem[];
-    autocompleteIndex: number;
+    filteredIndex: number;
 }
 
 const Wrapper = styled.div`
@@ -57,7 +57,7 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
         this.state = {
             valueWidth: 0,
             filteredItems: [],
-            autocompleteIndex: 0
+            filteredIndex: 0
         };
     }
 
@@ -76,15 +76,15 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
     private renderAutocomplete(): JSX.Element | null {
         const { value } = this.props;
-        const { filteredItems, autocompleteIndex } = this.state;
+        const { filteredItems, filteredIndex, valueWidth } = this.state;
         const title =
-            filteredItems.length && filteredItems[autocompleteIndex]
-                ? filteredItems[autocompleteIndex].title.substr(value.length)
+            filteredItems.length && filteredItems[filteredIndex]
+                ? filteredItems[filteredIndex].title.substr(value.length)
                 : '';
 
         return (
             <div>
-                <AutocompleteContainer style={{ left: this.state.valueWidth }}>
+                <AutocompleteContainer style={{ left: valueWidth }}>
                     {title}
                 </AutocompleteContainer>
                 <canvas width="700" height="30" ref={this.onCanvas} style={{ display: 'none' }} />
@@ -107,12 +107,12 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
             if (ctx) {
                 ctx.clearRect(0, 0, 700, 30);
-                ctx.font = '14px Raleway';
+                ctx.font = `${font.size} ${font.family}`;
                 ctx.fillText(value, 1, 1);
 
                 const valueWidth = ctx.measureText(value).width + 13;
 
-                this.setState({ valueWidth, filteredItems, autocompleteIndex: 0 });
+                this.setState({ valueWidth, filteredItems, filteredIndex: 0 });
             }
         }
 
@@ -122,20 +122,20 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
     private onClear = (): void => {
         const { onClear } = this.props;
 
-        this.setState({ valueWidth: 0, filteredItems: [], autocompleteIndex: 0 });
+        this.setState({ valueWidth: 0, filteredItems: [], filteredIndex: 0 });
         onClear && onClear();
     };
 
     private onKeyDown = (e: any): void => {
         const { onKeyDown, onChange } = this.props;
-        const { filteredItems, autocompleteIndex } = this.state;
+        const { filteredItems, filteredIndex } = this.state;
         const { keyCode } = e;
 
         if (keyCode === 9 && filteredItems.length) {
             // TAB
             e.preventDefault();
 
-            const show = filteredItems[autocompleteIndex];
+            const show = filteredItems[filteredIndex];
 
             onChange(show.title);
             this.onKeyDown({ keyCode: 13 });
@@ -147,8 +147,8 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
             // ARROW DOWN
             e.preventDefault();
 
-            if (this.state.filteredItems[autocompleteIndex + 1]) {
-                this.setState({ autocompleteIndex: autocompleteIndex + 1 });
+            if (this.state.filteredItems[filteredIndex + 1]) {
+                this.setState({ filteredIndex: filteredIndex + 1 });
             }
         }
 
@@ -156,8 +156,8 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
             // ARROW UP
             e.preventDefault();
 
-            if (this.state.filteredItems[autocompleteIndex - 1]) {
-                this.setState({ autocompleteIndex: autocompleteIndex - 1 });
+            if (this.state.filteredItems[filteredIndex - 1]) {
+                this.setState({ filteredIndex: filteredIndex - 1 });
             }
         }
 
