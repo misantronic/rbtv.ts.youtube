@@ -3,8 +3,14 @@ import styled from 'styled-components';
 
 interface ButtonProps {
     className?: string;
+    gradient?: boolean;
     onClick(): void;
 }
+
+const gradient = `
+    background-image: linear-gradient(90deg, #ff217c 0, #ff9186);
+    background-repeat: repeat-x;
+`
 
 const StyledButton = styled.button`
     color: #fff;
@@ -19,9 +25,7 @@ const StyledButton = styled.button`
     vertical-align: middle;
     cursor: pointer;
     user-select: none;
-    background-image: -webkit-linear-gradient(left,color-stop(#ff217c 0),color-stop(#ff9186 100%));
-    background-image: linear-gradient(90deg,#ff217c 0,#ff9186);
-    background-repeat: repeat-x;
+    ${(props: ButtonProps) => props.gradient ? gradient : ''}
 
     &:focus {
         outline: none;
@@ -30,10 +34,10 @@ const StyledButton = styled.button`
 
 export class Button extends React.PureComponent<ButtonProps> {
     render(): JSX.Element {
-        const { children, className, onClick } = this.props;
+        const { children, className, gradient, onClick } = this.props;
 
         return (
-            <StyledButton className={className} onClick={onClick}>
+            <StyledButton className={className} onClick={onClick} gradient={gradient}>
                 {children}
             </StyledButton>
         );
