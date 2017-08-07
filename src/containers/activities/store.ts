@@ -129,7 +129,7 @@ export class ActivitiesStore {
     private processResponse(response, nextPageToken = '') {
         const items = ActivitiesStore.parseActivities(response.items);
 
-        this.items = nextPageToken ? this.items.concat(items) : items;
+        this.items = nextPageToken ? this.concat(items) : items;
         this.nextPageToken = items.length ? response.nextPageToken : undefined;
 
         this.loadVideos(items.map(item => item.id));
@@ -158,5 +158,9 @@ export class ActivitiesStore {
 
             return item;
         });
+    }
+
+    private concat(items: youtube.ActivitiyItem[]) {
+        return this.items.concat(items.filter(item => !this.items.find(item2 => item2.id === item.id)));
     }
 }
