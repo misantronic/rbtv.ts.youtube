@@ -104,9 +104,9 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private renderColumns(): JSX.Element | null {
-        const { items, showLoader } = this.state.store;
+        const { items, isLoading, hideItemsWhenLoading } = this.state.store;
 
-        if (showLoader) {
+        if (isLoading && hideItemsWhenLoading) {
             return null;
         }
 
@@ -159,9 +159,9 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private renderSpinner() {
-        const { showLoader } = this.state.store;
+        const { isLoading } = this.state.store;
 
-        return showLoader && <Spinner key="spinner" />;
+        return isLoading && <Spinner key="spinner" />;
     }
 
     private renderEmpty(): string | null {
@@ -221,6 +221,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
 
         if (!isLoading && nextPageToken && scrollY >= maxY) {
             if (typedQ) {
+                store.hideItemsWhenLoading = false;
                 store.search(nextPageToken);
             } else {
                 store.loadActivities(nextPageToken);

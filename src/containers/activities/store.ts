@@ -11,7 +11,7 @@ export class ActivitiesStore {
     @observable nextPageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
-    @observable showLoader = false;
+    @observable hideItemsWhenLoading = true;
     @observable showBtnToTop = false;
     @observable error?: ErrorEvent;
 
@@ -76,9 +76,6 @@ export class ActivitiesStore {
     }
 
     public async loadActivities(nextPageToken: string = '') {
-        if (!nextPageToken) {
-            this.showLoader = true;
-        }
         this.isLoading = true;
 
         try {
@@ -94,14 +91,11 @@ export class ActivitiesStore {
             this.error = e;
         } finally {
             this.isLoading = false;
-            this.showLoader = false;
+            this.hideItemsWhenLoading = true;
         }
     }
 
     public async search(nextPageToken: string = '') {
-        if (!nextPageToken) {
-            this.showLoader = true;
-        }
         this.isLoading = true;
 
         try {
@@ -117,7 +111,7 @@ export class ActivitiesStore {
             this.error = e;
         } finally {
             this.isLoading = false;
-            this.showLoader = false;
+            this.hideItemsWhenLoading = true;
         }
     }
 
@@ -128,7 +122,7 @@ export class ActivitiesStore {
         this.nextPageToken = '';
         this.items = [];
         this.isLoading = false;
-        this.showLoader = false;
+        this.hideItemsWhenLoading = true;
         this.error = undefined;
     }
 
