@@ -1,19 +1,18 @@
-import * as moment from 'moment'
+import * as moment from 'moment';
 
-export function humanizeDuration(duration: moment.Duration) {
+export function humanizeDuration(duration: string | undefined) {
     if (!duration) {
         return '';
     }
 
-    const hours = ('0' + duration.hours()).slice(-2);
-    const mins = ('0' + duration.minutes()).slice(-2);
-    const secs = ('0' + duration.seconds()).slice(-2);
+    const momentDuration = moment.duration(duration);
+
+    const hours = ('0' + momentDuration.hours()).slice(-2);
+    const mins = ('0' + momentDuration.minutes()).slice(-2);
+    const secs = ('0' + momentDuration.seconds()).slice(-2);
 
     // Add minutes + seconds
-    const arr = [
-        mins,
-        secs
-    ];
+    const arr = [mins, secs];
 
     // Add hours
     if (hours !== '00') arr.unshift(hours);

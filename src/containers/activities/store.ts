@@ -2,10 +2,11 @@ import { observable, reaction } from 'mobx';
 import { channel } from '../../utils/channels';
 import { beans } from '../../utils/beans';
 import { fetchUtil } from '../../utils/ajax';
+import { setStorage, getStorage } from '../../utils/storage';
 
 export class ActivitiesStore {
-    @observable channelId?: channel;
-    @observable q = '';
+    @observable channelId?: channel = (getStorage('search.channelId') as channel) || channel.RBTV;
+    @observable typedQ = getStorage('search.value') || '';
     @observable fetchedQ = 'initial_dummy_value';
     @observable nextPageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
@@ -39,13 +40,13 @@ export class ActivitiesStore {
         });
     }
 
-    constructor(channel?: channel) {
-        if (channel) {
-            this.channelId = channel;
+    constructor() {
+        if (this.typedQ) {
+            this.search();
         }
 
         reaction(
-            () => this.channelId && !this.q && this.fetchedQ !== this.q,
+            () => this.channelId && !this.typedQ && this.fetchedQ !== this.typedQ,
             requireReload => {
                 if (requireReload) {
                     this.loadActivities();
@@ -60,14 +61,18 @@ export class ActivitiesStore {
             () => this.channelId,
             () => {
                 if (this.channelId) {
-                    if (this.q) {
+                    if (this.typedQ) {
                         this.search();
                     } else {
                         this.loadActivities();
                     }
                 }
+
+                setStorage('search.channelId', this.channelId);
             }
         );
+
+        reaction(() => this.fetchedQ, () => setStorage('search.value', this.fetchedQ));
     }
 
     public async loadActivities(nextPageToken: string = '') {
@@ -101,12 +106,12 @@ export class ActivitiesStore {
 
         try {
             const response = await fetchUtil.get('/api/search', {
-                q: this.q,
+                q: this.typedQ,
                 channelId: this.channelId,
                 pageToken: nextPageToken
             });
 
-            this.fetchedQ = this.q;
+            this.fetchedQ = this.typedQ;
             this.processResponse(response, nextPageToken);
         } catch (e) {
             this.error = e;
@@ -118,7 +123,7 @@ export class ActivitiesStore {
 
     public reset(): void {
         this.channelId = undefined;
-        this.q = '';
+        this.typedQ = '';
         this.fetchedQ = 'initial_dummy_value';
         this.nextPageToken = '';
         this.items = [];

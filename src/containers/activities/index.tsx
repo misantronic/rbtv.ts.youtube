@@ -50,7 +50,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         super(props);
 
         this.state = {
-            store: new ActivitiesStore(channel.RBTV)
+            store: new ActivitiesStore()
         };
     }
 
@@ -63,7 +63,13 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     render(): any {
-        return [this.renderSearch(), this.renderColumns(), this.renderBtnToTop()];
+        return [
+            this.renderSearch(),
+            this.renderColumns(),
+            this.renderEmpty(),
+            this.renderSpinner(),
+            this.renderBtnToTop()
+        ];
     }
 
     private renderSearch(): JSX.Element {
@@ -77,10 +83,10 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         return (
             <SearchWrapper key="search">
                 <StyledAutocomplete
-                    value={store.q}
+                    value={store.typedQ}
                     items={autocompleteItems}
                     placeholder={placeholder}
-                    onChange={this.onSearch}
+                    onChange={this.onSearchChange}
                     onKeyDown={this.onKeyDown}
                     onClear={this.onAutocompleteClear}
                     autofocus
@@ -97,37 +103,39 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         );
     }
 
-    private renderColumns(): JSX.Element {
+    private renderColumns(): JSX.Element | null {
         const { items, showLoader } = this.state.store;
+
+        if (showLoader) {
+            return null;
+        }
 
         return (
             <ColumnContainer key="column-container">
                 {this.renderError()}
-                {!showLoader &&
-                    items.map((item: youtube.ActivitiyItem) => {
-                        return (
-                            <Column sm={12} md={6} lg={4} key={item.id}>
-                                <ActivityItem
-                                    title={item.snippet.title}
-                                    description={item.snippet.description}
-                                    duration={item.duration}
-                                    publishedAt={item.snippet.publishedAt}
-                                    image={item.snippet.thumbnails.high.url}
-                                    tags={item.tags}
-                                    onClick={() => this.onClickActivity(item.id)}
-                                    onClickTag={this.onClickTag}
-                                />
-                            </Column>
-                        );
-                    })}
-                {showLoader && <Spinner />}
+                {items.map((item: youtube.ActivitiyItem) => {
+                    return (
+                        <Column sm={12} md={6} lg={4} key={item.id}>
+                            <ActivityItem
+                                title={item.snippet.title}
+                                description={item.snippet.description}
+                                duration={item.duration}
+                                publishedAt={item.snippet.publishedAt}
+                                image={item.snippet.thumbnails.high.url}
+                                tags={item.tags}
+                                onClick={() => this.onClickActivity(item.id)}
+                                onClickTag={this.onClickTag}
+                            />
+                        </Column>
+                    );
+                })}
             </ColumnContainer>
         );
     }
 
     private renderBtnToTop(): JSX.Element | false {
         const { showBtnToTop } = this.state.store;
-    
+
         return (
             showBtnToTop &&
             <BtnToTop key="btn-to-top" onClick={this.onScrollToTop} gradient>
@@ -150,7 +158,23 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         );
     }
 
-    private onSearch = (val: string): void => {
+    private renderSpinner() {
+        const { showLoader } = this.state.store;
+
+        return showLoader && <Spinner key="spinner" />;
+    }
+
+    private renderEmpty(): string | null {
+        const { isLoading, items } = this.state.store;
+
+        if (!isLoading && items.length === 0) {
+            return 'No results.';
+        }
+
+        return null;
+    }
+
+    private onSearchChange = (val: string): void => {
         const { store } = this.state;
         const show = autocompleteItems.find(show => show.title === val);
 
@@ -158,7 +182,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
             this.onChangeChannel(show.channel);
         }
 
-        store.q = val;
+        store.typedQ = val;
     };
 
     private onKeyDown = (e: any): void => {
@@ -178,13 +202,13 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     };
 
     private onAutocompleteClear = () => {
-        this.state.store.q = '';
+        this.state.store.typedQ = '';
     };
 
     private onClickTag = (tag: string): void => {
         const { store } = this.state;
 
-        store.q = tag;
+        store.typedQ = tag;
         store.search();
     };
 
@@ -192,14 +216,14 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
 
     private onScroll = () => {
         const { store } = this.state;
-        const { isLoading, nextPageToken } = store;
+        const { isLoading, nextPageToken, typedQ } = store;
         const maxY = document.body.scrollHeight - innerHeight - 800;
 
         if (!isLoading && nextPageToken && scrollY >= maxY) {
-            if (store.q) {
-                store.search(store.nextPageToken);
+            if (typedQ) {
+                store.search(nextPageToken);
             } else {
-                store.loadActivities(store.nextPageToken);
+                store.loadActivities(nextPageToken);
             }
         }
 
