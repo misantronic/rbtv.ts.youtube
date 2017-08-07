@@ -4,6 +4,8 @@ import { CaptionTitle } from '../../components/caption-title';
 import { Caption } from '../../components/caption';
 import { CaptionImage } from '../../components/caption-image';
 import { Badge } from '../../components/badge';
+import { DateFormat } from '../../components/date-format';
+import { humanizeDuration } from '../../utils/time';
 
 interface ActivityItemProps {
     publishedAt: Date;
@@ -29,15 +31,27 @@ const BeanBadge = styled(Badge)`
     }
 `;
 
+const DurationBadge = styled(Badge)`
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+`
+
+const DateBadge = styled(Badge)`
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+`;
+
 export class ActivityItem extends React.Component<ActivityItemProps> {
     render(): JSX.Element {
         const {
             title,
             description,
             className,
-            duration,
             image,
             publishedAt,
+            duration,
             tags = [],
             onClick,
             onClickTag
@@ -45,7 +59,16 @@ export class ActivityItem extends React.Component<ActivityItemProps> {
 
         return (
             <StyledDiv className={className}>
-                <CaptionImage image={image} duration={duration} publishedAt={publishedAt} onClick={onClick} />
+                <CaptionImage image={image} onClick={onClick}>
+                    <DurationBadge>
+                        {humanizeDuration(duration)}
+                    </DurationBadge>
+                    <DateBadge>
+                        <DateFormat>
+                            {publishedAt}
+                        </DateFormat>
+                    </DateBadge>
+                </CaptionImage>
                 <CaptionTitle onClick={onClick}>
                     {title}
                 </CaptionTitle>

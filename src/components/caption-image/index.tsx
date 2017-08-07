@@ -1,14 +1,8 @@
 import * as React from 'react';
-import * as moment from 'moment'
 import styled from 'styled-components';
-import { Badge } from '../badge';
-import { DateFormat } from '../date-format';
-import { humanizeDuration } from '../../utils/time';
 
 interface CaptionImageProps {
     image: string;
-    publishedAt: Date;
-    duration?: string;
     onClick(): void;
 }
 
@@ -27,36 +21,16 @@ const Image = styled.img`
     min-height: 246px;
 `
 
-const DurationBadge = styled(Badge)`
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-`
-
-const DateBadge = styled(Badge)`
-    position: absolute;
-    right: 10px;
-    bottom: 10px;
-`;
-
 export class CaptionImage extends React.PureComponent<CaptionImageProps> {
     render(): JSX.Element {
-        const { image, publishedAt } = this.props; 
-        const duration = moment.duration(this.props.duration);
+        const { image, children} = this.props; 
 
         return (
             <Div>
                 <Link href="#" onClick={this.onClick}>
                     <Image src={image} alt="" />
                 </Link>
-                <DurationBadge>
-                    {humanizeDuration(duration)}
-                </DurationBadge>
-                <DateBadge>
-                    <DateFormat>
-                        {publishedAt}
-                    </DateFormat>
-                </DateBadge>
+                {children}
             </Div>
         );
     }
