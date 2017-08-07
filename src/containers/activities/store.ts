@@ -11,6 +11,7 @@ export class ActivitiesStore {
     @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
     @observable showLoader = false;
+    @observable showBtnToTop = false;
     @observable error?: ErrorEvent;
 
     static parseActivities(items: youtube.ActivitiyItem[]): youtube.ActivitiyItem[] {

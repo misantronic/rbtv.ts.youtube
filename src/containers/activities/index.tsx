@@ -20,7 +20,6 @@ const autocompleteItems = ([] as Show[]).concat(shows, beans);
 interface ActivitiesStoreProps {}
 interface ActivitiesStoreState {
     store: ActivitiesStore;
-    showBtnToTop: boolean;
 }
 
 const SearchWrapper = styled.div`
@@ -51,8 +50,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         super(props);
 
         this.state = {
-            store: new ActivitiesStore(channel.RBTV),
-            showBtnToTop: false
+            store: new ActivitiesStore(channel.RBTV)
         };
     }
 
@@ -64,37 +62,8 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         removeEventListener('scroll', this.onScroll);
     }
 
-    render(): JSX.Element {
-        const { items, showLoader } = this.state.store;
-        const { showBtnToTop } = this.state;
-
-        return (
-            <div>
-                {this.renderSearch()}
-                <ColumnContainer>
-                    {this.renderError()}
-                    {!showLoader &&
-                        items.map((item: youtube.ActivitiyItem) => {
-                            return (
-                                <Column sm={12} md={6} lg={4} key={item.id}>
-                                    <ActivityItem
-                                        title={item.snippet.title}
-                                        description={item.snippet.description}
-                                        duration={item.duration}
-                                        publishedAt={item.snippet.publishedAt}
-                                        image={item.snippet.thumbnails.high.url}
-                                        tags={item.tags}
-                                        onClick={() => this.onClickActivity(item.id)}
-                                        onClickTag={this.onClickTag}
-                                    />
-                                </Column>
-                            );
-                        })}
-                    {showLoader && <Spinner />}
-                </ColumnContainer>
-                {showBtnToTop && <BtnToTop onClick={this.onScrollToTop}>To Top</BtnToTop>}
-            </div>
-        );
+    render(): any {
+        return [this.renderSearch(), this.renderColumns(), this.renderBtnToTop()];
     }
 
     private renderSearch(): JSX.Element {
@@ -106,7 +75,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         }));
 
         return (
-            <SearchWrapper>
+            <SearchWrapper key="search">
                 <StyledAutocomplete
                     value={store.q}
                     items={autocompleteItems}
@@ -125,6 +94,45 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
                     onChange={this.onChangeChannel as any}
                 />
             </SearchWrapper>
+        );
+    }
+
+    private renderColumns(): JSX.Element {
+        const { items, showLoader } = this.state.store;
+
+        return (
+            <ColumnContainer key="column-container">
+                {this.renderError()}
+                {!showLoader &&
+                    items.map((item: youtube.ActivitiyItem) => {
+                        return (
+                            <Column sm={12} md={6} lg={4} key={item.id}>
+                                <ActivityItem
+                                    title={item.snippet.title}
+                                    description={item.snippet.description}
+                                    duration={item.duration}
+                                    publishedAt={item.snippet.publishedAt}
+                                    image={item.snippet.thumbnails.high.url}
+                                    tags={item.tags}
+                                    onClick={() => this.onClickActivity(item.id)}
+                                    onClickTag={this.onClickTag}
+                                />
+                            </Column>
+                        );
+                    })}
+                {showLoader && <Spinner />}
+            </ColumnContainer>
+        );
+    }
+
+    private renderBtnToTop(): JSX.Element | false {
+        const { showBtnToTop } = this.state.store;
+    
+        return (
+            showBtnToTop &&
+            <BtnToTop key="btn-to-top" onClick={this.onScrollToTop} gradient>
+                To Top
+            </BtnToTop>
         );
     }
 
@@ -180,9 +188,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         store.search();
     };
 
-    private onScrollToTop = () => {
-        scrollTo(0, 0);
-    };
+    private onScrollToTop = () => scrollTo(0, 0);
 
     private onScroll = () => {
         const { store } = this.state;
@@ -197,7 +203,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
             }
         }
 
-        this.setState({ showBtnToTop: scrollY > innerHeight });
+        store.showBtnToTop = scrollY > innerHeight;
     };
 }
 
