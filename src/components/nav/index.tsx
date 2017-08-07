@@ -6,6 +6,10 @@ interface NavProps {
     children: /*React.ReactElement<any>*/ any[];
 }
 
+const StyledNav = styled.nav`
+    display: flex;
+`
+
 const Ul = styled.ul`
     list-style-type: none;
     padding: 0;
@@ -19,11 +23,11 @@ export class Nav extends React.PureComponent<NavProps> {
         const { className, children } = this.props;
 
         return (
-            <nav className={className}>
+            <StyledNav className={className}>
                 <Ul>
                     {children}
                 </Ul>
-            </nav>
+            </StyledNav>
         );
     }
 }
@@ -35,8 +39,10 @@ interface NavItemProps {
 }
 
 const A = styled.a`
-    display: block;
-    padding: 8px 12px;
+    display: flex;
+    padding: 0 12px;
+    height: 100%;
+    align-items: center;
 
     background-color: ${(props: NavItemProps) => (props.active ? '#eee' : 'transparent')};
 `;
