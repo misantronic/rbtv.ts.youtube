@@ -46,6 +46,10 @@ const Clearer = styled.button`
     &:hover {
         color: #777;
     }
+
+    &:focus {
+        outline: none;
+    }
 `;
 
 export class InputAutocomplete extends React.PureComponent<InputAutocompleteProps, InputAutocompleteState> {
