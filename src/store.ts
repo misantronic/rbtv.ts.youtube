@@ -1,17 +1,18 @@
 import { observable, computed } from 'mobx';
-import { Component as injectable } from 'tsdi';
+import { component as injectable } from 'tsdi';
 import { Router, RouterConfig, RouteEnterEvent, match } from 'yester';
 
-export type Route = '/activities' | '/video/:id' | '/playlists';
+export type Route = '/activities' | '/video/:id' | '/playlists' | '/activities/:search';
 type RouteObj = { id: string; route: Route };
 
 export const routes: RouteObj[] = [
     { id: 'activities', route: '/activities' },
+    { id: 'activities-search', route: '/activities/:search' },
     { id: 'playlists', route: '/playlists' },
     { id: 'video', route: '/video/:id' }
 ];
 
-@injectable()
+@injectable
 export class AppStore {
     @observable route: Route;
     @observable params: any;
@@ -38,7 +39,7 @@ export class AppStore {
 
     @computed
     public get isRouteActivities() {
-        return this.route === (routes.find(routeObj => routeObj.id === 'activities') as RouteObj).route;
+        return this.route === (routes.find(routeObj => routeObj.id.startsWith('activities')) as RouteObj).route;
     }
 
     @computed
@@ -56,6 +57,7 @@ export class AppStore {
 
         switch (name) {
             case '/activities':
+            case '/activities/:search':
                 target = await import('./containers/activities');
                 break;
             case '/playlists':
@@ -77,7 +79,7 @@ export class AppStore {
         return target.default;
     }
 
-    public navigate(path: string): void {
+    public navigate(path: string, replace = false): void {
         const result = routes.reduce((result, routeObj: RouteObj) => {
             if (result) return result;
 
@@ -98,7 +100,7 @@ export class AppStore {
             this.setRoute(result.pattern, result.params);
         }
 
-        this.router.navigate(path);
+        this.router.navigate(path, replace);
     }
 
     private setRoute(route: Route, params: any = {}): void {

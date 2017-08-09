@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { External, Inject } from 'tsdi';
+import { external, inject } from 'tsdi';
 import styled from 'styled-components';
 import { ActivitiesStore } from './store';
 import { AppStore } from '../../store';
@@ -42,9 +42,9 @@ const BtnToTop = styled(Button)`
 `;
 
 @observer
-@External()
+@external()
 export class Activities extends React.Component<ActivitiesStoreProps, ActivitiesStoreState> {
-    @Inject() private appStore: AppStore;
+    @inject() private appStore: AppStore;
 
     constructor(props) {
         super(props);

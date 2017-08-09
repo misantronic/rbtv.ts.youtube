@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
-import { External, Inject } from 'tsdi';
+import { external, Inject } from 'tsdi';
 import { AppStore } from '../../store';
 import { Nav, NavItem } from '../../components/nav';
 
@@ -20,7 +20,7 @@ const Logo = styled.div`
 `;
 
 @observer
-@External()
+@external()
 export class MainNav extends React.Component {
     @Inject() private appStore: AppStore;
 

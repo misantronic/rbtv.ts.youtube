@@ -1,12 +1,17 @@
 import { observable, reaction } from 'mobx';
+import { external, inject, initialize } from 'tsdi';
 import { channel } from '../../utils/channels';
 import { beans } from '../../utils/beans';
 import { fetchUtil } from '../../utils/ajax';
 import { setStorage, getStorage } from '../../utils/storage';
+import { AppStore } from '../../store';
 
+@external()
 export class ActivitiesStore {
+    @inject() private appStore: AppStore;
+
     @observable channelId?: channel = (getStorage('search.channelId') as channel) || channel.RBTV;
-    @observable typedQ = getStorage('search.value') || '';
+    @observable typedQ = '';
     @observable fetchedQ = 'initial_dummy_value';
     @observable nextPageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
@@ -15,32 +20,10 @@ export class ActivitiesStore {
     @observable showBtnToTop = false;
     @observable error?: ErrorEvent;
 
-    static parseActivities(items: youtube.ActivitiyItem[]): youtube.ActivitiyItem[] {
-        return items.map((item: youtube.ActivitiyItem) => {
-            item = Object.assign({}, item);
-            item.snippet = Object.assign({}, item.snippet, {
-                publishedAt: new Date(item.snippet.publishedAt)
-            });
+    @initialize
+    init() {
+        this.typedQ = this.getDefaultTypedQ();
 
-            if (typeof item.id === 'object') {
-                item.id = (item.id as any).videoId;
-            } else {
-                item.id = item.contentDetails.upload.videoId;
-            }
-
-            if (!item.contentDetails) {
-                item.contentDetails = {
-                    upload: {
-                        videoId: item.id
-                    }
-                };
-            }
-
-            return item;
-        });
-    }
-
-    constructor() {
         if (this.typedQ) {
             this.search();
         }
@@ -87,6 +70,8 @@ export class ActivitiesStore {
 
             this.fetchedQ = '';
             this.processResponse(response, nextPageToken);
+
+            this.appStore.navigate(`/activities`, true);
         } catch (e) {
             this.error = e;
         } finally {
@@ -107,6 +92,8 @@ export class ActivitiesStore {
 
             this.fetchedQ = this.typedQ;
             this.processResponse(response, nextPageToken);
+
+            this.appStore.navigate(`/activities/${this.fetchedQ}`, true);
         } catch (e) {
             this.error = e;
         } finally {
@@ -126,8 +113,33 @@ export class ActivitiesStore {
         this.error = undefined;
     }
 
+    private parseActivities(items: youtube.ActivitiyItem[]): youtube.ActivitiyItem[] {
+        return items.map((item: youtube.ActivitiyItem) => {
+            item = Object.assign({}, item);
+            item.snippet = Object.assign({}, item.snippet, {
+                publishedAt: new Date(item.snippet.publishedAt)
+            });
+
+            if (typeof item.id === 'object') {
+                item.id = (item.id as any).videoId;
+            } else {
+                item.id = item.contentDetails.upload.videoId;
+            }
+
+            if (!item.contentDetails) {
+                item.contentDetails = {
+                    upload: {
+                        videoId: item.id
+                    }
+                };
+            }
+
+            return item;
+        });
+    }
+
     private processResponse(response, nextPageToken = '') {
-        const items = ActivitiesStore.parseActivities(response.items);
+        const items = this.parseActivities(response.items);
 
         this.items = nextPageToken ? this.concat(items) : items;
         this.nextPageToken = items.length ? response.nextPageToken : undefined;
@@ -162,5 +174,15 @@ export class ActivitiesStore {
 
     private concat(items: youtube.ActivitiyItem[]) {
         return this.items.concat(items.filter(item => !this.items.find(item2 => item2.id === item.id)));
+    }
+
+    private getDefaultTypedQ(): string {
+        const { search } = this.appStore.params;
+
+        if (search) {
+            setStorage('search.value', search);
+        }
+
+        return getStorage('search.value') || '';
     }
 }
