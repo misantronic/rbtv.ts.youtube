@@ -25,7 +25,7 @@
         "react-dom": "^16.0.0-beta.2",
         "react-select": "^1.0.0-rc.5",
         "styled-components": "^2.1.1",
-        "tsdi": "^0.10.1",
+        "tsdi": "^0.11.1",
         "yester": "^0.10.0"
     },
     "devDependencies": {
