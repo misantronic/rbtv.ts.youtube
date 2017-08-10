@@ -1,44 +1,45 @@
 {
-    "name": "rbtv.ts.youtube",
-    "version": "0.0.1",
-    "description": "rbtv.youtube with react + ts",
-    "main": "index.js",
-    "scripts": {
-        "dev": "node fuse",
-        "dist": "node fuse dist",
-        "test": "echo \"Error: no test specified\" && exit 1"
-    },
-    "author": "David Schkalee <david.schkalee@magicline.de>",
-    "license": "MIT",
-    "dependencies": {
-        "@types/gapi.youtube": "^3.0.32",
-        "@types/lodash": "^4.14.71",
-        "@types/moment": "^2.13.0",
-        "@types/react": "^15.6.0",
-        "@types/react-dom": "^15.5.1",
-        "@types/react-select": "^1.0.48",
-        "lodash": "^4.17.4",
-        "mobx": "^3.2.2",
-        "mobx-react": "^4.2.2",
-        "moment": "^2.18.1",
-        "react": "^16.0.0-beta.1",
-        "react-dom": "^16.0.0-beta.2",
-        "react-select": "^1.0.0-rc.5",
-        "styled-components": "^2.1.1",
-        "tsdi": "^0.11.1",
-        "yester": "^0.10.0"
-    },
-    "devDependencies": {
-        "@types/express": "^4.0.36",
-        "express": "^4.15.3",
-        "fuse-box": "^2.2.1",
-        "tslib": "^1.7.1",
-        "tslint": "^5.5.0",
-        "typescript": "^2.4.2",
-        "uglify-js": "^3.0.27"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/misantronic/rbtv.ts.youtube.git"
-    }
+  "name": "rbtv.ts.youtube",
+  "version": "0.0.1",
+  "description": "rbtv.youtube with react + ts",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node fuse",
+    "dist": "node fuse dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "David Schkalee <david.schkalee@magicline.de>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/gapi.youtube": "^3.0.32",
+    "@types/lodash": "^4.14.71",
+    "@types/moment": "^2.13.0",
+    "@types/react": "^15.6.0",
+    "@types/react-dom": "^15.5.1",
+    "@types/react-select": "^1.0.48",
+    "date-fns": "^1.28.5",
+    "lodash": "^4.17.4",
+    "mobx": "^3.2.2",
+    "mobx-react": "^4.2.2",
+    "moment": "^2.18.1",
+    "react": "^16.0.0-beta.1",
+    "react-dom": "^16.0.0-beta.2",
+    "react-select": "^1.0.0-rc.5",
+    "styled-components": "^2.1.1",
+    "tsdi": "^0.11.1",
+    "yester": "^0.10.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.0.36",
+    "express": "^4.15.3",
+    "fuse-box": "^2.2.1",
+    "tslib": "^1.7.1",
+    "tslint": "^5.5.0",
+    "typescript": "^2.4.2",
+    "uglify-js": "^3.0.27"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/misantronic/rbtv.ts.youtube.git"
+  }
 }

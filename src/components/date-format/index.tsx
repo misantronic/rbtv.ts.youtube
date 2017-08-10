@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as moment from 'moment';
+import * as dateFormat from 'date-fns/format';
 
 interface DateFormatProps {
     children: Date;
@@ -16,7 +16,7 @@ export class DateFormat extends React.Component<DateFormatProps> {
 
         return (
             <span>
-                {moment(children).format(format)}
+                {dateFormat(children, format)}
             </span>
         );
     }
