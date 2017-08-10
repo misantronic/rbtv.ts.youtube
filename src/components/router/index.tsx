@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { External, Inject } from 'tsdi';
+import { external, inject } from 'tsdi';
 import { AppStore, Route } from '../../store';
 import { reaction } from 'mobx';
 
@@ -9,9 +9,9 @@ interface RouterState {
     Component: React.ComponentClass<{}> | null;
 }
 
-@External()
+@external
 export class Router extends React.Component<RouterProps, RouterState> {
-    @Inject() private appStore: AppStore;
+    @inject private appStore: AppStore;
 
     constructor(props) {
         super(props);

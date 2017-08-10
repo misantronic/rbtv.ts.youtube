@@ -1,14 +1,14 @@
 import { observable, reaction } from 'mobx';
-import { external, inject, initialize } from 'tsdi';
+import { external, inject, initialize as constructor } from 'tsdi';
 import { channel } from '../../utils/channels';
 import { beans } from '../../utils/beans';
 import { fetchUtil } from '../../utils/ajax';
 import { setStorage, getStorage } from '../../utils/storage';
 import { AppStore } from '../../store';
 
-@external()
+@external
 export class ActivitiesStore {
-    @inject() private appStore: AppStore;
+    @inject private appStore: AppStore;
 
     @observable channelId?: channel = (getStorage('search.channelId') as channel) || channel.RBTV;
     @observable typedQ = '';
@@ -20,7 +20,7 @@ export class ActivitiesStore {
     @observable showBtnToTop = false;
     @observable error?: ErrorEvent;
 
-    @initialize
+    @constructor
     init() {
         this.typedQ = this.getDefaultTypedQ();
 
@@ -28,6 +28,7 @@ export class ActivitiesStore {
             this.search();
         }
 
+        // a channel was selected and nothing is typed into the search-box
         reaction(
             () => this.channelId && !this.typedQ && this.fetchedQ !== this.typedQ,
             requireReload => {
@@ -40,6 +41,7 @@ export class ActivitiesStore {
             }
         );
 
+        // the channel changed
         reaction(
             () => this.channelId,
             () => {
@@ -55,11 +57,30 @@ export class ActivitiesStore {
             }
         );
 
+        // the fetched search-value changed
         reaction(() => this.fetchedQ, () => setStorage('search.value', this.fetchedQ));
+
+        // route is activities and the search-params changed
+        reaction(
+            () =>
+                this.appStore.route.startsWith('/activities') &&
+                this.appStore.params.search &&
+                this.appStore.params.search !== this.fetchedQ,
+            paramsChanged => {
+                const { search } = this.appStore.params;
+
+                if (paramsChanged && search) {
+                    this.typedQ = search;
+                    this.search();
+                }
+            }
+        );
     }
 
     public async loadActivities(nextPageToken: string = '') {
         this.isLoading = true;
+
+        this.appStore.navigate(`/activities`);
 
         try {
             const response = await fetchUtil.get('/api/activities', {
@@ -70,8 +91,6 @@ export class ActivitiesStore {
 
             this.fetchedQ = '';
             this.processResponse(response, nextPageToken);
-
-            this.appStore.navigate(`/activities`, true);
         } catch (e) {
             this.error = e;
         } finally {
@@ -93,7 +112,7 @@ export class ActivitiesStore {
             this.fetchedQ = this.typedQ;
             this.processResponse(response, nextPageToken);
 
-            this.appStore.navigate(`/activities/${this.fetchedQ}`, true);
+            this.appStore.navigate(`/activities/${this.fetchedQ}`);
         } catch (e) {
             this.error = e;
         } finally {

@@ -42,9 +42,9 @@ const BtnToTop = styled(Button)`
 `;
 
 @observer
-@external()
+@external
 export class Activities extends React.Component<ActivitiesStoreProps, ActivitiesStoreState> {
-    @inject() private appStore: AppStore;
+    @inject private appStore: AppStore;
 
     constructor(props) {
         super(props);
@@ -206,10 +206,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     };
 
     private onClickTag = (tag: string): void => {
-        const { store } = this.state;
-
-        store.typedQ = tag;
-        store.search();
+        this.appStore.navigate(`/activities/${tag}`);
     };
 
     private onScrollToTop = () => scrollTo(0, 0);
@@ -220,8 +217,9 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         const maxY = document.body.scrollHeight - innerHeight - 800;
 
         if (!isLoading && nextPageToken && scrollY >= maxY) {
-            if (typedQ) {
-                store.hideItemsWhenLoading = false;
+            store.hideItemsWhenLoading = false;
+
+            if (typedQ) {                
                 store.search(nextPageToken);
             } else {
                 store.loadActivities(nextPageToken);

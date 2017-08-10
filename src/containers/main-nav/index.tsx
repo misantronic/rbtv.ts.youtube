@@ -20,23 +20,21 @@ const Logo = styled.div`
 `;
 
 @observer
-@external()
+@external
 export class MainNav extends React.Component {
-    @Inject() private appStore: AppStore;
+    @Inject private appStore: AppStore;
 
     render() {
+        const { isRouteActivities, isRouteVideo, isRoutePlaylists } = this.appStore;
+
         return (
             <NavWrapper>
                 <Logo onClick={() => this.onNavItemClick('/')} />
                 <Nav>
-                    <NavItem
-                        href="/"
-                        active={this.appStore.isRouteActivities || this.appStore.isRouteVideo}
-                        onClick={this.onNavItemClick}
-                    >
+                    <NavItem href="/" active={isRouteActivities || isRouteVideo} onClick={this.onNavItemClick}>
                         Home
                     </NavItem>
-                    <NavItem href="/playlists" active={this.appStore.isRoutePlaylists} onClick={this.onNavItemClick}>
+                    <NavItem href="/playlists" active={isRoutePlaylists} onClick={this.onNavItemClick}>
                         Playlists
                     </NavItem>
                 </Nav>
