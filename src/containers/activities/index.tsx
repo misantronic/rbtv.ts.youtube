@@ -24,18 +24,13 @@ interface ActivitiesStoreState {
     store: ActivitiesStore;
 }
 
-const SearchWrapper = styled.div`
-    display: flex;
+const SearchWrapper = styled(ColumnContainer)`
     margin-bottom: 25px;
 `;
 
 const StyledAutocomplete = styled(InputAutocomplete)``;
 
-const StyledSelect = styled(Select)`
-    .Select-control {
-        border-left: none;
-    }
-`;
+const StyledSelect = styled(Select)``;
 
 const BtnToTop = styled(Button)`
     position: fixed;
@@ -75,23 +70,27 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
 
         return (
             <SearchWrapper key="search">
-                <StyledAutocomplete
-                    value={store.typedQ}
-                    items={autocompleteItems}
-                    placeholder={placeholder}
-                    onChange={this.onSearchChange}
-                    onKeyDown={this.onKeyDown}
-                    onClear={this.onAutocompleteClear}
-                    autofocus
-                />
-                <StyledSelect
-                    value={store.channelId}
-                    options={options}
-                    simpleValue
-                    searchable={false}
-                    clearable={false}
-                    onChange={this.onChangeChannel as any}
-                />
+                <Column sm={12} md={8}>
+                    <StyledAutocomplete
+                        value={store.typedQ}
+                        items={autocompleteItems}
+                        placeholder={placeholder}
+                        onChange={this.onSearchChange}
+                        onKeyDown={this.onKeyDown}
+                        onClear={this.onAutocompleteClear}
+                        autofocus
+                    />
+                </Column>
+                <Column sm={12} md={4}>
+                    <StyledSelect
+                        value={store.channelId}
+                        options={options}
+                        simpleValue
+                        searchable={false}
+                        clearable={false}
+                        onChange={this.onChangeChannel as any}
+                    />
+                </Column>
             </SearchWrapper>
         );
     }
@@ -208,7 +207,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         if (!isLoading && nextPageToken && scrollY >= maxY) {
             store.hideItemsWhenLoading = false;
 
-            if (typedQ) {                
+            if (typedQ) {
                 store.search(nextPageToken);
             } else {
                 store.loadActivities(nextPageToken);
