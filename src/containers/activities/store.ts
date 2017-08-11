@@ -4,6 +4,7 @@ import { channel } from '../../utils/channels';
 import { beans } from '../../utils/beans';
 import { fetchUtil } from '../../utils/ajax';
 import { setStorage, getStorage } from '../../utils/storage';
+import { parseActivities } from '../../utils/api';
 import { AppStore } from '../../store';
 
 @external
@@ -60,7 +61,7 @@ export class ActivitiesStore {
         // the fetched search-value changed
         reaction(() => this.fetchedQ, () => setStorage('search.value', this.fetchedQ));
 
-        // route is activities and the search-params changed
+        // route is current and the search-params changed
         reaction(
             () =>
                 this.appStore.route.startsWith('/activities') &&
@@ -132,33 +133,8 @@ export class ActivitiesStore {
         this.error = undefined;
     }
 
-    private parseActivities(items: youtube.ActivitiyItem[]): youtube.ActivitiyItem[] {
-        return items.map((item: youtube.ActivitiyItem) => {
-            item = Object.assign({}, item);
-            item.snippet = Object.assign({}, item.snippet, {
-                publishedAt: new Date(item.snippet.publishedAt)
-            });
-
-            if (typeof item.id === 'object') {
-                item.id = (item.id as any).videoId;
-            } else {
-                item.id = item.contentDetails.upload.videoId;
-            }
-
-            if (!item.contentDetails) {
-                item.contentDetails = {
-                    upload: {
-                        videoId: item.id
-                    }
-                };
-            }
-
-            return item;
-        });
-    }
-
     private processResponse(response, nextPageToken = '') {
-        const items = this.parseActivities(response.items);
+        const items = parseActivities(response.items);
 
         this.items = nextPageToken ? this.concat(items) : items;
         this.nextPageToken = items.length ? response.nextPageToken : undefined;

@@ -8,7 +8,9 @@ async function get(url: string, params: object = {}) {
         fetchUrl += '?' + query;
     }
 
-    return await (await fetch(fetchUrl)).json();
+    const response = await fetch(fetchUrl);
+
+    return await response.json();
 }
 
 export const fetchUtil = {

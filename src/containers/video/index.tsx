@@ -9,49 +9,47 @@ import { DateFormat } from '../../components/date-format';
 import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Likes, Dislikes } from '../../components/likes';
 import { NumberFormat } from '../../components/number-format';
+import { RelatedItem } from './related-item';
+
+const store = new VideoStore();
 
 interface VideoProps {
     id: string;
-}
-
-interface VideoState {
-    store: VideoStore;
 }
 
 const StyledVideoPlayer = styled(VideoPlayer)`
     margin-bottom: 30px;
 `;
 
+const VideoInfos = styled(ColumnContainer)`
+    margin-bottom: 15px;
+`;
+
 const ViewsColumn = styled(Column)`
     display: flex;
     align-items: flex-end;
     flex-direction: column;
+    white-space: nowrap;
 `;
 
 const StyledLikes = styled(Likes)`
     margin-right: 15px;
 `;
 
+const RelatedItems = styled.div`padding: 0 0 10px;`;
+
 @observer
-export class Video extends React.Component<VideoProps, VideoState> {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            store: new VideoStore()
-        };
-    }
-
+export class Video extends React.Component<VideoProps> {
     componentDidMount() {
-        this.state.store.id = this.props.id;
+        store.id = this.props.id;
     }
 
     componentWillUnmount() {
-        this.state.store.resetVideo();
+        store.reset();
     }
 
     render(): JSX.Element | null {
-        const { video } = this.state.store;
+        const { video } = store;
 
         if (!video) {
             return null;
@@ -65,16 +63,16 @@ export class Video extends React.Component<VideoProps, VideoState> {
                 </H1>
                 <ColumnContainer>
                     <Column sm={12} md={8}>
-                        <ColumnContainer>
-                            <Column sm={6}>
+                        <VideoInfos>
+                            <Column sm={7}>
                                 <H3>
                                     <span>Published at </span>
-                                    <DateFormat format="LL">
+                                    <DateFormat format="YYYY-MM-DD HH:mm">
                                         {video.snippet.publishedAt}
                                     </DateFormat>
                                 </H3>
                             </Column>
-                            <ViewsColumn sm={6}>
+                            <ViewsColumn sm={5}>
                                 <H3>
                                     <NumberFormat>
                                         {video.statistics.viewCount}
@@ -90,16 +88,36 @@ export class Video extends React.Component<VideoProps, VideoState> {
                                     </Dislikes>
                                 </div>
                             </ViewsColumn>
-                        </ColumnContainer>
-                        <Caption>
+                        </VideoInfos>
+                        <Caption parseLinks>
                             {video.snippet.description}
                         </Caption>
                     </Column>
                     <Column sm={12} md={4}>
-                        Text
+                        {this.renderRelated()}
                     </Column>
                 </ColumnContainer>
             </div>
+        );
+    }
+
+    private renderRelated(): JSX.Element {
+        const { related } = store;
+
+        return (
+            <RelatedItems>
+                <H3>Related</H3>
+
+                {related.map(item => {
+                    const { thumbnails, title } = item.snippet;
+
+                    return (
+                        <RelatedItem key={item.id} videoId={item.id} image={thumbnails.default.url}>
+                            {title}
+                        </RelatedItem>
+                    );
+                })}
+            </RelatedItems>
         );
     }
 }

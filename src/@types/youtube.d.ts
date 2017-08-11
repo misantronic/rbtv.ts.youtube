@@ -41,6 +41,7 @@ declare namespace youtube {
             thumbnails: Thumbnails;
             title: string;
             type: 'upload';
+            liveBroadcastContent?: string;
         };
         duration?: string;
         tags?: string[];

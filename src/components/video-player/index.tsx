@@ -55,6 +55,8 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         } else {
             this.onYT();
         }
+
+        addEventListener('resize', this.onResize);
     }
 
     componentDidUpdate(prevProps: VideoPlayerProps) {
@@ -67,6 +69,10 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         if (seekTo && seekTo !== prevProps.seekTo) {
             this.seekTo(seekTo);
         }
+    }
+
+    componentWillUnmount() {
+        removeEventListener('resize', this.onResize);
     }
 
     private createPlayer() {
@@ -140,6 +146,10 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
                 this.onEnded();
                 break;
         }
+    };
+
+    private onResize = () => {
+        
     };
 
     private onEnded() {

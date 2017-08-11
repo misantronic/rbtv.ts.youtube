@@ -12,11 +12,24 @@ interface LikesProps {
 
 const Span = styled.span`cursor: ${(props: any) => (props.onClick === noop ? 'default' : 'pointer')};`;
 
-const Icon = styled.span`font-size: 150%;`;
+const LikeIcon = styled.span`
+    font-size: 150%;
 
-const DislikeIcon = styled(Icon)`
+    &:before {
+        font-family: 'entypo', sans-serif;
+        content: "\\1f44d";
+    }
+`;
+
+const DislikeIcon = styled.span`
+    font-size: 150%;
     position: relative;
     top: 5px;
+
+    &:before {
+        font-family: 'entypo', sans-serif;
+        content: "\\1f44e";
+    }
 `;
 
 export class Likes extends React.PureComponent<LikesProps> {
@@ -25,7 +38,7 @@ export class Likes extends React.PureComponent<LikesProps> {
 
         return (
             <Span className={className} onClick={onClick}>
-                <Icon>👍</Icon> <NumberFormat>{children}</NumberFormat>
+                <LikeIcon /> <NumberFormat>{children}</NumberFormat>
             </Span>
         );
     }
@@ -37,7 +50,7 @@ export class Dislikes extends React.PureComponent<LikesProps> {
 
         return (
             <Span className={className} onClick={onClick}>
-                <DislikeIcon>👎</DislikeIcon> <NumberFormat>{children}</NumberFormat>
+                <DislikeIcon /> <NumberFormat>{children}</NumberFormat>
             </Span>
         );
     }

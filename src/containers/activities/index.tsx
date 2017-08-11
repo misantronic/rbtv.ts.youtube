@@ -17,6 +17,8 @@ import { beans } from '../../utils/beans';
 
 const autocompleteItems = ([] as Show[]).concat(shows, beans);
 
+const store = new ActivitiesStore();
+
 interface ActivitiesStoreProps {}
 interface ActivitiesStoreState {
     store: ActivitiesStore;
@@ -46,14 +48,6 @@ const BtnToTop = styled(Button)`
 export class Activities extends React.Component<ActivitiesStoreProps, ActivitiesStoreState> {
     @inject private appStore: AppStore;
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            store: new ActivitiesStore()
-        };
-    }
-
     componentDidMount() {
         addEventListener('scroll', this.onScroll);
     }
@@ -73,7 +67,6 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private renderSearch(): JSX.Element {
-        const { store } = this.state;
         const placeholder = `Search ${getChannelName(store.channelId || channel.RBTV)}...`;
         const options = Object.keys(channel).map((key: channel) => ({
             value: channel[key],
@@ -104,7 +97,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private renderColumns(): JSX.Element | null {
-        const { items, isLoading, hideItemsWhenLoading } = this.state.store;
+        const { items, isLoading, hideItemsWhenLoading } = store;
 
         if (isLoading && hideItemsWhenLoading) {
             return null;
@@ -134,7 +127,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private renderBtnToTop(): JSX.Element | false {
-        const { showBtnToTop } = this.state.store;
+        const { showBtnToTop } = store;
 
         return (
             showBtnToTop &&
@@ -145,7 +138,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private renderError() {
-        const { error } = this.state.store;
+        const { error } = store;
 
         if (!error) return null;
 
@@ -159,13 +152,13 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private renderSpinner() {
-        const { isLoading } = this.state.store;
+        const { isLoading } = store;
 
         return isLoading && <Spinner key="spinner" />;
     }
 
     private renderEmpty(): string | null {
-        const { isLoading, items } = this.state.store;
+        const { isLoading, items } = store;
 
         if (!isLoading && items.length === 0) {
             return 'No results.';
@@ -175,7 +168,6 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     }
 
     private onSearchChange = (val: string): void => {
-        const { store } = this.state;
         const show = autocompleteItems.find(show => show.title === val);
 
         if (show && show.channel) {
@@ -186,15 +178,13 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     };
 
     private onKeyDown = (e: any): void => {
-        const { store } = this.state;
-
         if (e.keyCode === 13) {
-            store.search();
+            this.appStore.navigate(`/activities/${store.typedQ}`);
         }
     };
 
     private onChangeChannel = (val: channel): void => {
-        this.state.store.channelId = val;
+        store.channelId = val;
     };
 
     private onClickActivity = (id: string) => {
@@ -202,7 +192,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     };
 
     private onAutocompleteClear = () => {
-        this.state.store.typedQ = '';
+        store.typedQ = '';
     };
 
     private onClickTag = (tag: string): void => {
@@ -212,7 +202,6 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
     private onScrollToTop = () => scrollTo(0, 0);
 
     private onScroll = () => {
-        const { store } = this.state;
         const { isLoading, nextPageToken, typedQ } = store;
         const maxY = document.body.scrollHeight - innerHeight - 800;
 

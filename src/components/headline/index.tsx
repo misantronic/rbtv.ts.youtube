@@ -12,6 +12,7 @@ export const H1 = styled.h1`
     font-size: 26px;
     font-weight: 500;
     line-height: 1.1;
+    height: 30px;
 `
 
 export const H2 = styled.h2`
@@ -22,6 +23,7 @@ export const H3 = styled.h3`
     font-size: 17px;
     font-weight: 500;
     line-height: 1.1;
+    height: 19px;
 `
 
 export const H4 = styled.h4`
