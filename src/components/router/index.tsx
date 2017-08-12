@@ -25,9 +25,11 @@ export class Router extends React.Component<RouterProps, RouterState> {
         reaction(
             () => this.appStore.route,
             async (name: Route) => {
-                const Component = await this.appStore.loadBundle(name);
+                if (name) {
+                    const Component = await this.appStore.loadBundle(name);
 
-                this.setState({ Component });
+                    this.setState({ Component });
+                }
             },
             { fireImmediately: true }
         );
