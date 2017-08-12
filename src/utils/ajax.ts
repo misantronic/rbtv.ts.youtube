@@ -1,4 +1,4 @@
-const baseUrl = '/';
+const baseUrl = location.origin;
 
 async function get(url: string, params: object = {}) {
     const query = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
