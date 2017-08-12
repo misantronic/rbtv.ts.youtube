@@ -34,18 +34,18 @@ Sparky.task('build', () => {
         ]
     });
 
-    if (!production) {
-        // server
-        fuse.dev({ root: false }, server => {
-            const dist = path.join(__dirname, 'dist');
-            const app = server.httpServer.app;
-
-            app.use('/static/', express.static(path.join(dist, 'static')));
-            app.get('*', (req, res) => {
-                res.sendFile(path.join(dist, 'static/index.html'));
-            });
-        });
-    }
+    // if (!production) {
+    //     // server
+    //     fuse.dev({ root: false }, server => {
+    //         const dist = path.join(__dirname, 'dist');
+    //         const app = server.httpServer.app;
+    // 
+    //         app.use('/static/', express.static(path.join(dist, 'static')));
+    //         app.get('*', (req, res) => {
+    //             res.sendFile(path.join(dist, 'static/index.html'));
+    //         });
+    //     });
+    // }
 
     // vendor
     const vendor = fuse.bundle('vendor').instructions(`~ **/**.{js,ts,tsx} +tslib - [@types/**/**.d.ts]`);

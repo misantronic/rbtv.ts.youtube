@@ -4,9 +4,9 @@
   "description": "rbtv.youtube with react + ts",
   "main": "index.js",
   "scripts": {
-    "dev": "node fuse",
-    "dist": "node fuse dist",
-    "start": "npm run dist && node www/index.js & node www/keepalive.js"
+    "dev": "concurrently \"node fuse\" \"node www/index.js\"",
+    "dist": "concurrently \"node fuse dist\" \"node www/index.js\"",
+    "start": "npm run dist & node www/keepalive.js"
   },
   "author": "David Schkalee <david.schkalee@magicline.de>",
   "license": "MIT",
@@ -20,6 +20,7 @@
     "@types/react-select": "^1.0.48",
     "body-parser": "^1.17.2",
     "compression": "^1.7.0",
+    "concurrently": "^3.5.0",
     "connect-timeout": "^1.9.0",
     "date-fns": "^1.28.5",
     "ejs": "^2.5.7",

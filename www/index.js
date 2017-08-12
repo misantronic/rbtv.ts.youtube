@@ -1,13 +1,19 @@
-var express = require('express');
-var timeout = require('connect-timeout');
-var compression = require('compression');
-var bodyParser = require('body-parser');
-var api = require('./api/api');
-var allowCors = require('./allowCors');
+const fs = require('fs');
 
-var publicPath = __dirname + '/../dist';
+if (fs.readFileSync(__dirname + '/env.js')) {
+    require('./env');
+}
 
-var app = express();
+const express = require('express');
+const timeout = require('connect-timeout');
+const compression = require('compression');
+const bodyParser = require('body-parser');
+const api = require('./api/api');
+const allowCors = require('./allowCors');
+
+const publicPath = __dirname + '/../dist';
+
+const app = express();
 
 app.set('port', process.env.PORT || 5000);
 
@@ -19,9 +25,7 @@ app.use(express.static(publicPath));
 // parse application/json
 app.use(bodyParser.json({ limit: '5mb' }));
 
-app.use((req, res, next) => {
-    if (!req.timedout) next();
-});
+app.use((req, res, next) => !req.timedout && next());
 
 // views is directory for all template files
 app.set('views', publicPath);
