@@ -49,5 +49,8 @@
   "repository": {
     "type": "git",
     "url": "git://github.com/misantronic/rbtv.ts.youtube.git"
+  },
+  "engines": {
+    "node": "6.11.1"
   }
 }
