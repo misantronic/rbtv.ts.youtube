@@ -61,8 +61,10 @@ Sparky.task('build', () => {
 
     if (!production) {
         // HMR
-        vendor.hmr();
-        app.hmr().watch();
+        // vendor.hmr();
+        // app.hmr().watch();
+        vendor.watch();
+        app.watch();
     }
 
     // Run
