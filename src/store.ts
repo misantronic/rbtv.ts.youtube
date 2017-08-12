@@ -39,17 +39,17 @@ export class AppStore {
 
     @computed
     public get isRouteActivities() {
-        return this.route.startsWith((routes.find(routeObj => routeObj.id.startsWith('activities')) as RouteObj).route);
+        return this.route && this.route.startsWith((routes.find(routeObj => routeObj.id.startsWith('activities')) as RouteObj).route);
     }
 
     @computed
     public get isRoutePlaylists() {
-        return this.route === (routes.find(routeObj => routeObj.id === 'playlists') as RouteObj).route;
+        return this.route && this.route === (routes.find(routeObj => routeObj.id === 'playlists') as RouteObj).route;
     }
 
     @computed
     public get isRouteVideo() {
-        return this.route === (routes.find(routeObj => routeObj.id === 'video') as RouteObj).route;
+        return this.route && this.route === (routes.find(routeObj => routeObj.id === 'video') as RouteObj).route;
     }
 
     public async loadBundle(name: Route): Promise<React.ComponentClass<any>> {
