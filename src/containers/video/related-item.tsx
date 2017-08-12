@@ -16,7 +16,7 @@ const Item = styled.div`
     margin-bottom: 10px;
 `;
 
-const Image = styled.div`
+const Image =  styled.div`
     flex: 0 0 100px;
     background-image: url('${(props: { image: string }) => props.image}');
     background-size: cover;
@@ -25,7 +25,7 @@ const Image = styled.div`
 `;
 
 const Title = styled(Caption)`
-    padding-left: 10px;
+    padding: 0 10px;
     margin: 0;
 `;
 
