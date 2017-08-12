@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var https = require('https');
 var param = require('node-jquery-param');
 var Promise = require('promise');
@@ -38,7 +38,7 @@ function request(config) {
 
         cache.get(cacheConfig)
             .then(value => {
-                if (!_.isEmpty(_.omit(value, 'items')) && value.items) {
+                if (!_.isEmpty(_.omit(value, ['items'])) && value.items) {
                     resolvePromise(value, true);
                     return;
                 }

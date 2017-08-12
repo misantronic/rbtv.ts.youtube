@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const fetch = require('./../fetch');
 const cache = require('../cache');
 const Config = require('../../Config');

@@ -1,4 +1,4 @@
-var _          = require('underscore');
+var _          = require('lodash');
 var VideoModel = require('./models/Video');
 
 module.exports = function (videoItem) {
@@ -7,7 +7,7 @@ module.exports = function (videoItem) {
             // Update
             VideoModel.findByIdAndUpdate(
                 videoItem._id,
-                { $set: _.omit(videoItem, '_id', '__v') },
+                { $set: _.omit(videoItem, ['_id', '__v']) },
                 function (err) {
                     if (err) {
                         console.error('Mongo: Error trying to update videoItem', err);

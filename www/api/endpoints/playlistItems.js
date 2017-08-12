@@ -1,4 +1,4 @@
-var _     = require('underscore');
+var _     = require('lodash');
 var fetch = require('./../fetch');
 var cache = require('../cache');
 

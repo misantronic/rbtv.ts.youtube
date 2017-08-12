@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const moment = require('moment');
 const Promise = require('promise');
 const fetch = require('./../fetch');

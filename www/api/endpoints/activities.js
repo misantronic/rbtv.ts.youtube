@@ -1,6 +1,6 @@
 var fetch = require('../fetch');
 var cache = require('../cache');
-var _ = require('underscore');
+var _ = require('lodash');
 
 module.exports = function (req, res) {
     var query = {

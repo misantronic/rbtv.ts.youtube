@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var moment = require('moment');
 var Promise = require('promise');
 var Model = require('./models/Playlist');
@@ -27,7 +27,7 @@ module.exports = function (ids, fromCache) {
 
                         if (expires.diff(now) > 0) {
                             itemsFromDB.push(
-                                _.omit(model.toObject(), '__v', '_id')
+                                _.omit(model.toObject(), ['__v', '_id'])
                             );
                         } else {
                             itemsNotFound.push(playlistId);

@@ -1,4 +1,4 @@
-var _ = require('underscore');
+var _ = require('lodash');
 var Model = require('./models/Playlist');
 
 module.exports = function (item) {
@@ -7,7 +7,7 @@ module.exports = function (item) {
             // Update
             Model.findByIdAndUpdate(
                 item._id,
-                { $set: _.omit(item, '_id', '__v') },
+                { $set: _.omit(item, ['_id', '__v']) },
                 function (err) {
                     if (err) {
                         console.error('Mongo: Error trying to update playlistItem', err);

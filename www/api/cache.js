@@ -1,4 +1,4 @@
-var _       = require('underscore');
+var _       = require('lodash');
 var Promise = require('promise');
 var flatten = require('flat');
 var Redis   = require('ioredis');
@@ -123,7 +123,7 @@ module.exports = {
             redis.set(identifier, value);
         } else if (_.isObject(value) || !_.isArray(value)) {
             // Object: Remove items-property
-            value = _.omit(value, 'items');
+            value = _.omit(value, ['items']);
 
             // Check if object is empty
             if (!_.isEmpty(value)) {

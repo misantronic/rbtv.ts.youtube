@@ -1,4 +1,4 @@
-const _ = require('underscore');
+const _ = require('lodash');
 const param = require('node-jquery-param');
 const Promise = require('promise');
 const moment = require('moment');
