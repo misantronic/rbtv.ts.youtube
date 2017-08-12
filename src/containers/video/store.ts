@@ -111,9 +111,7 @@ export class VideoStore {
             if (commentThreadObj.items && commentThreadObj.items.length) {
                 const items: youtube.CommentThread[] = parseCommentThread(commentThreadObj.items);
 
-                this.commentThread = items;
-
-                console.log(this.commentThread);                
+                this.commentThread = items;          
             }
         } catch (e) {
             console.log(e);
