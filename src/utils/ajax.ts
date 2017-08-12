@@ -1,4 +1,4 @@
-const baseUrl = 'http://localhost:5000';
+const baseUrl = '/';
 
 async function get(url: string, params: object = {}) {
     const query = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
