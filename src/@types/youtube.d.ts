@@ -47,6 +47,37 @@ declare namespace youtube {
         tags?: string[];
     }
 
+    interface CommentThread {
+        kind: 'youtube#commentThread';
+        etag: string;
+        id: string;
+        snippet: {
+            videoId: string;
+            topLevelComment: {
+                kind: 'youtube#comment';
+                etag: string;
+                id: string;
+                snippet: {
+                    authorDisplayName: string;
+                    authorProfileImageUrl: string;
+                    authorChannelUrl: string;
+                    authorChannelId: { value: string };
+                    videoId: string;
+                    textDisplay: string;
+                    textOriginal: string;
+                    canRate: boolean;
+                    viewerRating: string;
+                    likeCount: number;
+                    publishedAt: Date;
+                    updatedAt: Date;
+                };
+            };
+            canReply: boolean;
+            totalReplyCount: number;
+            isPublic: boolean;
+        };
+    }
+
     // type VideoItem = GoogleApiYouTubeVideoResource;
 
     interface VideoItem {
@@ -84,6 +115,6 @@ declare namespace youtube {
         PlayerState: {
             PLAYING: 1;
             ENDED: 2;
-        }
+        };
     }
 }

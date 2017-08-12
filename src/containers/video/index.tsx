@@ -10,6 +10,7 @@ import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Likes, Dislikes } from '../../components/likes';
 import { NumberFormat } from '../../components/number-format';
 import { RelatedItem } from './related-item';
+import { CommentItem } from './comment-item';
 
 const store = new VideoStore();
 
@@ -37,6 +38,10 @@ const StyledLikes = styled(Likes)`
 `;
 
 const RelatedItems = styled.div`padding: 0 0 10px;`;
+
+const Comments = styled.div`
+    margin-top: 50px;
+`
 
 @observer
 export class Video extends React.Component<VideoProps> {
@@ -97,6 +102,7 @@ export class Video extends React.Component<VideoProps> {
                         {this.renderRelated()}
                     </Column>
                 </ColumnContainer>
+                {this.renderComments()}
             </div>
         );
     }
@@ -118,6 +124,41 @@ export class Video extends React.Component<VideoProps> {
                     );
                 })}
             </RelatedItems>
+        );
+    }
+
+    private renderComments(): JSX.Element {
+        const { commentThread } = store;
+
+        return (
+            <Comments>
+                <hr/>
+                <H3>Comments</H3>
+                {commentThread.map(item => {
+                    const {
+                        textDisplay,
+                        publishedAt,
+                        authorChannelUrl,
+                        authorDisplayName,
+                        authorProfileImageUrl,
+                        likeCount
+                    } = item.snippet.topLevelComment.snippet;
+
+                    return (
+                        <CommentItem
+                            key={item.id}
+                            id={item.id}
+                            date={publishedAt}
+                            authorImage={authorProfileImageUrl}
+                            author={authorDisplayName}
+                            authorUrl={authorChannelUrl}
+                            likes={likeCount}
+                        >
+                            {textDisplay}
+                        </CommentItem>
+                    );
+                })}
+            </Comments>
         );
     }
 }

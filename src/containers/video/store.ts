@@ -2,7 +2,7 @@ import { observable, reaction } from 'mobx';
 import { external, inject, initialize as constructor } from 'tsdi';
 import { fetchUtil } from '../../utils/ajax';
 import { channel } from '../../utils/channels';
-import { parseActivities, rejectLiveItems, parseVideo } from '../../utils/api';
+import { parseActivities, rejectLiveItems, parseVideo, parseCommentThread } from '../../utils/api';
 import { AppStore } from '../../store';
 
 @external
@@ -14,6 +14,8 @@ export class VideoStore {
     @observable videoIsLoading = false;
     @observable relatedIsLoading = false;
     @observable related: youtube.ActivitiyItem[] = [];
+    @observable commentThreadIsLoading = false;
+    @observable commentThread: youtube.CommentThread[] = [];
 
     @constructor
     init() {
@@ -25,6 +27,7 @@ export class VideoStore {
                     (async () => {
                         await this.loadVideo();
                         this.loadRelated();
+                        this.loadCommentThread();
                     })();
                 }
             }
@@ -76,7 +79,7 @@ export class VideoStore {
         this.relatedIsLoading = true;
 
         try {
-            const channelId = this.video && this.video.snippet.channelId || channel.RBTV;
+            const channelId = (this.video && this.video.snippet.channelId) || channel.RBTV;
 
             const relatedObj = await fetchUtil.get('/api/related', {
                 channelId,
@@ -93,6 +96,29 @@ export class VideoStore {
             console.log(e);
         } finally {
             this.relatedIsLoading = false;
+        }
+    }
+
+    private async loadCommentThread() {
+        this.commentThreadIsLoading = true;
+
+        try {
+            const commentThreadObj = await fetchUtil.get('/api/commentThreads', {
+                videoId: this.id,
+                pageToken: ''
+            });
+
+            if (commentThreadObj.items && commentThreadObj.items.length) {
+                const items: youtube.CommentThread[] = parseCommentThread(commentThreadObj.items);
+
+                this.commentThread = items;
+
+                console.log(this.commentThread);                
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            this.commentThreadIsLoading = false;
         }
     }
 }
