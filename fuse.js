@@ -8,7 +8,7 @@ Sparky.task('build', () => {
     // config
     const fuse = FuseBox.init({
         homeDir: 'src',
-        output: 'dist/static/$name.js',
+        output: 'dist/$name.js',
         target: 'browser',
         experimentalFeatures: true,
         cache: !production,
@@ -19,7 +19,7 @@ Sparky.task('build', () => {
             WebIndexPlugin({
                 title: 'rbtv.ts.youtube',
                 template: 'src/index.html',
-                path: '/static/'
+                path: '/'
             }),
             CSSPlugin(),
             production &&
@@ -48,12 +48,12 @@ Sparky.task('build', () => {
     }
 
     // vendor
-    const vendor = fuse.bundle('vendor').instructions(`~ **/**.{ts,tsx} +tslib - [@types/**/**.d.ts]`);
+    const vendor = fuse.bundle('vendor').instructions(`~ **/**.{js,ts,tsx} +tslib - [@types/**/**.d.ts]`);
 
     // app
     const app = fuse
         .bundle('app')
-        .splitConfig({ browser: '/static/', dest: 'bundles/' })
+        .splitConfig({ browser: '/', dest: '/' })
         .split('containers/activities/**', 'activities > containers/activities/index.tsx')
         .split('containers/video/**', 'video > containers/video/index.tsx')
         .split('containers/playlists/**', 'playlists > containers/playlists/index.tsx')
