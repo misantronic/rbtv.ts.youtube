@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-if (fs.readFileSync(__dirname + '/env.js')) {
+if (fs.existsSync(__dirname + '/env.js')) {
     require('./env');
 }
 
