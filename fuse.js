@@ -18,6 +18,7 @@ Sparky.task('build', () => {
             EnvPlugin({ NODE_ENV: production ? 'production' : 'development' }),
             WebIndexPlugin({
                 title: 'rbtv.ts.youtube',
+                target: 'index.ejs',
                 template: 'src/index.html',
                 path: '/'
             }),

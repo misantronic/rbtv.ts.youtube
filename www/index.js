@@ -5,13 +5,14 @@ if (fs.existsSync(__dirname + '/env.js')) {
 }
 
 const express = require('express');
+const path = require('path');
 const timeout = require('connect-timeout');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 const api = require('./api/api');
 const allowCors = require('./allowCors');
 
-const publicPath = __dirname + '/../dist';
+const publicPath = path.join(__dirname, '../dist/');
 
 const app = express();
 
@@ -33,7 +34,7 @@ app.set('view engine', 'ejs');
 
 api.init(app);
 
-app.get('/', (request, response) => response.render('index'));
+app.get('*', (request, response) => response.render('index'));
 
 app.listen(app.get('port'), function() {
     console.log('Node app is running on port', app.get('port'));
