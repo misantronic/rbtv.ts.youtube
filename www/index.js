@@ -5,7 +5,7 @@ var bodyParser  = require('body-parser');
 var api         = require('./api/api');
 var allowCors   = require('./allowCors');
 
-var publicPath = __dirname + '/../dist';
+var publicPath = __dirname + '/../dist/static';
 
 var app = express();
 
