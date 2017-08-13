@@ -32,21 +32,19 @@ const ContentFooter = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    > div {
-        > :last-child {
-            opacity: 0.6;
-        }
-    }
 `;
 
 const ReplyLink = styled.a`
     margin-right: 15px;
 `
 
+const StyledDate = styled(DateFormat)`
+    opacity: 0.6;
+`
+
 export class CommentItem extends React.PureComponent<CommentItemProps> {
     render(): JSX.Element {
-        const { children, date, authorImage, likes, author, authorUrl, id } = this.props;
+        const { children, date, authorImage, likes, author, authorUrl } = this.props;
 
         return (
             <Item>
@@ -66,9 +64,9 @@ export class CommentItem extends React.PureComponent<CommentItemProps> {
                             <a href={authorUrl} target="_blank">
                                 {author}
                             </a>
-                            , <DateFormat format="YYYY-MM-DD HH:mm">
+                            , <StyledDate format="YYYY-MM-DD HH:mm">
                                 {date}
-                            </DateFormat>
+                            </StyledDate>
                         </div>
                     </ContentFooter>
                 </Content>

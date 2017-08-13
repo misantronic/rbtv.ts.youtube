@@ -4,6 +4,7 @@ import * as dateFormat from 'date-fns/format';
 interface DateFormatProps {
     children: Date;
     format?: string;
+    className?: string;
 }
 
 export class DateFormat extends React.Component<DateFormatProps> {
@@ -12,10 +13,10 @@ export class DateFormat extends React.Component<DateFormatProps> {
     }
 
     render(): JSX.Element {
-        const { children, format = 'YYYY-MM-DD' } = this.props;
+        const { children, className, format = 'YYYY-MM-DD' } = this.props;
 
         return (
-            <span>
+            <span className={className}>
                 {dateFormat(children, format)}
             </span>
         );
