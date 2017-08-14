@@ -1,10 +1,29 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { TSDI } from 'tsdi';
-import styled from 'styled-components';
+import styled, { injectGlobal } from 'styled-components';
 import { AppStore } from './store';
 import { Router } from './components/router';
 import { MainNav } from './containers/main-nav';
+
+injectGlobal`
+    @import url(//fonts.googleapis.com/css?family=Raleway);
+    @import url(http://weloveiconfonts.com/api/?family=entypo);
+
+    body {
+        overflow-y: scroll;
+        overflow-x: hidden;
+        margin: 0;
+        padding: 0;
+        background: #fcfcfc;
+        color: #333;
+    }
+
+    #app {
+        width: 100%;
+        height: 100%;
+    }
+`;
 
 const App = styled.div`
     font-family: Raleway, Arial, sans-serif;
