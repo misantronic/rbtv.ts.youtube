@@ -89,8 +89,8 @@ declare namespace youtube {
         statistics: {
             commentCount: number;
             favoriteCount: number;
-            dislikeCount: number;
-            likeCount: number;
+            dislikeCount?: number;
+            likeCount?: number;
             viewCount: number;
         };
         contentDetails: {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { NumberFormat } from '../number-format';
 
-const noop = () => {};
+type Type = 'like' | 'dislike';
 
 interface LikesProps {
     children: number;
@@ -11,60 +11,55 @@ interface LikesProps {
     onClick?(): void;
 }
 
-const Span = styled.span`
-    cursor: ${(props: any) => (props.onClick === noop ? 'default' : 'pointer')};
-`;
+interface IconTextProps extends LikesProps {
+    type: Type;
+}
 
-const LikeIcon = styled.span`
+const Span = styled.span`cursor: ${(props: any) => (props.onClick ? 'pointer' : 'default')};`;
+
+const Icon = styled.span`
     font-size: 150%;
-    opacity: ${(props: { active: boolean }) => props.active ? 1 : 0.4};
+    opacity: ${(props: { active: boolean; type: Type }) => (props.active ? 1 : 0.4)};
+
+    &[type="dislike"] {
+        position: relative;
+        top: 5px;
+    }
 
     &:before {
         font-family: 'entypo', sans-serif;
-        content: "\\1f44d";
+        content: "${(props: { active: boolean; type: Type }) => (props.type === 'like' ? '👍' : '👎')}";
     }
 
     &:hover {
-        ${(props: any) => (props.onClick === noop ? '' : 'opacity: 1;')}
+        ${(props: any) => (props.onClick ? 'opacity: 1;' : '')};
     }
 `;
 
-const DislikeIcon = styled.span`
-    font-size: 150%;
-    opacity: ${(props: { active: boolean }) => props.active ? 1 : 0.4};
-    position: relative;
-    top: 5px;
-
-    &:before {
-        font-family: 'entypo', sans-serif;
-        content: "\\1f44e";
-    }
-
-    &:hover {
-        ${(props: any) => (props.onClick === noop ? '' : 'opacity: 1;')}
-    }
-`;
-
-export class Likes extends React.PureComponent<LikesProps> {
+class IconText extends React.PureComponent<IconTextProps> {
     render(): JSX.Element {
-        const { children, className, active = false, onClick = noop } = this.props;
+        const { children, className, type, active = false, onClick } = this.props;
 
         return (
             <Span className={className} onClick={onClick}>
-                <LikeIcon active={active} />&nbsp;&nbsp;<NumberFormat>{children}</NumberFormat>
+                <Icon active={active} type={type} />&nbsp;&nbsp;{children === undefined
+                    ? null
+                    : <NumberFormat>
+                          {children}
+                      </NumberFormat>}
             </Span>
         );
     }
 }
 
+export class Likes extends React.PureComponent<LikesProps> {
+    render(): JSX.Element {
+        return <IconText {...this.props} type="like" />;
+    }
+}
+
 export class Dislikes extends React.PureComponent<LikesProps> {
     render(): JSX.Element {
-        const { children, className, active = false, onClick = noop } = this.props;
-
-        return (
-            <Span className={className} onClick={onClick}>
-                <DislikeIcon active={active} /> <NumberFormat>{children}</NumberFormat>
-            </Span>
-        );
+        return <IconText {...this.props} type="dislike" />;
     }
 }
