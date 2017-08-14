@@ -29,10 +29,6 @@ const StyledVideoPlayer = styled(VideoPlayer)`
     margin-bottom: 30px;
 `;
 
-const VideoInfos = styled(ColumnContainer)`
-    margin-bottom: 15px;
-`;
-
 const ViewsColumn = styled(Column)`
     display: flex;
     align-items: flex-end;
@@ -101,7 +97,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
                 </H1>
                 <ColumnContainer>
                     <Column sm={12} md={8}>
-                        <VideoInfos>
+                        <ColumnContainer>
                             <Column sm={7}>
                                 <H3>
                                     <span>Published at </span>
@@ -119,14 +115,14 @@ export class Video extends React.Component<VideoProps, VideoState> {
                                 </H3>
                                 <div>
                                     <StyledLikes>
-                                        {video.statistics.likeCount}
+                                        {video.statistics.likeCount || 0}
                                     </StyledLikes>
                                     <Dislikes>
-                                        {video.statistics.dislikeCount}
+                                        {video.statistics.dislikeCount || 0}
                                     </Dislikes>
                                 </div>
                             </ViewsColumn>
-                        </VideoInfos>
+                        </ColumnContainer>
                         <Caption parseLinks>
                             {video.snippet.description}
                         </Caption>

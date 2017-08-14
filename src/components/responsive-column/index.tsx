@@ -17,6 +17,7 @@ const calcSizes = (props: ColumnProps): string => {
 
     return `
         padding: 0 10px;
+        margin-bottom: 20px;
 
         @media (max-width: 599px) {
             width: ${100 / 12 * sm}%;

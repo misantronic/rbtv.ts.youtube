@@ -19,8 +19,6 @@ interface ActivityItemProps {
     onClickTag(tag: string): void;
 }
 
-const StyledDiv = styled.div`margin-bottom: 20px;`;
-
 const BeansContainer = styled.div`height: 20px;`;
 
 const BeanBadge = styled(Badge)`
@@ -58,7 +56,7 @@ export class ActivityItem extends React.Component<ActivityItemProps> {
         } = this.props;
 
         return (
-            <StyledDiv className={className}>
+            <div className={className}>
                 <CaptionImage image={image} onClick={onClick}>
                     <DurationBadge>
                         {humanizeDuration(duration)}
@@ -82,7 +80,7 @@ export class ActivityItem extends React.Component<ActivityItemProps> {
                         </BeanBadge>
                     )}
                 </BeansContainer>
-            </StyledDiv>
+            </div>
         );
     }
 }

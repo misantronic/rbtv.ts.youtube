@@ -24,10 +24,6 @@ interface ActivitiesStoreState {
     store: ActivitiesStore;
 }
 
-const SearchWrapper = styled(ColumnContainer)`
-    margin-bottom: 25px;
-`;
-
 const StyledAutocomplete = styled(InputAutocomplete)``;
 
 const StyledSelect = styled(Select)``;
@@ -45,10 +41,18 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
 
     componentDidMount() {
         addEventListener('scroll', this.onScroll);
+
+        if(store.typedQ) {
+            store.search();
+        } else {
+            store.loadActivities();
+        }
     }
 
     componentWillUnmount() {
         removeEventListener('scroll', this.onScroll);
+
+        store.reset();
     }
 
     render(): any {
@@ -69,7 +73,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
         }));
 
         return (
-            <SearchWrapper key="search">
+            <ColumnContainer key="search">
                 <Column sm={12} md={8}>
                     <StyledAutocomplete
                         value={store.typedQ}
@@ -91,7 +95,7 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
                         onChange={this.onChangeChannel as any}
                     />
                 </Column>
-            </SearchWrapper>
+            </ColumnContainer>
         );
     }
 
