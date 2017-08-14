@@ -30,8 +30,8 @@ injectGlobal`
 const App = styled.div`
     width: 1074px;
     max-width: 100%;
-    margin: 25px auto;
-    padding: 0 25px;
+    margin: 20px auto;
+    padding: 0 20px;
     box-sizing: border-box;
 
     * {
