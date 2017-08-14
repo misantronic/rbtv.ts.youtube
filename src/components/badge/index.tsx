@@ -10,8 +10,8 @@ interface BadgeProps {
 const noop = () => {};
 
 const Span = styled.span`
-    display: inline-block;
-    padding: .2em .6em .2em;
+    display: inline-flex;
+    padding: 0 .6em 0;
     font-weight: 700;
     line-height: 1;
     color: #fff;
@@ -19,6 +19,8 @@ const Span = styled.span`
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: .25em;
+    height: 20px;
+    align-items: center;
 
     cursor: ${(props: BadgeProps) => (props.onClick === noop ? 'default' : 'pointer')};
     background-color: ${(props: BadgeProps) => (props.onClick === noop ? '#777' : '#AAA')};
