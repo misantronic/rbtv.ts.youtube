@@ -11,10 +11,10 @@ export class VideoStore {
 
     @observable id: string | null;
     @observable video: youtube.VideoItem | null;
-    @observable videoIsLoading = false;
-    @observable relatedIsLoading = false;
+    @observable videoLoading = false;
+    @observable relatedLoading = false;
     @observable related: youtube.ActivitiyItem[] = [];
-    @observable commentThreadIsLoading = false;
+    @observable commentThreadLoading = false;
     @observable commentThread: youtube.CommentThread[] = [];
 
     @constructor
@@ -50,7 +50,7 @@ export class VideoStore {
     }
 
     private async loadVideo() {
-        this.videoIsLoading = true;
+        this.videoLoading = true;
 
         try {
             const items: youtube.VideoItem[] = await fetchUtil.get('/api/videos', {
@@ -63,20 +63,20 @@ export class VideoStore {
         } catch (e) {
             console.log(e);
         } finally {
-            this.videoIsLoading = false;
+            this.videoLoading = false;
         }
     }
 
     public reset(): void {
         this.id = null;
         this.video = null;
-        this.videoIsLoading = false;
+        this.videoLoading = false;
         this.related = [];
-        this.relatedIsLoading = false;
+        this.relatedLoading = false;
     }
 
     private async loadRelated() {
-        this.relatedIsLoading = true;
+        this.relatedLoading = true;
 
         try {
             const channelId = (this.video && this.video.snippet.channelId) || channel.RBTV;
@@ -95,12 +95,12 @@ export class VideoStore {
         } catch (e) {
             console.log(e);
         } finally {
-            this.relatedIsLoading = false;
+            this.relatedLoading = false;
         }
     }
 
     private async loadCommentThread() {
-        this.commentThreadIsLoading = true;
+        this.commentThreadLoading = true;
 
         try {
             const commentThreadObj = await fetchUtil.get('/api/commentThreads', {
@@ -111,12 +111,12 @@ export class VideoStore {
             if (commentThreadObj.items && commentThreadObj.items.length) {
                 const items: youtube.CommentThread[] = parseCommentThread(commentThreadObj.items);
 
-                this.commentThread = items;          
+                this.commentThread = items;
             }
         } catch (e) {
             console.log(e);
         } finally {
-            this.commentThreadIsLoading = false;
+            this.commentThreadLoading = false;
         }
     }
 }

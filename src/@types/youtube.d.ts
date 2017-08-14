@@ -47,31 +47,33 @@ declare namespace youtube {
         tags?: string[];
     }
 
+    interface Comment {
+        kind: 'youtube#comment';
+        etag: string;
+        id: string;
+        snippet: {
+            authorDisplayName: string;
+            authorProfileImageUrl: string;
+            authorChannelUrl: string;
+            authorChannelId: { value: string };
+            videoId: string;
+            textDisplay: string;
+            textOriginal: string;
+            canRate: boolean;
+            viewerRating: string;
+            likeCount: number;
+            publishedAt: Date;
+            updatedAt: Date;
+        };
+    }
+
     interface CommentThread {
         kind: 'youtube#commentThread';
         etag: string;
         id: string;
         snippet: {
             videoId: string;
-            topLevelComment: {
-                kind: 'youtube#comment';
-                etag: string;
-                id: string;
-                snippet: {
-                    authorDisplayName: string;
-                    authorProfileImageUrl: string;
-                    authorChannelUrl: string;
-                    authorChannelId: { value: string };
-                    videoId: string;
-                    textDisplay: string;
-                    textOriginal: string;
-                    canRate: boolean;
-                    viewerRating: string;
-                    likeCount: number;
-                    publishedAt: Date;
-                    updatedAt: Date;
-                };
-            };
+            topLevelComment: Comment;
             canReply: boolean;
             totalReplyCount: number;
             isPublic: boolean;

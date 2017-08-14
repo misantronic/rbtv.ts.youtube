@@ -2,6 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import styled from 'styled-components';
 import { VideoStore } from './store';
+import { RepliesStore } from './replies-store';
 import { VideoPlayer } from '../../components/video-player';
 import { H1, H3 } from '../../components/headline';
 import { Caption } from '../../components/caption';
@@ -9,13 +10,19 @@ import { DateFormat } from '../../components/date-format';
 import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Likes, Dislikes } from '../../components/likes';
 import { NumberFormat } from '../../components/number-format';
+import { Spinner } from '../../components/spinner';
 import { RelatedItem } from './related-item';
 import { CommentItem } from './comment-item';
 
 const store = new VideoStore();
+const repliesStore = new RepliesStore();
 
 interface VideoProps {
     id: string;
+}
+
+interface VideoState {
+    hideComments: boolean;
 }
 
 const StyledVideoPlayer = styled(VideoPlayer)`
@@ -39,12 +46,38 @@ const StyledLikes = styled(Likes)`
 
 const RelatedItems = styled.div`padding: 0 0 10px;`;
 
-const Comments = styled.div`
-    margin-top: 50px;
-`
+const Comments = styled.div`margin-top: 50px;`;
+
+const CommentsHeader = styled.header`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+`;
+
+const ShowReplies = styled.div`
+    margin: -10px 0 25px 50px;
+    padding: 3px;
+    font-size: 11px;
+    text-align: center;
+    background: #eee;
+    cursor: pointer;
+`;
+
+const Replies = styled.div`
+    margin: 0 0 30px 50px;
+`;
 
 @observer
-export class Video extends React.Component<VideoProps> {
+export class Video extends React.Component<VideoProps, VideoState> {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            hideComments: false
+        };
+    }
+
     componentDidMount() {
         store.id = this.props.id;
     }
@@ -129,38 +162,76 @@ export class Video extends React.Component<VideoProps> {
 
     private renderComments(): JSX.Element {
         const { commentThread } = store;
+        const { hideComments } = this.state;
 
         return (
             <Comments>
-                <hr/>
-                <H3>Comments</H3>
-                {commentThread.map(item => {
-                    const {
-                        textDisplay,
-                        publishedAt,
-                        authorChannelUrl,
-                        authorDisplayName,
-                        authorProfileImageUrl,
-                        likeCount
-                    } = item.snippet.topLevelComment.snippet;
-
-                    return (
-                        <CommentItem
-                            key={item.id}
-                            id={item.id}
-                            date={publishedAt}
-                            authorImage={authorProfileImageUrl}
-                            author={authorDisplayName}
-                            authorUrl={authorChannelUrl}
-                            likes={likeCount}
-                        >
-                            {textDisplay}
-                        </CommentItem>
-                    );
-                })}
+                <hr />
+                <CommentsHeader>
+                    <H3>Comments</H3>
+                    <a href="#" onClick={this.onClickHideComments}>
+                        {hideComments ? 'Show' : 'Hide'} comments
+                    </a>
+                </CommentsHeader>
+                {!hideComments &&
+                    commentThread.map(item =>
+                        this.renderComment(item.snippet.topLevelComment, item.snippet.totalReplyCount)
+                    )}
             </Comments>
         );
     }
+
+    private renderComment(item: youtube.Comment, replyCount = 0) {
+        const {
+            publishedAt,
+            authorProfileImageUrl,
+            authorDisplayName,
+            authorChannelUrl,
+            likeCount,
+            textDisplay
+        } = item.snippet;
+
+        const { parentId, commentLoading, comments } = repliesStore;
+
+        return [
+            <CommentItem
+                key={item.id}
+                id={item.id}
+                date={publishedAt}
+                authorImage={authorProfileImageUrl}
+                author={authorDisplayName}
+                authorUrl={authorChannelUrl}
+                likes={likeCount}
+            >
+                {textDisplay}
+            </CommentItem>,
+            replyCount
+                ? <ShowReplies key="btn-replies" onClick={() => this.onClickShowReplies(item.id)}>
+                      {parentId === item.id ? 'Hide' : 'Show'} {replyCount} {replyCount > 1 ? 'replies' : 'reply'}
+                  </ShowReplies>
+                : null,
+            replyCount && parentId === item.id
+                ? <Replies key="replies">
+                      {commentLoading && <Spinner />}
+                      {!commentLoading && comments.map(comment => this.renderComment(comment))}
+                  </Replies>
+                : null
+        ];
+    }
+
+    private onClickShowReplies(parentId: string) {
+        if (parentId === repliesStore.parentId) {
+            repliesStore.reset();
+        } else {
+            repliesStore.loadReplies(parentId);
+        }
+    }
+
+    private onClickHideComments = (e: React.SyntheticEvent<HTMLAnchorElement>) => {
+        e.preventDefault();
+
+        this.setState({ hideComments: !this.state.hideComments });
+    };
 }
 
 export default Video;

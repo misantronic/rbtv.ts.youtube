@@ -33,15 +33,20 @@ export function parseVideo(item: youtube.VideoItem): youtube.VideoItem {
     return item;
 }
 
+export function parseComment(item: youtube.Comment): youtube.Comment {
+    item.snippet = Object.assign({}, item.snippet, {
+        publishedAt: new Date(item.snippet.publishedAt),
+        updatedAt: new Date(item.snippet.updatedAt)
+    });
+
+    return item;
+}
+
 export function parseCommentThread(items: youtube.CommentThread[]): youtube.CommentThread[] {
     return items.map(item => {
         item = Object.assign({}, item);
         item.snippet = Object.assign({}, item.snippet);
-        item.snippet.topLevelComment = Object.assign({}, item.snippet.topLevelComment);
-        item.snippet.topLevelComment.snippet = Object.assign({}, item.snippet.topLevelComment.snippet, {
-            publishedAt: new Date(item.snippet.topLevelComment.snippet.publishedAt),
-            updatedAt: new Date(item.snippet.topLevelComment.snippet.updatedAt)
-        });
+        item.snippet.topLevelComment = parseComment(item.snippet.topLevelComment);
 
         return item;
     });
