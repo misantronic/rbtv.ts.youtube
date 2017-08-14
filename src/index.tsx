@@ -17,6 +17,8 @@ injectGlobal`
         padding: 0;
         background: #fcfcfc;
         color: #333;
+        font-family: Raleway, Arial, sans-serif;
+        font-size: 14px;
     }
 
     #app {
@@ -26,8 +28,6 @@ injectGlobal`
 `;
 
 const App = styled.div`
-    font-family: Raleway, Arial, sans-serif;
-    font-size: 14px;
     width: 1074px;
     max-width: 100%;
     margin: 25px auto;
