@@ -11,9 +11,9 @@ import { AppStore } from '../../store';
 export class ActivitiesStore {
     @inject private appStore: AppStore;
 
-    @observable channelId?: channel = (getStorage('search.channelId') as channel) || channel.RBTV;
+    @observable channelId?: channel;
     @observable typedQ = '';
-    @observable fetchedQ = 'initial_dummy_value';
+    @observable fetchedQ = '';
     @observable nextPageToken = '';
     @observable items: youtube.ActivitiyItem[] = [];
     @observable isLoading = false;
@@ -23,11 +23,13 @@ export class ActivitiesStore {
 
     @constructor
     init() {
-        this.typedQ = this.getDefaultTypedQ();
+        const { search } = this.appStore.params;
 
-        if (this.typedQ) {
-            this.search();
+        if (search) {
+            setStorage('search.value', search);
         }
+
+        this.reset();
 
         // a channel was selected and nothing is typed into the search-box
         reaction(
@@ -36,9 +38,6 @@ export class ActivitiesStore {
                 if (requireReload) {
                     this.loadActivities();
                 }
-            },
-            {
-                fireImmediately: true
             }
         );
 
@@ -52,9 +51,9 @@ export class ActivitiesStore {
                     } else {
                         this.loadActivities();
                     }
-                }
 
-                setStorage('search.channelId', this.channelId);
+                    setStorage('search.channelId', this.channelId);
+                }
             }
         );
 
@@ -123,14 +122,15 @@ export class ActivitiesStore {
     }
 
     public reset(): void {
-        this.channelId = undefined;
-        this.typedQ = '';
-        this.fetchedQ = 'initial_dummy_value';
+        this.channelId = (getStorage('search.channelId') as channel) || channel.RBTV;
+        this.typedQ = getStorage('search.value') || '';
+        // this.fetchedQ = '';
         this.nextPageToken = '';
         this.items = [];
         this.isLoading = false;
         this.hideItemsWhenLoading = true;
         this.error = undefined;
+        this.showBtnToTop = false;
     }
 
     private processResponse(response, nextPageToken = '') {
@@ -169,15 +169,5 @@ export class ActivitiesStore {
 
     private concat(items: youtube.ActivitiyItem[]) {
         return this.items.concat(items.filter(item => !this.items.find(item2 => item2.id === item.id)));
-    }
-
-    private getDefaultTypedQ(): string {
-        const { search } = this.appStore.params;
-
-        if (search) {
-            setStorage('search.value', search);
-        }
-
-        return getStorage('search.value') || '';
     }
 }
