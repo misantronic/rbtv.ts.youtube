@@ -106,21 +106,22 @@ export class Activities extends React.Component {
                 {this.renderError()}
                 {items.map((item: youtube.ActivitiyItem) => {
                     let image, imageMargin;
+                    const { title, thumbnails, description, publishedAt } = item.snippet;
 
                     if (store.useSmallThumbs) {
-                        image = item.snippet.thumbnails.medium.url;
+                        image = thumbnails.medium.url;
                         imageMargin = '0';
                     } else {
-                        image = item.snippet.thumbnails.standard.url;
+                        image = (thumbnails.standard || thumbnails.high).url;
                     }
 
                     return (
                         <Column sm={12} md={6} lg={4} key={item.id}>
                             <ActivityItem
-                                title={item.snippet.title}
-                                description={item.snippet.description}
+                                title={title}
+                                description={description}
                                 duration={item.duration}
-                                publishedAt={item.snippet.publishedAt}
+                                publishedAt={publishedAt}
                                 image={image}
                                 imageMargin={imageMargin}
                                 tags={item.tags}
