@@ -90,7 +90,8 @@ export class AppStore {
 
     public async loadLiveId() {
         const response = await fetchUtil.get('/api/search', {
-            q: 'live',
+            q: '',
+            eventType: 'live',
             maxResults: 1,
             channelId: channel.RBTV,
             pageToken: '',
