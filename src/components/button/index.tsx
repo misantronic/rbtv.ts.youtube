@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
 interface ButtonProps {
     className?: string;
@@ -7,10 +7,10 @@ interface ButtonProps {
     onClick(): void;
 }
 
-const gradient = `
+const gradient = css`
     background-image: linear-gradient(90deg, #ff217c 0, #ff9186);
     background-repeat: repeat-x;
-`
+`;
 
 const StyledButton = styled.button`
     color: #fff;
@@ -25,9 +25,7 @@ const StyledButton = styled.button`
     vertical-align: middle;
     cursor: pointer;
     user-select: none;
-    ${(props: ButtonProps) => props.gradient ? gradient : ''}
-
-    &:focus {
+    ${(props: ButtonProps) => (props.gradient ? gradient : '')} &:focus {
         outline: none;
     }
 `;

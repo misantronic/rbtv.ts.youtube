@@ -1,6 +1,6 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 
-const baseStyle = `
+const baseStyle = css`
     margin: 10px 0;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -8,32 +8,26 @@ const baseStyle = `
 `;
 
 export const H1 = styled.h1`
-    ${baseStyle}
-    font-size: 26px;
+    ${baseStyle} font-size: 26px;
     font-weight: 500;
     line-height: 1.1;
     height: 30px;
-`
+`;
 
-export const H2 = styled.h2`
-`
+export const H2 = styled.h2``;
 
 export const H3 = styled.h3`
-    ${baseStyle}
-    font-size: 17px;
+    ${baseStyle} font-size: 17px;
     font-weight: 500;
     line-height: 1.1;
     height: 19px;
-`
+`;
 
-export const H4 = styled.h4`
-`
+export const H4 = styled.h4``;
 
-export const H5 = styled.h5`
-`
+export const H5 = styled.h5``;
 
-export const H6 = styled.h6`
-`
+export const H6 = styled.h6``;
 
 H1.displayName = 'H1';
 H2.displayName = 'H2';

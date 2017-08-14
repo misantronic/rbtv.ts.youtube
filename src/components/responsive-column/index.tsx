@@ -1,5 +1,5 @@
 import * as React from 'react';
-import styled from 'styled-components';
+import styled, { css, ThemedCssFunction } from 'styled-components';
 
 type sizes = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -10,12 +10,12 @@ interface ColumnProps {
     className?: string;
 }
 
-const calcSizes = (props: ColumnProps): string => {
+const calcSizes = (props: ColumnProps) => {
     const sm = props.sm || props.md || props.lg || 12;
     const md = props.md || sm;
     const lg = props.lg || md;
 
-    return `
+    return css`
         padding: 0 10px;
         margin-bottom: 20px;
 
