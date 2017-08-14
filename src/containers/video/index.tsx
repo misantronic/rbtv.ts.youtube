@@ -45,8 +45,6 @@ const StyledLikes = styled(Likes)`
 
 const RelatedItems = styled.div`padding: 0 0 10px;`;
 
-const Comments = styled.div`margin-top: 50px;`;
-
 const CommentsHeader = styled.header`
     display: flex;
     align-items: center;
@@ -169,7 +167,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
         const { hideComments } = this.state;
 
         return (
-            <Comments>
+            <div>
                 <hr />
                 <CommentsHeader>
                     <H3>Comments</H3>
@@ -181,7 +179,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
                     commentThread.map(item =>
                         this.renderComment(item.snippet.topLevelComment, item.snippet.totalReplyCount)
                     )}
-            </Comments>
+            </div>
         );
     }
 
