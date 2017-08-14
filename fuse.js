@@ -49,7 +49,7 @@ Sparky.task('build', () => {
     // }
 
     // vendor
-    const vendor = fuse.bundle('vendor').instructions(`~ **/**.{js,ts,tsx} +tslib - [@types/**/**.d.ts]`);
+    const vendor = fuse.bundle('vendor').instructions(`~ **/**.{js,ts,tsx} +tslib - [__types__/**/**.d.ts]`);
 
     // app
     const app = fuse
