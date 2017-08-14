@@ -18,7 +18,7 @@ declare namespace youtube {
     interface Thumbnails {
         default: Thumbnail;
         medium: Thumbnail;
-        standard: Thumbnail;
+        standard?: Thumbnail;
         high: Thumbnail;
     }
 
