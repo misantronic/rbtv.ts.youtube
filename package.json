@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "concurrently \"node fuse\" \"node www/index.js\"",
     "dist": "concurrently \"node fuse dist\" \"node www/index.js\"",
-    "start": "npm run dist & node www/keepalive.js"
+    "start": "npm run dist & node www/keepalive.js",
+    "test": "echo \"No tests specified\";"
   },
   "author": "David Schkalee <david.schkalee@magicline.de>",
   "license": "MIT",
