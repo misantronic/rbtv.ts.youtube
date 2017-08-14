@@ -7,15 +7,17 @@ function parseData(data) {
     return data;
 }
 
-module.exports = function (req, res) {
+module.exports = function(req, res) {
+    const { q, maxResults = 30, pageToken, channelId, ttl = 60 * 60 * 2 /* 2 hours */ } = req.query;
+
     var query = {
         part: 'snippet',
-        maxResults: 30,
+        maxResults,
         type: 'video',
         order: 'date',
-        q: req.query.q,
-        pageToken: req.query.pageToken,
-        channelId: req.query.channelId
+        q,
+        pageToken,
+        channelId
     };
 
     var config = new fetch.Config({
@@ -23,8 +25,8 @@ module.exports = function (req, res) {
         endpoint: 'search',
         query: query,
         cacheConfig: new cache.Config(
-            cache.rk('search', query.channelId, encodeURIComponent(query.q), query.pageToken),
-            60 * 60 * 2 // 2 hours
+            cache.rk('search', query.channelId, encodeURIComponent(query.q), query.pageToken, query.maxResults),
+            ttl
         )
     });
 

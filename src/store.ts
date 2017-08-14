@@ -1,6 +1,9 @@
 import { observable, computed, action } from 'mobx';
 import { component as injectable } from 'tsdi';
 import { Router, RouterConfig, RouteEnterEvent } from 'yester';
+import { channel } from './utils/channels';
+import { fetchUtil } from './utils/ajax';
+import { parseActivities } from './utils/api';
 
 export type Route = '/activities' | '/video/:id' | '/playlists' | '/activities/:search';
 type RouteObj = { id: string; route: Route };
@@ -15,7 +18,8 @@ export const routes: RouteObj[] = [
 @injectable
 export class AppStore {
     @observable route: Route;
-    @observable params: any;
+    @observable params: { [key: string]: string } = {};
+    @observable liveId = '';
 
     private router: Router;
 
@@ -39,17 +43,22 @@ export class AppStore {
 
     @computed
     public get isRouteActivities() {
-        return this.route && this.route.startsWith((routes.find(routeObj => routeObj.id.startsWith('activities')) as RouteObj).route);
-    }
-
-    @computed
-    public get isRoutePlaylists() {
-        return this.route && this.route === (routes.find(routeObj => routeObj.id === 'playlists') as RouteObj).route;
+        return this.route === '/activities' || this.route === '/activities/:search';
     }
 
     @computed
     public get isRouteVideo() {
-        return this.route && this.route === (routes.find(routeObj => routeObj.id === 'video') as RouteObj).route;
+        return this.route === '/video/:id' && !this.isRouteLive;
+    }
+
+    @computed
+    public get isRoutePlaylists() {
+        return this.route === '/playlists';
+    }
+
+    @computed
+    public get isRouteLive() {
+        return this.route === '/video/:id' && this.params.id === this.liveId;
     }
 
     public async loadBundle(name: Route): Promise<React.ComponentClass<any>> {
@@ -79,12 +88,28 @@ export class AppStore {
         return target.default;
     }
 
+    public async loadLiveId() {
+        const response = await fetchUtil.get('/api/search', {
+            q: 'live',
+            maxResults: 1,
+            channelId: channel.RBTV,
+            pageToken: '',
+            ttl: 60 * 15
+        });
+
+        const items = parseActivities(response.items);
+
+        if (items.length) {
+            this.liveId = items[0].id;
+        }
+    }
+
     public navigate(path: string, replace = false): void {
         this.router.navigate(path, replace);
     }
 
     @action
-    private setRoute(route: Route, params: any = {}): void {        
+    private setRoute(route: Route, params: any = {}): void {
         this.params = params;
         this.route = route;
     }

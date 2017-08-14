@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
-import { external, Inject } from 'tsdi';
+import { external, Inject, Initialize as constructor } from 'tsdi';
 import { AppStore } from '../../store';
 import { Nav, NavItem } from '../../components/nav';
 
@@ -24,18 +24,26 @@ const Logo = styled.div`
 export class MainNav extends React.Component {
     @Inject private appStore: AppStore;
 
+    @constructor
+    init() {
+        this.appStore.loadLiveId();
+    }
+
     render() {
-        const { isRouteActivities, isRouteVideo, isRoutePlaylists } = this.appStore;
+        const { isRouteActivities, isRouteVideo, isRoutePlaylists, isRouteLive } = this.appStore;
 
         return (
             <NavWrapper>
-                <Logo onClick={() => this.onNavItemClick('/')} />
+                <Logo onClick={() => this.onNavItemClick('/activities')} />
                 <Nav>
                     <NavItem href="/" active={isRouteActivities || isRouteVideo} onClick={this.onNavItemClick}>
                         Home
                     </NavItem>
                     <NavItem href="/playlists" active={isRoutePlaylists} onClick={this.onNavItemClick}>
                         Playlists
+                    </NavItem>
+                    <NavItem href={`/video/${this.appStore.liveId}`} active={isRouteLive} onClick={this.onNavItemClick}>
+                        Live
                     </NavItem>
                 </Nav>
             </NavWrapper>
