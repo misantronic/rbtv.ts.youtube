@@ -11,6 +11,7 @@ interface ActivityItemProps {
     publishedAt: Date;
     duration?: string;
     image: string;
+    imageMargin?: string;
     title: string;
     description: string;
     className?: string;
@@ -48,6 +49,7 @@ export class ActivityItem extends React.Component<ActivityItemProps> {
             description,
             className,
             image,
+            imageMargin,
             publishedAt,
             duration,
             tags = [],
@@ -57,7 +59,7 @@ export class ActivityItem extends React.Component<ActivityItemProps> {
 
         return (
             <div className={className}>
-                <CaptionImage image={image} onClick={onClick}>
+                <CaptionImage image={image} margin={imageMargin} onClick={onClick}>
                     <DurationBadge>
                         {humanizeDuration(duration)}
                     </DurationBadge>

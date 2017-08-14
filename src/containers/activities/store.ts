@@ -1,4 +1,4 @@
-import { observable, reaction } from 'mobx';
+import { observable, reaction, computed } from 'mobx';
 import { external, inject, initialize as constructor } from 'tsdi';
 import { channel } from '../../utils/channels';
 import { beans } from '../../utils/beans';
@@ -169,5 +169,10 @@ export class ActivitiesStore {
 
     private concat(items: youtube.ActivitiyItem[]) {
         return this.items.concat(items.filter(item => !this.items.find(item2 => item2.id === item.id)));
+    }
+
+    @computed
+    public get useSmallThumbs(): boolean {
+        return innerWidth <= 768;
     }
 }

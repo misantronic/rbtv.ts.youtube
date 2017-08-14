@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
+import { external, inject } from 'tsdi';
 import styled from 'styled-components';
+import { AppStore } from '../../store';
 import { VideoStore } from './store';
 import { RepliesStore } from './replies-store';
 import { VideoPlayer } from '../../components/video-player';
@@ -13,6 +15,7 @@ import { NumberFormat } from '../../components/number-format';
 import { Spinner } from '../../components/spinner';
 import { RelatedItem } from './related-item';
 import { CommentItem } from './comment-item';
+import { Chat } from './chat';
 
 const store = new VideoStore();
 const repliesStore = new RepliesStore();
@@ -60,12 +63,13 @@ const ShowReplies = styled.div`
     cursor: pointer;
 `;
 
-const Replies = styled.div`
-    margin: 0 0 30px 50px;
-`;
+const Replies = styled.div`margin: 0 0 30px 50px;`;
 
+@external
 @observer
 export class Video extends React.Component<VideoProps, VideoState> {
+    @inject private appStore: AppStore;
+
     constructor(props) {
         super(props);
 
@@ -89,11 +93,14 @@ export class Video extends React.Component<VideoProps, VideoState> {
             return null;
         }
 
+        const { publishedAt, description, title } = video.snippet;
+        const { likeCount, dislikeCount, viewCount } = video.statistics;
+
         return (
             <div>
                 <StyledVideoPlayer id={video.id} />
                 <H1>
-                    {video.snippet.title}
+                    {title}
                 </H1>
                 <ColumnContainer>
                     <Column sm={12} md={8}>
@@ -102,36 +109,37 @@ export class Video extends React.Component<VideoProps, VideoState> {
                                 <H3>
                                     <span>Published at </span>
                                     <DateFormat format="YYYY-MM-DD HH:mm">
-                                        {video.snippet.publishedAt}
+                                        {publishedAt}
                                     </DateFormat>
                                 </H3>
                             </Column>
                             <ViewsColumn sm={5}>
                                 <H3>
                                     <NumberFormat>
-                                        {video.statistics.viewCount}
+                                        {viewCount}
                                     </NumberFormat>
                                     <span> views</span>
                                 </H3>
                                 <div>
                                     <StyledLikes>
-                                        {video.statistics.likeCount || 0}
+                                        {likeCount || 0}
                                     </StyledLikes>
                                     <Dislikes>
-                                        {video.statistics.dislikeCount || 0}
+                                        {dislikeCount || 0}
                                     </Dislikes>
                                 </div>
                             </ViewsColumn>
                         </ColumnContainer>
                         <Caption parseLinks>
-                            {video.snippet.description}
+                            {description}
                         </Caption>
                     </Column>
                     <Column sm={12} md={4}>
-                        {this.renderRelated()}
+                        {!this.isLive && this.renderRelated()}
+                        {this.isLive && <Chat id={video.id} />}
                     </Column>
                 </ColumnContainer>
-                {this.renderComments()}
+                {!this.isLive && this.renderComments()}
             </div>
         );
     }
@@ -213,6 +221,10 @@ export class Video extends React.Component<VideoProps, VideoState> {
                   </Replies>
                 : null
         ];
+    }
+
+    private get isLive(): boolean {
+        return !!store.video && this.appStore.liveId === store.video.id;
     }
 
     private onClickShowReplies(parentId: string) {

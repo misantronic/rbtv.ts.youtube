@@ -19,11 +19,6 @@ const autocompleteItems = ([] as Show[]).concat(shows, beans);
 
 const store = new ActivitiesStore();
 
-interface ActivitiesStoreProps {}
-interface ActivitiesStoreState {
-    store: ActivitiesStore;
-}
-
 const StyledAutocomplete = styled(InputAutocomplete)``;
 
 const StyledSelect = styled(Select)``;
@@ -36,13 +31,13 @@ const BtnToTop = styled(Button)`
 
 @observer
 @external
-export class Activities extends React.Component<ActivitiesStoreProps, ActivitiesStoreState> {
+export class Activities extends React.Component {
     @inject private appStore: AppStore;
 
     componentDidMount() {
         addEventListener('scroll', this.onScroll);
 
-        if(store.typedQ) {
+        if (store.typedQ) {
             store.search();
         } else {
             store.loadActivities();
@@ -110,6 +105,15 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
             <ColumnContainer key="column-container">
                 {this.renderError()}
                 {items.map((item: youtube.ActivitiyItem) => {
+                    let image, imageMargin;
+
+                    if (store.useSmallThumbs) {
+                        image = item.snippet.thumbnails.medium.url;
+                        imageMargin = '0';
+                    } else {
+                        image = item.snippet.thumbnails.standard.url;
+                    }
+
                     return (
                         <Column sm={12} md={6} lg={4} key={item.id}>
                             <ActivityItem
@@ -117,7 +121,8 @@ export class Activities extends React.Component<ActivitiesStoreProps, Activities
                                 description={item.snippet.description}
                                 duration={item.duration}
                                 publishedAt={item.snippet.publishedAt}
-                                image={item.snippet.thumbnails.high.url}
+                                image={image}
+                                imageMargin={imageMargin}
                                 tags={item.tags}
                                 onClick={() => this.onClickActivity(item.id)}
                                 onClickTag={this.onClickTag}
