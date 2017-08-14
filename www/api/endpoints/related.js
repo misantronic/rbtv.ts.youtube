@@ -1,9 +1,9 @@
 const _ = require('lodash');
 const fetch = require('./../fetch');
 const cache = require('../cache');
-const Config = require('../../Config');
+const Config = require('../../../src/utils/channels');
 
-module.exports = function (req, res) {
+module.exports = function(req, res) {
     const query = {
         part: 'snippet',
         maxResults: 6,
@@ -26,15 +26,12 @@ module.exports = function (req, res) {
         )
     });
 
-    fetch(config).then(function (result) {
+    fetch(config).then(function(result) {
         // Filter data
         // TODO: Do this before caching data
         result.data.items = _.filter(
             result.data.items,
-            item => _.filter(
-                Config.channels,
-                channel => channel.id === item.snippet.channelId
-            ).length
+            item => _.filter(Config.channel, channel => channel === item.snippet.channelId).length
         );
 
         fetch.end(res, result.data);

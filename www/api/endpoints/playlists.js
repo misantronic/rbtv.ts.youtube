@@ -4,7 +4,7 @@ const Promise = require('promise');
 const moment = require('moment');
 const fetch = require('./../fetch');
 const cache = require('../cache');
-const Config = require('../../Config');
+const Config = require('../../../src/utils/channels');
 const dbGetPlaylists = require('../../db/playlists/getPlaylists');
 const dbSavePlaylist = require('../../db/playlists/savePlaylist');
 
@@ -64,7 +64,7 @@ module.exports = function (req, res) {
                     return;
                 }
 
-                const requests = _.map(Config.channels, channel => initRequest(channel.id));
+                const requests = _.map(Config.channel, initRequest);
 
                 // Fetch all playlists
                 Promise.all(requests).then(requestResult => {
