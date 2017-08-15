@@ -34,7 +34,7 @@ export class MainNav extends React.Component {
 
         return (
             <NavWrapper>
-                <Logo onClick={() => this.onNavItemClick('/activities')} />
+                <Logo onClick={this.onLogoClick} />
                 <Nav>
                     <NavItem href="/" active={isRouteActivities || isRouteVideo} onClick={this.onNavItemClick}>
                         Home
@@ -51,4 +51,6 @@ export class MainNav extends React.Component {
     }
 
     private onNavItemClick = (href: string) => this.appStore.navigate(href);
+
+    private onLogoClick = () => this.onNavItemClick('/activities');
 }

@@ -18,11 +18,10 @@ declare namespace youtube {
     interface Thumbnails {
         default: Thumbnail;
         medium: Thumbnail;
-        standard?: Thumbnail;
         high: Thumbnail;
+        standard?: Thumbnail;
+        maxres?: Thumbnail;
     }
-
-    // type ActivitiyItem = GoogleApiYouTubeActivityResource;
 
     interface ActivitiyItem {
         contentDetails: {
@@ -80,8 +79,6 @@ declare namespace youtube {
         };
     }
 
-    // type VideoItem = GoogleApiYouTubeVideoResource;
-
     interface VideoItem {
         kind: 'youtube#video';
         etag: string;
@@ -110,6 +107,27 @@ declare namespace youtube {
             tags: string[];
         };
         expires: string;
+    }
+
+    interface PlaylistItem {
+        contentDetails: {
+            itemCount: number;
+        };
+        etag: string;
+        id: string;
+        kind: 'youtube#playlist';
+        snippet: {
+            channelId: string;
+            channelTitle: string;
+            description: string;
+            localized: {
+                description: string;
+                title: string;
+            }
+            publishedAt: Date;
+            thumbnails: Thumbnails;
+            title: string;
+        };
     }
 
     interface YT {

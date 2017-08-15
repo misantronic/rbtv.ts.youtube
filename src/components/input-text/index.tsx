@@ -6,7 +6,7 @@ type Border = 'default' | 'none' | 'error';
 export const font = {
     size: '14px',
     family: 'Raleway, Arial, sans-serif'
-}
+};
 
 export interface InputTextProps {
     value: string;
@@ -51,8 +51,8 @@ export class InputText extends React.PureComponent<InputTextProps> {
     };
 
     render(): JSX.Element {
-        const { value, onChange, onKeyDown, className, placeholder, padding, autofocus } = this.props;
-        
+        const { value, onKeyDown, className, placeholder, padding, autofocus } = this.props;
+
         return (
             <Input
                 type="text"
@@ -61,9 +61,13 @@ export class InputText extends React.PureComponent<InputTextProps> {
                 value={value}
                 padding={padding}
                 autofocus={autofocus}
-                onChange={(e: any) => onChange(e.target.value)}
+                onChange={this.onChange}
                 onKeyDown={onKeyDown}
             />
         );
     }
+
+    private onChange = (e: any) => {
+        this.props.onChange(e.currentTarget.value);
+    };
 }

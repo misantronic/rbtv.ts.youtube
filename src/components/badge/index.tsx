@@ -4,7 +4,7 @@ import styled from 'styled-components';
 interface BadgeProps {
     children: React.ReactNode;
     className?: string;
-    onClick?(): void;
+    onClick?(e: React.SyntheticEvent<HTMLSpanElement>): void;
 }
 
 const noop = () => {};

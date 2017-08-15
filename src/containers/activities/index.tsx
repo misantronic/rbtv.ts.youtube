@@ -5,23 +5,18 @@ import styled from 'styled-components';
 import { ActivitiesStore } from './store';
 import { AppStore } from '../../store';
 import { ActivityItem } from './activity-item';
-import { InputAutocomplete } from '../../components/input-autocomplete';
 import { Column, ColumnContainer } from '../../components/responsive-column';
-import { Select } from '../../components/select';
 import { Spinner } from '../../components/spinner';
 import { Error } from '../../components/error';
 import { Button } from '../../components/button';
-import { channel, getChannelName } from '../../utils/channels';
+import { channel } from '../../utils/channels';
 import { shows, Show } from '../../utils/shows';
 import { beans } from '../../utils/beans';
+import { Search } from '../search';
 
 const autocompleteItems = ([] as Show[]).concat(shows, beans);
 
 const store = new ActivitiesStore();
-
-const StyledAutocomplete = styled(InputAutocomplete)``;
-
-const StyledSelect = styled(Select)``;
 
 const BtnToTop = styled(Button)`
     position: fixed;
@@ -61,36 +56,17 @@ export class Activities extends React.Component {
     }
 
     private renderSearch(): JSX.Element {
-        const placeholder = `Search ${getChannelName(store.channelId || channel.RBTV)}...`;
-        const options = Object.keys(channel).map((key: channel) => ({
-            value: channel[key],
-            label: getChannelName(channel[key])
-        }));
-
         return (
-            <ColumnContainer key="search">
-                <Column sm={12} md={8}>
-                    <StyledAutocomplete
-                        value={store.typedQ}
-                        items={autocompleteItems}
-                        placeholder={placeholder}
-                        onChange={this.onSearchChange}
-                        onKeyDown={this.onKeyDown}
-                        onClear={this.onAutocompleteClear}
-                        autofocus
-                    />
-                </Column>
-                <Column sm={12} md={4}>
-                    <StyledSelect
-                        value={store.channelId}
-                        options={options}
-                        simpleValue
-                        searchable={false}
-                        clearable={false}
-                        onChange={this.onChangeChannel as any}
-                    />
-                </Column>
-            </ColumnContainer>
+            <Search
+                key="search"
+                autocompleteItems={autocompleteItems}
+                channelId={store.channelId}
+                onAutocompleteClear={this.onAutocompleteClear}
+                onChannelChange={this.onChangeChannel}
+                onSearchChange={this.onChangeSearch}
+                onKeyDown={this.onKeyDown}
+                value={store.typedQ}
+            />
         );
     }
 
@@ -105,12 +81,11 @@ export class Activities extends React.Component {
             <ColumnContainer key="column-container">
                 {this.renderError()}
                 {items.map((item: youtube.ActivitiyItem) => {
-                    let image, imageMargin;
+                    let image;
                     const { title, thumbnails, description, publishedAt } = item.snippet;
 
                     if (store.useSmallThumbs) {
                         image = thumbnails.medium.url;
-                        imageMargin = '0';
                     } else {
                         image = (thumbnails.standard || thumbnails.high).url;
                     }
@@ -118,14 +93,14 @@ export class Activities extends React.Component {
                     return (
                         <Column sm={12} md={6} lg={4} key={item.id}>
                             <ActivityItem
+                                id={item.id}
                                 title={title}
                                 description={description}
                                 duration={item.duration}
                                 publishedAt={publishedAt}
                                 image={image}
-                                imageMargin={imageMargin}
                                 tags={item.tags}
-                                onClick={() => this.onClickActivity(item.id)}
+                                onClick={this.onClickActivity}
                                 onClickTag={this.onClickTag}
                             />
                         </Column>
@@ -176,7 +151,7 @@ export class Activities extends React.Component {
         return null;
     }
 
-    private onSearchChange = (val: string): void => {
+    private onChangeSearch = (val: string): void => {
         const show = autocompleteItems.find(show => show.title === val);
 
         if (show && show.channel) {

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled, { css } from 'styled-components';
+import { sizeSm, sizeMd, sizeLg } from '../../utils/responsive';
 
 type sizes = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 
@@ -19,15 +20,15 @@ const calcSizes = (props: ColumnProps) => {
         padding: 0 10px;
         margin-bottom: 20px;
 
-        @media (max-width: 599px) {
+        @media (max-width: ${sizeSm.max}px) {
             width: ${100 / 12 * sm}%;
         }
 
-        @media (min-width: 600px) AND (max-width: 1199px) {
+        @media (min-width: ${sizeMd.min}px) AND (max-width: ${sizeMd.max}px) {
             width: ${100 / 12 * md}%;
         }
 
-        @media (min-width: 1200px) {
+        @media (min-width: ${sizeLg.min}px) {
             width: ${100 / 12 * lg}%;
         }
     `;

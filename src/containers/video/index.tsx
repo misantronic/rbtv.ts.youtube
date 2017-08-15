@@ -208,7 +208,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
                 {textDisplay}
             </CommentItem>,
             replyCount
-                ? <ShowReplies key="btn-replies" onClick={() => this.onClickShowReplies(item.id)}>
+                ? <ShowReplies key="btn-replies" id={item.id} onClick={this.onClickShowReplies}>
                       {parentId === item.id ? 'Hide' : 'Show'} {replyCount} {replyCount > 1 ? 'replies' : 'reply'}
                   </ShowReplies>
                 : null,
@@ -225,7 +225,9 @@ export class Video extends React.Component<VideoProps, VideoState> {
         return !!store.video && this.appStore.liveId === store.video.id;
     }
 
-    private onClickShowReplies(parentId: string) {
+    private onClickShowReplies = (e: React.SyntheticEvent<HTMLDivElement>) => {
+        const parentId = e.currentTarget.id;
+
         if (parentId === repliesStore.parentId) {
             repliesStore.reset();
         } else {

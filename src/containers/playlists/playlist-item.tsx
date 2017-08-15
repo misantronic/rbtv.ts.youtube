@@ -4,49 +4,28 @@ import { CaptionTitle } from '../../components/caption-title';
 import { Caption } from '../../components/caption';
 import { CaptionImage } from '../../components/caption-image';
 import { Badge } from '../../components/badge';
-import { DateFormat } from '../../components/date-format';
-import { humanizeDuration } from '../../utils/time';
 
-interface ActivityItemProps {
+interface PlaylistItemProps {
     id: string;
-    publishedAt: Date;
-    duration?: string;
     image: string;
     title: string;
     description: string;
     className?: string;
-    tags?: string[];
+    count: number;
     onClick(id: string): void;
-    onClickTag(tag: string): void;
 }
 
-interface ActivityItemState {
+interface PlaylistItemState {
     loadImage: boolean;
 }
 
-const BeansContainer = styled.div`height: 20px;`;
-
-const BeanBadge = styled(Badge)`
-    margin-right: 8px;
-
-    &:last-child {
-        margin-right: 0;
-    }
-`;
-
-const DurationBadge = styled(Badge)`
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-`;
-
-const DateBadge = styled(Badge)`
+const NumBadge = styled(Badge)`
     position: absolute;
     right: 10px;
     bottom: 10px;
 `;
 
-export class ActivityItem extends React.PureComponent<ActivityItemProps, ActivityItemState> {
+export class PlaylistItem extends React.PureComponent<PlaylistItemProps, PlaylistItemState> {
     el: HTMLDivElement;
 
     constructor(props) {
@@ -56,7 +35,7 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps, Activit
             loadImage: false
         };
     }
-
+    
     componentDidMount() {
         document.addEventListener('scroll', this.onScroll);
     }
@@ -66,20 +45,15 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps, Activit
     }
 
     render(): JSX.Element {
-        const { title, description, className, image, publishedAt, duration, tags = [] } = this.props;
+        const { title, description, className, image, count } = this.props;
         const { loadImage } = this.state;
 
         return (
             <div className={className} ref={this.onEl}>
-                <CaptionImage load={loadImage} image={image} onClick={this.onClick}>
-                    <DurationBadge>
-                        {humanizeDuration(duration)}
-                    </DurationBadge>
-                    <DateBadge>
-                        <DateFormat>
-                            {publishedAt}
-                        </DateFormat>
-                    </DateBadge>
+                <CaptionImage image={image} load={loadImage} onClick={this.onClick}>
+                    <NumBadge>
+                        {count}
+                    </NumBadge>
                 </CaptionImage>
                 <CaptionTitle onClick={this.onClick}>
                     {title}
@@ -87,13 +61,6 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps, Activit
                 <Caption lineClamp={3}>
                     {description}
                 </Caption>
-                <BeansContainer>
-                    {tags.map(tag =>
-                        <BeanBadge key={tag} onClick={this.onClickTag}>
-                            {tag}
-                        </BeanBadge>
-                    )}
-                </BeansContainer>
             </div>
         );
     }
@@ -118,13 +85,5 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps, Activit
         const { id, onClick } = this.props;
 
         onClick(id);
-    };
-
-    private onClickTag = (e: React.SyntheticEvent<HTMLSpanElement>) => {
-        const tag = e.currentTarget.textContent;
-
-        if (tag) {
-            this.props.onClickTag(tag);
-        }
     };
 }

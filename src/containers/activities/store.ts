@@ -26,7 +26,7 @@ export class ActivitiesStore {
         const { search } = this.appStore.params;
 
         if (search) {
-            setStorage('search.value', search);
+            setStorage('activities.search', search);
         }
 
         this.reset();
@@ -52,13 +52,13 @@ export class ActivitiesStore {
                         this.loadActivities();
                     }
 
-                    setStorage('search.channelId', this.channelId);
+                    setStorage('activities.channelId', this.channelId);
                 }
             }
         );
 
         // the fetched search-value changed
-        reaction(() => this.fetchedQ, () => setStorage('search.value', this.fetchedQ));
+        reaction(() => this.fetchedQ, () => setStorage('activities.search', this.fetchedQ));
 
         // route is current and the search-params changed
         reaction(
@@ -122,8 +122,8 @@ export class ActivitiesStore {
     }
 
     public reset(): void {
-        this.channelId = (getStorage('search.channelId') as channel) || channel.RBTV;
-        this.typedQ = getStorage('search.value') || '';
+        this.channelId = (getStorage('activities.channelId') as channel) || channel.RBTV;
+        this.typedQ = getStorage('activities.search') || '';
         // this.fetchedQ = '';
         this.nextPageToken = '';
         this.items = [];

@@ -51,3 +51,20 @@ export function parseCommentThread(items: youtube.CommentThread[]): youtube.Comm
         return item;
     });
 }
+
+export function parsePlaylists(items: youtube.PlaylistItem[]): youtube.PlaylistItem[] {
+    return items
+        .map(item => {
+            item = Object.assign({}, item);
+            item.snippet = Object.assign({}, item.snippet, {
+                publishedAt: new Date(item.snippet.publishedAt)
+            });
+
+            return item;
+        })
+        .sort((a, b) => {
+            if (a.snippet.title < b.snippet.title) return -1;
+            if (a.snippet.title > b.snippet.title) return 1;
+            return 0;
+        });
+}

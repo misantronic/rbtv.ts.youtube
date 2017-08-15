@@ -111,6 +111,8 @@ module.exports = function (req, res) {
                 fetch(config).then(result => {
                     const fromCache = result.fromCache;
 
+                    console.log(result);
+
                     output.items = result.data.items.concat(itemsFromDB);
 
                     fetch.end(res, output);

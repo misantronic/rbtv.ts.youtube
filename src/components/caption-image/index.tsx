@@ -1,9 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { sizeMd } from '../../utils/responsive';
 
 interface CaptionImageProps {
     image: string;
-    margin?: string;
+    load?: boolean;
     onClick(): void;
 }
 
@@ -12,23 +13,33 @@ const Div = styled.div`position: relative;`;
 const Link = styled.a`
     display: block;
     overflow: hidden;
-`;
 
-const Image = styled.img`
+    background-position: center center;
+    background-color: #EEE;
+    background-repeat: no-repeat;
+    background-size: 100% 250px;
     width: 100%;
-    margin: ${(props: { margin: string | undefined }) => props.margin || '-34px 0 -38px'};
-    min-height: 199px;
+    height: 180px;
+
+    @media (max-width: ${sizeMd.max}px) {
+        height: 250px;
+        background-size: auto 250px;
+    }
 `;
 
 export class CaptionImage extends React.PureComponent<CaptionImageProps> {
     render(): JSX.Element {
-        const { image, children, margin } = this.props;
+        const { image, load, children } = this.props;
+
+        const style: any = {};
+
+        if (load) {
+            style.backgroundImage = `url('${image}')`;
+        }
 
         return (
             <Div>
-                <Link href="#" onClick={this.onClick}>
-                    <Image src={image} margin={margin} />
-                </Link>
+                <Link href="#" onClick={this.onClick} style={style} />
                 {children}
             </Div>
         );
