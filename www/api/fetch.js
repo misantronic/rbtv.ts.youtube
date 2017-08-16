@@ -19,7 +19,7 @@ Config.prototype.query = null;
  * @param {Config} config
  * @return {Promise}
  */
-function request(config) {
+async function request(config) {
     var endpoint = config.endpoint;
     var query = config.query;
     var cacheConfig = config.cacheConfig;

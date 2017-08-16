@@ -2,7 +2,7 @@ var fetch = require('../fetch');
 var cache = require('../cache');
 var _ = require('lodash');
 
-module.exports = function (req, res) {
+module.exports = async function(req, res) {
     var query = {
         part: 'snippet,contentDetails,id',
         maxResults: 30,
@@ -20,9 +20,9 @@ module.exports = function (req, res) {
         )
     });
 
-    fetch(config).then(function (result) {
-        result.data.items = _.filter(result.data.items, item => item.snippet.type === 'upload');
+    const result = await fetch(config);
+    
+    result.data.items = result.data.items.filter(item => item.snippet.type === 'upload');
 
-        fetch.end(res, result.data);
-    });
+    fetch.end(res, result.data);
 };
