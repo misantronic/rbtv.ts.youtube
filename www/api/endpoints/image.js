@@ -66,8 +66,6 @@ module.exports = async function(req, res) {
                 height = 360;
                 break;
         }
-        
-        console.log(width, filepath, dest);
 
         await clipImage(filepath, dest, { left: 0, top, width, height });
         await deleteImage(filepath);
