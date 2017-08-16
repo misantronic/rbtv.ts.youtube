@@ -41,9 +41,10 @@ async function deleteImage(path) {
 }
 
 module.exports = async function(req, res) {
-    const { url, name } = req.query;
+    const { url, name, small } = req.query;
     const filepath = `.images/${name}`;
-    const dest = `.images/rez-${name}`;
+    const prefix = '_'; //small ? '_small-' : '_';
+    const dest = `.images/${prefix}${name}`;
 
     let buffer = await readImage(dest);
 
@@ -65,6 +66,8 @@ module.exports = async function(req, res) {
                 height = 360;
                 break;
         }
+        
+        console.log(width, filepath, dest);
 
         await clipImage(filepath, dest, { left: 0, top, width, height });
         await deleteImage(filepath);

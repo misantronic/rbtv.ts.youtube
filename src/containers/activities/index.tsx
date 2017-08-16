@@ -83,9 +83,15 @@ export class Activities extends React.Component {
                 {this.renderError()}
                 {items.map((item: youtube.ActivitiyItem) => {
                     const { title, thumbnails, description, publishedAt } = item.snippet;
-                    const image = `${baseUrl}/image?url=${encodeURIComponent(
-                        (thumbnails.standard || thumbnails.high).url
-                    )}&name=${item.contentDetails.upload.videoId}.jpg`;
+                    const path = `${baseUrl}/image`;
+                    const query = [
+                        `${baseUrl}/image`,
+                        `url=${encodeURIComponent((thumbnails.standard || thumbnails.high).url)}`,
+                        `name=${item.id}.jpg`,
+                        thumbnails.standard ? '' : 'small=true'
+                    ];
+                    
+                    const image = path + '?' + query.join('&');
 
                     return (
                         <Column sm={12} md={6} lg={4} key={item.id}>

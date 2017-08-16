@@ -72,9 +72,15 @@ export class Playlists extends React.Component {
                 {filteredItems.map((item: youtube.PlaylistItem) => {
                     const { title, thumbnails, description } = item.snippet;
                     const { itemCount } = item.contentDetails;
-                    const image = `${baseUrl}/image?url=${encodeURIComponent(
-                        (thumbnails.standard || thumbnails.high).url
-                    )}&name=${item.id}.jpg`;
+                    const path = `${baseUrl}/image`;
+                    const query = [
+                        `${baseUrl}/image`,
+                        `url=${encodeURIComponent((thumbnails.standard || thumbnails.high).url)}`,
+                        `name=${item.id}.jpg`,
+                        thumbnails.standard ? '' : 'small=true'
+                    ];
+                    
+                    const image = path + '?' + query.join('&');
 
                     return (
                         <Column sm={12} md={6} lg={4} key={item.id}>
