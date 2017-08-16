@@ -1,33 +1,21 @@
-var mongoose = require("mongoose");
+const mongoose = require('mongoose');
 
-var mongoURI   = process.env.MONGOLAB_URI;
-var connection = mongoose.connection;
+mongoose.Promise = Promise;
+
+const mongoURI = process.env.MONGOLAB_URI;
+const { connection } = mongoose;
 
 if (!connection.readyState) {
-    mongoose.connect(mongoURI, function (err, res) {
-        if (err) {
-            return console.log('Mongo: ERROR connecting to: ' + mongoURI + '. ' + err);
-        }
+    mongoose.connect(mongoURI, { useMongoClient: true }).then(() => console.log('Mongo: Connected to: ' + mongoURI));
 
-        console.log('Mongo: Connected to: ' + mongoURI);
-    });
-
-    connection.on('error', function (error) {
+    connection.on('error', error => {
         console.error('Mongo: Error: ' + error);
         mongoose.disconnect();
     });
 
-    connection.once('open', function() {
-        console.log('Mongo: Connection opened...');
-    });
-
-    connection.on('reconnected', function() {
-        console.log('Mongo: Reconnected...');
-    });
-
-    connection.on('disconnected', function() {
-        console.log('Mongo: Disconnected.');
-    });
+    connection.once('open', () => console.log('Mongo: Connection opened...'));
+    connection.on('reconnected', () => console.log('Mongo: Reconnected...'));
+    connection.on('disconnected', () => console.log('Mongo: Disconnected.'));
 }
 
 module.exports = mongoose;
