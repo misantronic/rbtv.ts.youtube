@@ -40,6 +40,7 @@
     "react-dom": "^16.0.0-beta.5",
     "react-infinite": "^0.12.1",
     "react-select": "^1.0.0-rc.5",
+    "sharp": "^0.18.2",
     "styled-components": "^2.1.1",
     "tsdi": "^0.11.1",
     "tslib": "^1.7.1",
@@ -67,6 +68,6 @@
     "url": "git://github.com/misantronic/rbtv.ts.youtube.git"
   },
   "engines": {
-    "node": "6.11.1"
+    "node": "8.4.0"
   }
 }

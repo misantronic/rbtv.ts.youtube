@@ -17,13 +17,12 @@ const Link = styled.a`
     background-position: center center;
     background-color: #EEE;
     background-repeat: no-repeat;
-    background-size: 100% 250px;
+    background-size: cover;
     width: 100%;
     height: 180px;
 
     @media (max-width: ${sizeMd.max}px) {
         height: 250px;
-        background-size: auto 250px;
     }
 `;
 

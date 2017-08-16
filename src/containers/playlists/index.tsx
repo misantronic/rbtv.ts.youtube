@@ -10,6 +10,7 @@ import { Error } from '../../components/error';
 import { Spinner } from '../../components/spinner';
 import { Button } from '../../components/button';
 import { channel } from '../../utils/channels';
+import { baseUrl } from '../../utils/ajax';
 import { PlaylistItem } from './playlist-item';
 import { Search } from '../search';
 
@@ -69,15 +70,11 @@ export class Playlists extends React.Component {
             <ColumnContainer key="column-container">
                 {this.renderError()}
                 {filteredItems.map((item: youtube.PlaylistItem) => {
-                    let image;
                     const { title, thumbnails, description } = item.snippet;
                     const { itemCount } = item.contentDetails;
-
-                    if (store.useSmallThumbs) {
-                        image = thumbnails.medium.url;
-                    } else {
-                        image = (thumbnails.standard || thumbnails.high).url;
-                    }
+                    const image = `${baseUrl}/image?url=${encodeURIComponent(
+                        (thumbnails.standard || thumbnails.high).url
+                    )}&name=${item.id}.jpg`;
 
                     return (
                         <Column sm={12} md={6} lg={4} key={item.id}>

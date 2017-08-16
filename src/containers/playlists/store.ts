@@ -69,9 +69,4 @@ export class PlaylistsStore {
         this.error = undefined;
         this.showBtnToTop = false;
     }
-
-    @computed
-    public get useSmallThumbs(): boolean {
-        return innerWidth <= 768;
-    }
 }

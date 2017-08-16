@@ -170,9 +170,4 @@ export class ActivitiesStore {
     private concat(items: youtube.ActivitiyItem[]) {
         return this.items.concat(items.filter(item => !this.items.find(item2 => item2.id === item.id)));
     }
-
-    @computed
-    public get useSmallThumbs(): boolean {
-        return innerWidth <= 768;
-    }
 }

@@ -11,6 +11,7 @@ import { Error } from '../../components/error';
 import { Button } from '../../components/button';
 import { channel } from '../../utils/channels';
 import { shows, Show } from '../../utils/shows';
+import { baseUrl } from '../../utils/ajax';
 import { beans } from '../../utils/beans';
 import { Search } from '../search';
 
@@ -81,14 +82,10 @@ export class Activities extends React.Component {
             <ColumnContainer key="column-container">
                 {this.renderError()}
                 {items.map((item: youtube.ActivitiyItem) => {
-                    let image;
                     const { title, thumbnails, description, publishedAt } = item.snippet;
-
-                    if (store.useSmallThumbs) {
-                        image = thumbnails.medium.url;
-                    } else {
-                        image = (thumbnails.standard || thumbnails.high).url;
-                    }
+                    const image = `${baseUrl}/image?url=${encodeURIComponent(
+                        (thumbnails.standard || thumbnails.high).url
+                    )}&name=${item.contentDetails.upload.videoId}.jpg`;
 
                     return (
                         <Column sm={12} md={6} lg={4} key={item.id}>
