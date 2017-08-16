@@ -4,6 +4,7 @@ import { CaptionTitle } from '../../components/caption-title';
 import { Caption } from '../../components/caption';
 import { CaptionImage } from '../../components/caption-image';
 import { Badge } from '../../components/badge';
+import { lazyLoading } from '../../components/hoc/lazy-loading';
 
 interface PlaylistItemProps {
     id: string;
@@ -12,11 +13,8 @@ interface PlaylistItemProps {
     description: string;
     className?: string;
     count: number;
+    lazyLoad?: boolean;
     onClick(id: string): void;
-}
-
-interface PlaylistItemState {
-    loadImage: boolean;
 }
 
 const NumBadge = styled(Badge)`
@@ -25,32 +23,14 @@ const NumBadge = styled(Badge)`
     bottom: 10px;
 `;
 
-export class PlaylistItem extends React.PureComponent<PlaylistItemProps, PlaylistItemState> {
-    el: HTMLDivElement;
-
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loadImage: false
-        };
-    }
-    
-    componentDidMount() {
-        document.addEventListener('scroll', this.onScroll);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('scroll', this.onScroll);
-    }
-
+@lazyLoading
+export class PlaylistItem extends React.PureComponent<PlaylistItemProps> {
     render(): JSX.Element {
-        const { title, description, className, image, count } = this.props;
-        const { loadImage } = this.state;
+        const { title, description, className, image, count, lazyLoad } = this.props;
 
         return (
-            <div className={className} ref={this.onEl}>
-                <CaptionImage image={image} load={loadImage} onClick={this.onClick}>
+            <div className={className}>
+                <CaptionImage image={image} load={lazyLoad} onClick={this.onClick}>
                     <NumBadge>
                         {count}
                     </NumBadge>
@@ -63,22 +43,6 @@ export class PlaylistItem extends React.PureComponent<PlaylistItemProps, Playlis
                 </Caption>
             </div>
         );
-    }
-
-    private checkScrolling(): void {
-        if (this.el && this.el.offsetTop <= scrollY + innerHeight * 2) {
-            this.setState({ loadImage: true });
-        }
-    }
-
-    private onEl = (el: HTMLDivElement) => {
-        this.el = el;
-
-        this.checkScrolling();
-    };
-
-    private onScroll = () => {
-        this.checkScrolling();
     }
 
     private onClick = () => {

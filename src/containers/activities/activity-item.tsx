@@ -5,24 +5,8 @@ import { Caption } from '../../components/caption';
 import { CaptionImage } from '../../components/caption-image';
 import { Badge } from '../../components/badge';
 import { DateFormat } from '../../components/date-format';
+import { lazyLoading } from '../../components/hoc/lazy-loading';
 import { humanizeDuration } from '../../utils/time';
-
-interface ActivityItemProps {
-    id: string;
-    publishedAt: Date;
-    duration?: string;
-    image: string;
-    title: string;
-    description: string;
-    className?: string;
-    tags?: string[];
-    onClick(id: string): void;
-    onClickTag(tag: string): void;
-}
-
-interface ActivityItemState {
-    loadImage: boolean;
-}
 
 const BeansContainer = styled.div`height: 20px;`;
 
@@ -46,32 +30,28 @@ const DateBadge = styled(Badge)`
     bottom: 10px;
 `;
 
-export class ActivityItem extends React.PureComponent<ActivityItemProps, ActivityItemState> {
-    el: HTMLDivElement;
+interface ActivityItemProps {
+    id: string;
+    publishedAt: Date;
+    duration?: string;
+    image: string;
+    title: string;
+    description: string;
+    className?: string;
+    tags?: string[];
+    lazyLoad?: boolean;
+    onClick(id: string): void;
+    onClickTag(tag: string): void;
+}
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            loadImage: false
-        };
-    }
-
-    componentDidMount() {
-        document.addEventListener('scroll', this.onScroll);
-    }
-
-    componentWillUnmount() {
-        document.removeEventListener('scroll', this.onScroll);
-    }
-
+@lazyLoading
+export class ActivityItem extends React.PureComponent<ActivityItemProps> {
     render(): JSX.Element {
-        const { title, description, className, image, publishedAt, duration, tags = [] } = this.props;
-        const { loadImage } = this.state;
+        const { title, description, className, image, publishedAt, duration, tags = [], lazyLoad } = this.props;
 
         return (
-            <div className={className} ref={this.onEl}>
-                <CaptionImage load={loadImage} image={image} onClick={this.onClick}>
+            <div className={className}>
+                <CaptionImage load={lazyLoad} image={image} onClick={this.onClick}>
                     <DurationBadge>
                         {humanizeDuration(duration)}
                     </DurationBadge>
@@ -96,22 +76,6 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps, Activit
                 </BeansContainer>
             </div>
         );
-    }
-
-    private checkScrolling(): void {
-        if (this.el && this.el.offsetTop <= scrollY + innerHeight * 2) {
-            this.setState({ loadImage: true });
-        }
-    }
-
-    private onEl = (el: HTMLDivElement) => {
-        this.el = el;
-
-        this.checkScrolling();
-    };
-
-    private onScroll = () => {
-        this.checkScrolling();
     }
 
     private onClick = () => {
