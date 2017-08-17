@@ -6,6 +6,7 @@ import { AppStore } from './store';
 import { YoutubeStore } from './youtube-store';
 import { Router } from './components/router';
 import { MainNav } from './containers/main-nav';
+import { sizeApp } from './utils/responsive';
 
 injectGlobal`
     @import url(//fonts.googleapis.com/css?family=Raleway);
@@ -29,7 +30,7 @@ injectGlobal`
 `;
 
 const App = styled.div`
-    width: 1074px;
+    width: ${sizeApp.max + 40}px;
     max-width: 100%;
     margin: 20px auto;
     padding: 0 20px;

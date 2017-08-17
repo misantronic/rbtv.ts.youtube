@@ -10,3 +10,7 @@ export const sizeMd = {
 export const sizeLg = {
     min: sizeMd.max + 1
 };
+
+export const sizeApp = {
+    max: 1034
+}

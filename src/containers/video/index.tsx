@@ -17,6 +17,7 @@ import { Spinner } from '../../components/spinner';
 import { RelatedItem } from './related-item';
 import { CommentItem } from './comment-item';
 import { Chat } from './chat';
+import { sizeApp } from '../../utils/responsive';
 
 const store = new VideoStore();
 const repliesStore = new RepliesStore();
@@ -32,6 +33,11 @@ interface VideoState {
 
 const StyledVideoPlayer = styled(VideoPlayer)`
     margin-bottom: 30px;
+
+    @media (max-width: ${sizeApp.max}px) {
+        width: auto !important;
+        margin: 0 -20px 30px;
+    }
 `;
 
 const ViewsColumn = styled(Column)`
