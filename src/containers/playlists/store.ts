@@ -1,4 +1,4 @@
-import { observable, computed } from 'mobx';
+import { observable, computed, reaction } from 'mobx';
 import { external, inject, initialize as constructor } from 'tsdi';
 import { fetchUtil } from '../../utils/ajax';
 import { channel } from '../../utils/channels';
@@ -12,6 +12,7 @@ export class PlaylistsStore {
 
     @observable channelId?: channel;
     @observable typedQ = '';
+    @observable commitedQ = '';
     @observable nextPageToken = '';
     @observable items: youtube.PlaylistItem[] = [];
     @observable loading = false;
@@ -23,8 +24,8 @@ export class PlaylistsStore {
     public get filteredItems(): youtube.PlaylistItem[] {
         return this.items.filter(item => {
             if (item.snippet.channelId !== this.channelId) return false;
-            if (this.typedQ) {
-                return item.snippet.title.toLowerCase().indexOf(this.typedQ.toLowerCase()) !== -1;
+            if (this.commitedQ) {
+                return item.snippet.title.toLowerCase().indexOf(this.commitedQ.toLowerCase()) !== -1;
             }
 
             return true;
@@ -38,6 +39,13 @@ export class PlaylistsStore {
         if (search) {
             setStorage('playlists.search', search);
         }
+
+        reaction(
+            () => this.typedQ,
+            typedQ => {
+                if (!typedQ) this.commitedQ = '';
+            }
+        );
 
         this.reset();
     }
@@ -62,6 +70,7 @@ export class PlaylistsStore {
     public reset(): void {
         this.channelId = (getStorage('playlists.channelId') as channel) || channel.RBTV;
         this.typedQ = getStorage('playlists.value') || '';
+        this.commitedQ = '';
         this.nextPageToken = '';
         this.items = [];
         this.loading = false;

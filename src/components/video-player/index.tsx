@@ -123,12 +123,6 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         scrollY = 0;
     }
 
-    private setWatched() {
-        const videoId = this.props.id;
-
-        updateStorage(`${videoId}.info`, { watched: true });
-    }
-
     /**
      * Event handler
      */
@@ -155,8 +149,6 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     private onEnded() {
         const { id, onEnded } = this.props;
-
-        this.setWatched();
 
         if (onEnded) {
             onEnded(id);

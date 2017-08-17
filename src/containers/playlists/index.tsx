@@ -135,18 +135,12 @@ export class Playlists extends React.Component {
     };
 
     private onChangeSearch = (val: string): void => {
-        // const show = autocompleteItems.find(show => show.title === val);
-
-        // if (show && show.channel) {
-        //     this.onChangeChannel(show.channel);
-        // }
-
         store.typedQ = val;
     };
 
     private onKeyDown = (e: any): void => {
         if (e.keyCode === 13) {
-            this.appStore.navigate(`/playlists/${store.typedQ}`);
+            store.commitedQ = store.typedQ;
         }
     };
 

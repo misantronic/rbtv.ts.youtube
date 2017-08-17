@@ -3,6 +3,7 @@ import { observer } from 'mobx-react';
 import { external, inject } from 'tsdi';
 import styled from 'styled-components';
 import { AppStore } from '../../store';
+import { YoutubeStore, YoutubeRating } from '../../youtube-store';
 import { VideoStore } from './store';
 import { RepliesStore } from './replies-store';
 import { VideoPlayer } from '../../components/video-player';
@@ -26,6 +27,7 @@ interface VideoProps {
 
 interface VideoState {
     hideComments: boolean;
+    rating: YoutubeRating;
 }
 
 const StyledVideoPlayer = styled(VideoPlayer)`
@@ -67,17 +69,21 @@ const Replies = styled.div`margin: 0 0 30px 50px;`;
 @observer
 export class Video extends React.Component<VideoProps, VideoState> {
     @inject private appStore: AppStore;
+    @inject private youtubeStore: YoutubeStore;
 
     constructor(props) {
         super(props);
 
         this.state = {
-            hideComments: false
+            hideComments: false,
+            rating: 'none'
         };
     }
 
     componentDidMount() {
         store.id = this.props.id;
+
+        this.loadRating();
     }
 
     componentWillUnmount() {
@@ -91,6 +97,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
             return null;
         }
 
+        const { rating } = this.state;
         const { publishedAt, description, title } = video.snippet;
         const { likeCount, dislikeCount, viewCount } = video.statistics;
 
@@ -119,10 +126,10 @@ export class Video extends React.Component<VideoProps, VideoState> {
                                     <span> views</span>
                                 </H3>
                                 <div>
-                                    <StyledLikes>
+                                    <StyledLikes active={rating === 'like'} onClick={this.onClickLike}>
                                         {likeCount || 0}
                                     </StyledLikes>
-                                    <Dislikes>
+                                    <Dislikes active={rating === 'dislike'} onClick={this.onClickDislike}>
                                         {dislikeCount || 0}
                                     </Dislikes>
                                 </div>
@@ -221,6 +228,14 @@ export class Video extends React.Component<VideoProps, VideoState> {
         ];
     }
 
+    private async loadRating() {
+        try {
+            const rating = await this.youtubeStore.getRating(store.id, false);
+
+            this.setState({ rating });
+        } catch (e) {}
+    }
+
     private get isLive(): boolean {
         return !!store.video && this.appStore.liveId === store.video.id;
     }
@@ -233,12 +248,28 @@ export class Video extends React.Component<VideoProps, VideoState> {
         } else {
             repliesStore.loadReplies(parentId);
         }
-    }
+    };
 
     private onClickHideComments = (e: React.SyntheticEvent<HTMLAnchorElement>) => {
         e.preventDefault();
 
         this.setState({ hideComments: !this.state.hideComments });
+    };
+
+    private onClickLike = async () => {
+        const { rating } = this.state;
+        const newRating: YoutubeRating = rating === 'like' ? 'none' : 'like';
+
+        await this.youtubeStore.addRating(newRating, store.id);
+        this.setState({ rating: newRating });
+    };
+
+    private onClickDislike = async () => {
+        const { rating } = this.state;
+        const newRating: YoutubeRating = rating === 'dislike' ? 'none' : 'dislike';
+
+        await this.youtubeStore.addRating(newRating, store.id);
+        this.setState({ rating: newRating });
     };
 }
 

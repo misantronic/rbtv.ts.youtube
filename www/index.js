@@ -1,7 +1,11 @@
 const fs = require('fs');
 
 if (fs.existsSync(__dirname + '/env.js')) {
-    require('./env');
+    const env = require('./env');
+
+    for(var i in env) {
+        process.env[i] = env[i];
+    }
 }
 
 const express = require('express');

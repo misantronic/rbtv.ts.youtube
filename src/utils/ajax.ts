@@ -1,18 +1,91 @@
 export const baseUrl = location.origin;
 
-async function get(url: string, params: object = {}) {
-    const query = Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
-    let fetchUrl = baseUrl + url;
+function buildQuery(params: {}): string {
+    return '?' + Object.keys(params).map(key => `${key}=${params[key]}`).join('&');
+}
 
-    if (params) {
-        fetchUrl += '?' + query;
+function buildUrl(url: string, params: {} = {}) {
+    const query = buildQuery(params);
+    let fetchUrl;
+
+    if (url.startsWith('http')) {
+        fetchUrl = url;
+    } else {
+        fetchUrl = baseUrl + url;
     }
 
-    const response = await fetch(fetchUrl);
+    if (params) {
+        fetchUrl += query;
+    }
 
-    return await response.json();
+    return fetchUrl;
+}
+
+async function getFn(url: string, params = {}, headers = {}) {
+    const fetchUrl = buildUrl(url, params);
+
+    try {
+        const response = await fetch(fetchUrl, { method: 'GET', headers: new Headers(headers) });
+        
+        try {
+            return await response.json();
+        } catch (e) {}
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
+async function deleteFn(url: string, params = {}, headers = {}) {
+    const fetchUrl = buildUrl(url, params);
+
+    try {
+        const response = await fetch(fetchUrl, { method: 'DELETE', headers: new Headers(headers) });
+
+        try {
+            return await response.json();
+        } catch (e) {}
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
+async function postFn(url: string, data = {}, params = {}, headers = {}) {
+    const fetchUrl = buildUrl(url, params);
+    try {
+        const response = await fetch(fetchUrl, {
+            method: 'POST',
+            body: data,
+            headers: new Headers(Object.assign(headers, { Accept: 'application/json' }))
+        });
+
+        try {
+            return await response.json();
+        } catch (e) {}
+    } catch (e) {
+        console.warn(e);
+    }
+}
+
+async function putFn(url: string, data = {}, params = {}, headers = {}) {
+    const fetchUrl = buildUrl(url, params);
+    try {
+        const response = await fetch(fetchUrl, {
+            method: 'PUT',
+            body: data,
+            headers: new Headers(headers)
+        });
+
+        try {
+            return await response.json();
+        } catch (e) {}
+    } catch (e) {
+        console.warn(e);
+    }
 }
 
 export const fetchUtil = {
-    get
-}
+    get: getFn,
+    post: postFn,
+    put: putFn,
+    delete: deleteFn
+};

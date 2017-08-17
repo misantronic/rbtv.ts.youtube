@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { TSDI } from 'tsdi';
 import styled, { injectGlobal } from 'styled-components';
 import { AppStore } from './store';
+import { YoutubeStore } from './youtube-store';
 import { Router } from './components/router';
 import { MainNav } from './containers/main-nav';
 
@@ -59,6 +60,7 @@ function main() {
 
     tsdi.enableComponentScanner();
     tsdi.get(AppStore);
+    tsdi.get(YoutubeStore);
 
     render(
         <App>

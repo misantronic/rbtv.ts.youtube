@@ -10,12 +10,15 @@ const NavWrapper = styled.div`
     margin-bottom: 20px;
 `;
 
+const LogoWrapper = styled.div`
+    flex: 1;
+`;
+
 const Logo = styled.div`
     background: url(https://www.rocketbeans.tv/wp-content/themes/rocket-beans/images/logo.png) no-repeat 0 0;
     background-size: contain;
     width: 40px;
     height: 40px;
-    flex: 1;
     cursor: pointer;
 `;
 
@@ -34,7 +37,9 @@ export class MainNav extends React.Component {
 
         return (
             <NavWrapper>
-                <Logo onClick={this.onLogoClick} />
+                <LogoWrapper>
+                    <Logo onClick={this.onLogoClick} />
+                </LogoWrapper>
                 <Nav>
                     <NavItem href="/" active={isRouteActivities || isRouteVideo} onClick={this.onNavItemClick}>
                         Home
