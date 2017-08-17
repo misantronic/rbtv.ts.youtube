@@ -76,6 +76,29 @@ export class VideoStore {
         }
     }
 
+    public async loadCommentThread(nextPageToken = '') {
+        this.commentThreadLoading = true;
+
+        try {
+            const commentThreadObj = await fetchUtil.get('/api/commentThreads', {
+                videoId: this.id,
+                pageToken: nextPageToken
+            });
+
+            if (commentThreadObj.items && commentThreadObj.items.length) {
+                const items: youtube.CommentThread[] = parseCommentThread(commentThreadObj.items);
+
+                this.commentThread = nextPageToken ? this.concat(items) : items;
+            }
+
+            this.nextPageToken = commentThreadObj.items.length ? commentThreadObj.nextPageToken : undefined;
+        } catch (e) {
+            console.log(e);
+        } finally {
+            this.commentThreadLoading = false;
+        }
+    }
+
     public reset(): void {
         this.id = null;
         this.video = null;
@@ -106,29 +129,6 @@ export class VideoStore {
             console.log(e);
         } finally {
             this.relatedLoading = false;
-        }
-    }
-
-    public async loadCommentThread(nextPageToken = '') {
-        this.commentThreadLoading = true;
-
-        try {
-            const commentThreadObj = await fetchUtil.get('/api/commentThreads', {
-                videoId: this.id,
-                pageToken: nextPageToken
-            });
-
-            if (commentThreadObj.items && commentThreadObj.items.length) {
-                const items: youtube.CommentThread[] = parseCommentThread(commentThreadObj.items);
-
-                this.commentThread = nextPageToken ? this.concat(items) : items;
-            }
-
-            this.nextPageToken = commentThreadObj.items.length ? commentThreadObj.nextPageToken : undefined;
-        } catch (e) {
-            console.log(e);
-        } finally {
-            this.commentThreadLoading = false;
         }
     }
 
