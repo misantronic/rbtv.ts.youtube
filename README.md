@@ -31,7 +31,7 @@ module.exports = {
 };
 ```
 
-these envirenment-variables will be set in production from heroku.
+these environment-variables will be set in production from heroku.
 
 ## run
 
