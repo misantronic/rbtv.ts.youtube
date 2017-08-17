@@ -9,6 +9,7 @@ import { RepliesStore } from './replies-store';
 import { VideoPlayer } from '../../components/video-player';
 import { H1, H3 } from '../../components/headline';
 import { Caption } from '../../components/caption';
+import { Button } from '../../components/button';
 import { DateFormat } from '../../components/date-format';
 import { Column, ColumnContainer } from '../../components/responsive-column';
 import { Likes, Dislikes } from '../../components/likes';
@@ -27,7 +28,6 @@ interface VideoProps {
 }
 
 interface VideoState {
-    hideComments: boolean;
     rating: YoutubeRating;
     seekTo?: number;
 }
@@ -72,6 +72,12 @@ const ShowReplies = styled.div`
 
 const Replies = styled.div`margin: 0 0 30px 50px;`;
 
+const BtnToTop = styled(Button)`
+    position: fixed;
+    right: 10px;
+    bottom: 10px;
+`;
+
 @external
 @observer
 export class Video extends React.Component<VideoProps, VideoState> {
@@ -82,7 +88,6 @@ export class Video extends React.Component<VideoProps, VideoState> {
         super(props);
 
         this.state = {
-            hideComments: false,
             rating: 'none',
             seekTo: undefined
         };
@@ -91,10 +96,14 @@ export class Video extends React.Component<VideoProps, VideoState> {
     componentDidMount() {
         store.id = this.props.id;
 
+        addEventListener('scroll', this.onScroll);
+
         this.loadRating();
     }
 
     componentWillUnmount() {
+        removeEventListener('scroll', this.onScroll);
+
         store.reset();
     }
 
@@ -153,6 +162,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
                     </Column>
                 </ColumnContainer>
                 {!this.isLive && this.renderComments()}
+                {this.renderBtnToTop()}
             </div>
         );
     }
@@ -178,22 +188,18 @@ export class Video extends React.Component<VideoProps, VideoState> {
     }
 
     private renderComments(): JSX.Element {
-        const { commentThread } = store;
-        const { hideComments } = this.state;
+        const { commentThread, commentThreadLoading } = store;
 
         return (
             <div>
                 <hr />
                 <CommentsHeader>
                     <H3>Comments</H3>
-                    <a href="#" onClick={this.onClickHideComments}>
-                        {hideComments ? 'Show' : 'Hide'} comments
-                    </a>
                 </CommentsHeader>
-                {!hideComments &&
-                    commentThread.map(item =>
-                        this.renderComment(item.snippet.topLevelComment, item.snippet.totalReplyCount)
-                    )}
+                {commentThread.map(item =>
+                    this.renderComment(item.snippet.topLevelComment, item.snippet.totalReplyCount)
+                )}
+                {commentThreadLoading && <Spinner />}
             </div>
         );
     }
@@ -237,6 +243,17 @@ export class Video extends React.Component<VideoProps, VideoState> {
         ];
     }
 
+    private renderBtnToTop(): JSX.Element | false {
+        const { showBtnToTop } = store;
+
+        return (
+            showBtnToTop &&
+            <BtnToTop key="btn-to-top" onClick={this.onScrollToTop} gradient>
+                To Top
+            </BtnToTop>
+        );
+    }
+
     private async loadRating() {
         try {
             const rating = await this.youtubeStore.getRating(store.id, false);
@@ -259,12 +276,6 @@ export class Video extends React.Component<VideoProps, VideoState> {
         }
     };
 
-    private onClickHideComments = (e: React.SyntheticEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-
-        this.setState({ hideComments: !this.state.hideComments });
-    };
-
     private onClickLike = async () => {
         const { rating } = this.state;
         const newRating: YoutubeRating = rating === 'like' ? 'none' : 'like';
@@ -282,6 +293,19 @@ export class Video extends React.Component<VideoProps, VideoState> {
     };
 
     private onClickCommentSeek = (seekTo: number) => this.setState({ seekTo });
+
+    private onScrollToTop = () => scrollTo(0, 0);
+
+    private onScroll = () => {
+        const { nextPageToken, commentThreadLoading } = store;
+        const maxY = document.body.scrollHeight - innerHeight - 200;
+
+        if (!commentThreadLoading && nextPageToken && scrollY >= maxY) {
+            store.loadCommentThread(nextPageToken);
+        }
+
+        store.showBtnToTop = scrollY > innerHeight;
+    };
 }
 
 export default Video;

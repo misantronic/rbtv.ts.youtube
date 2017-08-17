@@ -1,4 +1,4 @@
-import { observable, reaction, computed } from 'mobx';
+import { observable, reaction } from 'mobx';
 import { external, inject, initialize as constructor } from 'tsdi';
 import { channel } from '../../utils/channels';
 import { beans } from '../../utils/beans';
@@ -124,7 +124,6 @@ export class ActivitiesStore {
     public reset(): void {
         this.channelId = (getStorage('activities.channelId') as channel) || channel.RBTV;
         this.typedQ = getStorage('activities.search') || '';
-        // this.fetchedQ = '';
         this.nextPageToken = '';
         this.items = [];
         this.isLoading = false;

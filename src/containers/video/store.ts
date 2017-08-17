@@ -16,6 +16,8 @@ export class VideoStore {
     @observable related: youtube.ActivitiyItem[] = [];
     @observable commentThreadLoading = false;
     @observable commentThread: youtube.CommentThread[] = [];
+    @observable nextPageToken = '';
+    @observable showBtnToTop = false;
 
     @constructor
     init() {
@@ -73,6 +75,7 @@ export class VideoStore {
         this.videoLoading = false;
         this.related = [];
         this.relatedLoading = false;
+        this.showBtnToTop = false;
     }
 
     private async loadRelated() {
@@ -99,24 +102,30 @@ export class VideoStore {
         }
     }
 
-    private async loadCommentThread() {
+    public async loadCommentThread(nextPageToken = '') {
         this.commentThreadLoading = true;
 
         try {
             const commentThreadObj = await fetchUtil.get('/api/commentThreads', {
                 videoId: this.id,
-                pageToken: ''
+                pageToken: nextPageToken
             });
 
             if (commentThreadObj.items && commentThreadObj.items.length) {
                 const items: youtube.CommentThread[] = parseCommentThread(commentThreadObj.items);
 
-                this.commentThread = items;
+                this.commentThread = nextPageToken ? this.concat(items) : items;
             }
+
+            this.nextPageToken = commentThreadObj.items.length ? commentThreadObj.nextPageToken : undefined;
         } catch (e) {
             console.log(e);
         } finally {
             this.commentThreadLoading = false;
         }
+    }
+
+    private concat(items: youtube.CommentThread[]) {
+        return this.commentThread.concat(items.filter(item => !this.commentThread.find(item2 => item2.id === item.id)));
     }
 }
