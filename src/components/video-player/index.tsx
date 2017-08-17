@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { updateStorage } from '../../utils/storage';
 import { Duration } from '../../utils/time';
 
 interface VideoPlayerProps {
@@ -11,16 +10,19 @@ interface VideoPlayerProps {
 }
 
 interface VideoPlayerState {
-    playerWidth: '100%' | number;
-    playerHeight: number;
     isReady: boolean;
 }
 
 let YT: youtube.YT;
 const containerId = 'yt-video-container';
+const playerDefaultSize = {
+    width: '100%',
+    height: 450
+}
 
 export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlayerState> {
     private player: Player;
+    private el: HTMLDivElement | null;
 
     static defaultProps = {
         autoplay: false
@@ -30,18 +32,15 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         super(props);
 
         this.state = {
-            playerWidth: '100%',
-            playerHeight: 450,
             isReady: false
         };
     }
 
     render() {
-        const { playerWidth, playerHeight } = this.state;
         const { className } = this.props;
 
         return (
-            <div className={className} style={{ width: playerWidth, height: playerHeight }}>
+            <div className={className} ref={el => (this.el = el)} style={playerDefaultSize}>
                 <div id={containerId} />
             </div>
         );
@@ -77,11 +76,10 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     private createPlayer() {
         const { id } = this.props;
-        const { playerWidth, playerHeight } = this.state;
 
         this.player = new YT.Player(containerId, {
-            width: playerWidth,
-            height: playerHeight,
+            width: playerDefaultSize.width,
+            height: playerDefaultSize.height,
             videoId: id,
             origin: location.hostname,
             events: {
@@ -90,6 +88,8 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
             },
             playerVars: {}
         });
+
+        this.onResize();
     }
 
     private updatePlayer() {
@@ -144,7 +144,17 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
     };
 
     private onResize = () => {
-        
+        const iframe = document.getElementById(containerId);
+
+        if (iframe) {
+            const height = Math.min(innerWidth * 0.55, playerDefaultSize.height);
+
+            iframe.setAttribute('height', String(height));
+
+            if (this.el) {
+                this.el.style.height = String(height) + 'px';
+            }
+        }
     };
 
     private onEnded() {

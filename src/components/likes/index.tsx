@@ -15,7 +15,10 @@ interface IconTextProps extends LikesProps {
     type: Type;
 }
 
-const Span = styled.span`cursor: ${(props: any) => (props.onClick ? 'pointer' : 'default')};`;
+const Span = styled.span`
+    cursor: ${(props: any) => (props.onClick ? 'pointer' : 'default')};
+    user-select: none;
+`;
 
 const Icon = styled.span`
     font-size: 150%;
