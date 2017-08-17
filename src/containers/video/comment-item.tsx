@@ -82,7 +82,10 @@ export class CommentItem extends React.PureComponent<CommentItemProps> {
 
     private onCaptionInnerRef = (el: HTMLSpanElement): void => {
         this.captionEl = el;
-        this.captionEl.querySelectorAll('a').forEach(link => link.addEventListener('click', this.onClickLink));
+
+        if (this.captionEl) {
+            this.captionEl.querySelectorAll('a').forEach(link => link.addEventListener('click', this.onClickLink));
+        }
     };
 
     private onClickLink = (e: MouseEvent) => {
