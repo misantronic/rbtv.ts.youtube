@@ -18,7 +18,7 @@ const containerId = 'yt-video-container';
 const playerDefaultSize = {
     width: '100%',
     height: 450
-}
+};
 
 export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlayerState> {
     private player: Player;
@@ -145,15 +145,14 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     private onResize = () => {
         const iframe = document.getElementById(containerId);
+        const height = Math.min(innerWidth * 0.55, playerDefaultSize.height);
 
         if (iframe) {
-            const height = Math.min(innerWidth * 0.55, playerDefaultSize.height);
-
             iframe.setAttribute('height', String(height));
+        }
 
-            if (this.el) {
-                this.el.style.height = String(height) + 'px';
-            }
+        if (this.el) {
+            this.el.style.height = String(height) + 'px';
         }
     };
 
