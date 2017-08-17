@@ -8,8 +8,8 @@ const envData = {
     YT_KEY: process.env.YT_KEY
 };
 
-if (fs.existsSync(__dirname + '/www/env.js')) {
-    const env = require('./www/env');
+if (fs.existsSync(__dirname + '/env.js')) {
+    const env = require('./env');
 
     for (var i in env) {
         if (env.hasOwnProperty(i)) {

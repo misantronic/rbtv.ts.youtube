@@ -4,17 +4,20 @@
 
 ## setup
 
-to work on your local machine you need:
-- npm
-- a redis-db to cache youtube-api-data
-- a mongo-db to cache videos
-- a youtube-key to access the data-api
+to develop on your local machine you need:
+- a [redis-db](https://elements.heroku.com/addons/heroku-redis) to cache youtube-api-data
+- a [mongo-db](https://elements.heroku.com/addons/mongolab) to cache videos
+- a [youtube-key](https://console.developers.google.com/apis/api/youtube.googleapis.com/overview) to access the data-api
+
+note: both redis- and mongo-db can be completely empty. they're just needed for caching data.
 
 ## installation
 
-`npm install`
+```js
+npm install
+```
 
-create an-env file: `www/env.js`
+create `env.js` in the project-root
 
 ```js
 const REDIS_URL = 'redis://user:pw@server:port';
@@ -28,6 +31,12 @@ module.exports = {
 };
 ```
 
+these envirenment-variables will be set in production from heroku.
+
 ## run
 
-`npm run dev`
+```js
+npm run dev
+```
+
+open `http://localhost:5000/`
