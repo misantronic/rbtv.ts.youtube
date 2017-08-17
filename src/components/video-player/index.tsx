@@ -111,11 +111,11 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     private seekTo(seconds: number) { 
         this.player.seekTo(seconds);
-        this.scrollTo();
+        this.scrollTop();
         this.player.playVideo();
     }
 
-    private scrollTo() {
+    private scrollTop() {
         scrollTo(0, 0);
     }
 
