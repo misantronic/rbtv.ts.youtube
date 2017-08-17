@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { Sparky, FuseBox, WebIndexPlugin, CSSPlugin, EnvPlugin, QuantumPlugin } = require('fuse-box');
 
-let YT_KEY;
+let YT_KEY = process.env.YT_KEY;
 
 if (fs.existsSync(__dirname + '/env.js')) {
     const env = require('./www/env');
