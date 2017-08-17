@@ -1,15 +1,22 @@
 const fs = require('fs');
 const { Sparky, FuseBox, WebIndexPlugin, CSSPlugin, EnvPlugin, QuantumPlugin } = require('fuse-box');
 
-let YT_KEY = process.env.YT_KEY;
+let production = false;
 
-if (fs.existsSync(__dirname + '/env.js')) {
+const envData = {
+    NODE_ENV: production ? 'production' : 'development',
+    YT_KEY: process.env.YT_KEY
+};
+
+if (fs.existsSync(__dirname + '/www/env.js')) {
     const env = require('./www/env');
 
-    YT_KEY = env.YT_KEY;
+    for (var i in env) {
+        if (env.hasOwnProperty(i)) {
+            envData[i] = env[i];
+        }
+    }
 }
-
-let production = false;
 
 Sparky.task('build', () => {
     // config
@@ -22,10 +29,7 @@ Sparky.task('build', () => {
         sourceMaps: !production,
         hash: production,
         plugins: [
-            EnvPlugin({
-                NODE_ENV: production ? 'production' : 'development',
-                YT_KEY
-            }),
+            EnvPlugin(envData),
             WebIndexPlugin({
                 title: 'rbtv.ts.youtube',
                 target: 'index.ejs',
