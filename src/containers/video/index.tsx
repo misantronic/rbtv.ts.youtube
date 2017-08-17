@@ -2,7 +2,6 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { external, inject } from 'tsdi';
 import styled from 'styled-components';
-import { AppStore } from '../../store';
 import { YoutubeStore, YoutubeRating } from '../../youtube-store';
 import { VideoStore } from './store';
 import { RepliesStore } from './replies-store';
@@ -81,7 +80,6 @@ const BtnToTop = styled(Button)`
 @external
 @observer
 export class Video extends React.Component<VideoProps, VideoState> {
-    @inject private appStore: AppStore;
     @inject private youtubeStore: YoutubeStore;
 
     constructor(props) {
@@ -108,7 +106,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
     }
 
     render(): JSX.Element | null {
-        const { video } = store;
+        const { video, isLive } = store;
 
         if (!video) {
             return null;
@@ -157,11 +155,11 @@ export class Video extends React.Component<VideoProps, VideoState> {
                         </Caption>
                     </Column>
                     <Column sm={12} md={4}>
-                        {!this.isLive && this.renderRelated()}
-                        {this.isLive && <Chat id={video.id} />}
+                        {!isLive && this.renderRelated()}
+                        {isLive && <Chat id={video.id} />}
                     </Column>
                 </ColumnContainer>
-                {!this.isLive && this.renderComments()}
+                {!isLive && this.renderComments()}
                 {this.renderBtnToTop()}
             </div>
         );
@@ -260,10 +258,6 @@ export class Video extends React.Component<VideoProps, VideoState> {
 
             this.setState({ rating });
         } catch (e) {}
-    }
-
-    private get isLive(): boolean {
-        return !!store.video && this.appStore.liveId === store.video.id;
     }
 
     private onClickShowReplies = (e: React.SyntheticEvent<HTMLDivElement>) => {

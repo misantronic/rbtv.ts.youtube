@@ -1,4 +1,4 @@
-import { observable, reaction } from 'mobx';
+import { observable, reaction, computed } from 'mobx';
 import { external, inject, initialize as constructor } from 'tsdi';
 import { fetchUtil } from '../../utils/ajax';
 import { channel } from '../../utils/channels';
@@ -29,7 +29,9 @@ export class VideoStore {
                     (async () => {
                         await this.loadVideo();
                         this.loadRelated();
-                        this.loadCommentThread();
+                        if (!this.isLive) {
+                            this.loadCommentThread();
+                        }
                     })();
                 }
             }
@@ -49,6 +51,11 @@ export class VideoStore {
                 }
             }
         );
+    }
+
+    @computed
+    public get isLive(): boolean {
+        return !!this.video && this.appStore.liveId === this.video.id;
     }
 
     private async loadVideo() {
