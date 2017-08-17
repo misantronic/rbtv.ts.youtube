@@ -1,4 +1,4 @@
-const durationRegEx = /PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/i;
+const durationRegEx = /(?:PT)(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?/i;
 
 export class Duration {
     public seconds = 0;

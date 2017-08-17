@@ -5,6 +5,7 @@ interface CaptionProps {
     lineClamp?: number;
     className?: string;
     parseLinks?: boolean;
+    innerRef?: (el: HTMLSpanElement) => void;
 }
 
 const Text = styled.span`
@@ -26,10 +27,10 @@ const parseLines = (html: string): string => html.replace(/\n/g, '<br/>');
 
 export class Caption extends React.Component<CaptionProps> {
     render(): JSX.Element {
-        const { children, lineClamp, className, parseLinks } = this.props;
+        const { children, lineClamp, className, parseLinks, innerRef } = this.props;
         const html = children as string;
         const __html = parseLines(parseLinks ? parseHTMLLinks(html) : html);
 
-        return <Text lineClamp={lineClamp} className={className} dangerouslySetInnerHTML={{ __html }} />;
+        return <Text innerRef={innerRef} lineClamp={lineClamp} className={className} dangerouslySetInnerHTML={{ __html }} />;
     }
 }

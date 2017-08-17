@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { Duration } from '../../utils/time';
 
 interface VideoPlayerProps {
     id: string;
     autoplay?: boolean;
-    seekTo?: string;
+    seekTo?: number;
     className?: string;
     onEnded?(id: string): void;
 }
@@ -110,17 +109,14 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         }
     }
 
-    private seekTo(value: string) {
-        const duration = new Duration(value);
-        const seconds = duration.asSeconds();
-
+    private seekTo(seconds: number) { 
         this.player.seekTo(seconds);
         this.scrollTo();
         this.player.playVideo();
     }
 
     private scrollTo() {
-        scrollY = 0;
+        scrollTo(0, 0);
     }
 
     /**

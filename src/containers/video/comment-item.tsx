@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Caption } from '../../components/caption';
 import { Likes } from '../../components/likes';
 import { DateFormat } from '../../components/date-format';
+import { Duration } from '../../utils/time';
 
 interface CommentItemProps {
     id: string;
@@ -12,6 +13,7 @@ interface CommentItemProps {
     authorUrl: string;
     authorImage: string;
     date: Date;
+    onSeek?(seconds: number): void;
 }
 
 const Item = styled.div`
@@ -34,15 +36,21 @@ const ContentFooter = styled.div`
     justify-content: space-between;
 `;
 
-const ReplyLink = styled.a`
-    margin-right: 15px;
-`
+const ReplyLink = styled.a`margin-right: 15px;`;
 
 const StyledDate = styled(DateFormat)`
     opacity: 0.6;
-`
+`;
 
 export class CommentItem extends React.PureComponent<CommentItemProps> {
+    captionEl: HTMLSpanElement;
+
+    componentWillUnmount() {
+        if (this.captionEl) {
+            this.captionEl.querySelectorAll('a').forEach(link => link.removeEventListener('click', this.onClickLink));
+        }
+    }
+
     render(): JSX.Element {
         const { children, date, authorImage, likes, author, authorUrl } = this.props;
 
@@ -50,7 +58,7 @@ export class CommentItem extends React.PureComponent<CommentItemProps> {
             <Item>
                 <Image image={authorImage} />
                 <Content>
-                    <Caption>
+                    <Caption innerRef={this.onCaptionInnerRef}>
                         {children}
                     </Caption>
                     <ContentFooter>
@@ -64,13 +72,32 @@ export class CommentItem extends React.PureComponent<CommentItemProps> {
                             <a href={authorUrl} target="_blank">
                                 {author}
                             </a>
-                            , <StyledDate format="YYYY-MM-DD HH:mm">
-                                {date}
-                            </StyledDate>
+                            , <StyledDate format="YYYY-MM-DD HH:mm">{date}</StyledDate>
                         </div>
                     </ContentFooter>
                 </Content>
             </Item>
         );
     }
+
+    private onCaptionInnerRef = (el: HTMLSpanElement): void => {
+        this.captionEl = el;
+        this.captionEl.querySelectorAll('a').forEach(link => link.addEventListener('click', this.onClickLink));
+    };
+
+    private onClickLink = (e: MouseEvent) => {
+        const { onSeek } = this.props;
+        const target = e.target as HTMLAnchorElement;
+        const href = target.getAttribute('href') as string;
+        const match = /&t=(.*)/.exec(href);
+
+        if (onSeek && match) {
+            const durationStr = 'PT' + match[1];
+            const duration = new Duration(durationStr);
+
+            onSeek(duration.asSeconds());
+
+            e.preventDefault();
+        }
+    };
 }

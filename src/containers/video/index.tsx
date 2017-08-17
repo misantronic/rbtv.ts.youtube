@@ -29,6 +29,7 @@ interface VideoProps {
 interface VideoState {
     hideComments: boolean;
     rating: YoutubeRating;
+    seekTo?: number;
 }
 
 const StyledVideoPlayer = styled(VideoPlayer)`
@@ -82,7 +83,8 @@ export class Video extends React.Component<VideoProps, VideoState> {
 
         this.state = {
             hideComments: false,
-            rating: 'none'
+            rating: 'none',
+            seekTo: undefined
         };
     }
 
@@ -103,13 +105,13 @@ export class Video extends React.Component<VideoProps, VideoState> {
             return null;
         }
 
-        const { rating } = this.state;
+        const { rating, seekTo } = this.state;
         const { publishedAt, description, title } = video.snippet;
         const { likeCount, dislikeCount, viewCount } = video.statistics;
 
         return (
             <div>
-                <StyledVideoPlayer id={video.id} />
+                <StyledVideoPlayer seekTo={seekTo} id={video.id} />
                 <H1>
                     {title}
                 </H1>
@@ -217,6 +219,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
                 author={authorDisplayName}
                 authorUrl={authorChannelUrl}
                 likes={likeCount}
+                onSeek={this.onClickCommentSeek}
             >
                 {textDisplay}
             </CommentItem>,
@@ -277,6 +280,8 @@ export class Video extends React.Component<VideoProps, VideoState> {
         await this.youtubeStore.addRating(newRating, store.id);
         this.setState({ rating: newRating });
     };
+
+    private onClickCommentSeek = (seekTo: number) => this.setState({ seekTo });
 }
 
 export default Video;
