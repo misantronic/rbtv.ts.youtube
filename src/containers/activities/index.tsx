@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
-import { external, inject } from 'tsdi';
+import { external as canInject, inject } from 'tsdi';
 import styled from 'styled-components';
 import { ActivitiesStore } from './store';
 import { AppStore } from '../../store';
@@ -26,7 +26,7 @@ const BtnToTop = styled(Button)`
 `;
 
 @observer
-@external
+@canInject
 export class Activities extends React.Component {
     @inject private appStore: AppStore;
 

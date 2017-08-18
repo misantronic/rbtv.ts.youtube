@@ -1,5 +1,5 @@
 import { observable, reaction } from 'mobx';
-import { external, inject, initialize as constructor } from 'tsdi';
+import { external as canInject, inject, initialize as constructor } from 'tsdi';
 import { channel } from '../../utils/channels';
 import { beans } from '../../utils/beans';
 import { fetchUtil } from '../../utils/ajax';
@@ -7,7 +7,7 @@ import { setStorage, getStorage } from '../../utils/storage';
 import { parseActivities } from '../../utils/api';
 import { AppStore } from '../../store';
 
-@external
+@canInject
 export class ActivitiesStore {
     @inject private appStore: AppStore;
 

@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { external as canInject, inject } from 'tsdi';
 import styled from 'styled-components';
-import { sizeMd } from '../../utils/responsive';
+import { Responsive } from '../../utils/responsive';
 
 interface CaptionImageProps {
     image: string;
@@ -10,35 +11,33 @@ interface CaptionImageProps {
 
 const Div = styled.div`position: relative;`;
 
-const Link = styled.a`
-    display: block;
-    overflow: hidden;
-
-    background-position: center center;
-    background-color: #EEE;
-    background-repeat: no-repeat;
-    background-size: cover;
-    width: 100%;
-    height: 180px;
-
-    @media (max-width: ${sizeMd.max}px) {
-        height: 250px;
-    }
-`;
-
+@canInject
 export class CaptionImage extends React.PureComponent<CaptionImageProps> {
+    @inject private sizes: Responsive;
+
     render(): JSX.Element {
-        const { image, load, children } = this.props;
+        const { image, load, children } = this.props;        
 
-        const style: any = {};
-
-        if (load) {
-            style.backgroundImage = `url('${image}')`;
-        }
+        const Link = styled.a`
+            display: block;
+            overflow: hidden;
+        
+            background-position: center center;
+            background-color: #eee;
+            background-repeat: no-repeat;
+            background-size: cover;
+            width: 100%;
+            height: 180px;
+            ${load ? `background-image: url('${image}');` : ''} 
+        
+            @media (max-width: ${this.sizes.sizeSm.max}px) {
+                height: 250px;
+            }
+        `;
 
         return (
             <Div>
-                <Link href="#" onClick={this.onClick} style={style} />
+                <Link href="#" onClick={this.onClick} />
                 {children}
             </Div>
         );

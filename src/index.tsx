@@ -6,7 +6,7 @@ import { AppStore } from './store';
 import { YoutubeStore } from './youtube-store';
 import { Router } from './components/router';
 import { MainNav } from './containers/main-nav';
-import { sizeApp } from './utils/responsive';
+import { sizeApp, Responsive } from './utils/responsive';
 
 injectGlobal`
     @import url(//fonts.googleapis.com/css?family=Raleway);
@@ -62,6 +62,7 @@ function main() {
     tsdi.enableComponentScanner();
     tsdi.get(AppStore);
     tsdi.get(YoutubeStore);
+    tsdi.get(Responsive);
 
     render(
         <App>

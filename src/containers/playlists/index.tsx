@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { observer } from 'mobx-react';
 // import * as Infinite from 'react-infinite';
-import { external, inject } from 'tsdi';
+import { external as canInject, inject } from 'tsdi';
 import styled from 'styled-components';
 import { AppStore } from '../../store';
 import { PlaylistsStore } from './store';
@@ -23,7 +23,7 @@ const BtnToTop = styled(Button)`
     bottom: 10px;
 `;
 
-@external
+@canInject
 @observer
 export class Playlists extends React.Component {
     @inject private appStore: AppStore;

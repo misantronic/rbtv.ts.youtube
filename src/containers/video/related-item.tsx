@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { external, inject } from 'tsdi';
+import { external as canInject, inject } from 'tsdi';
 import styled from 'styled-components';
 import { Caption } from '../../components/caption';
 import { AppStore } from '../../store';
@@ -29,7 +29,7 @@ const Title = styled(Caption)`
     margin: 0;
 `;
 
-@external
+@canInject
 export class RelatedItem extends React.PureComponent<RelatedItemProps> {
     @inject private appStore: AppStore;
 

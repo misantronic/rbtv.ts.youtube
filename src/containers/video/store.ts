@@ -1,11 +1,11 @@
 import { observable, reaction, computed } from 'mobx';
-import { external, inject, initialize as constructor } from 'tsdi';
+import { external as canInject, inject, initialize as constructor } from 'tsdi';
 import { fetchUtil } from '../../utils/ajax';
 import { channel } from '../../utils/channels';
 import { parseActivities, rejectLiveItems, parseVideo, parseCommentThread } from '../../utils/api';
 import { AppStore } from '../../store';
 
-@external
+@canInject
 export class VideoStore {
     @inject private appStore: AppStore;
 
