@@ -5,14 +5,15 @@ import { channel } from './utils/channels';
 import { fetchUtil } from './utils/ajax';
 import { parseActivities } from './utils/api';
 
-export type Route = '/activities' | '/video/:id' | '/playlists' | '/activities/:search';
+export type Route = '/activities' | '/video/:id' | '/playlists' | '/activities/:search' | '/timetable';
 type RouteObj = { id: string; route: Route };
 
 export const routes: RouteObj[] = [
     { id: 'activities', route: '/activities' },
     { id: 'activities-search', route: '/activities/:search' },
     { id: 'playlists', route: '/playlists' },
-    { id: 'video', route: '/video/:id' }
+    { id: 'video', route: '/video/:id' },
+    { id: 'timetable', route: '/timetable' }
 ];
 
 @injectable
@@ -61,6 +62,11 @@ export class AppStore {
         return this.route === '/video/:id' && this.params.id === this.liveId;
     }
 
+    @computed
+    public get isRouteTimetable() {
+        return this.route === '/timetable';
+    }
+
     public async loadBundle(name: Route): Promise<React.ComponentClass<any>> {
         let target;
 
@@ -74,6 +80,9 @@ export class AppStore {
                 break;
             case '/video/:id':
                 target = await import('./containers/video');
+                break;
+            case '/timetable':
+                target = await import('./containers/timetable');
                 break;
         }
 
