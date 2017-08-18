@@ -6,7 +6,7 @@ import { AppStore } from './store';
 import { YoutubeStore } from './youtube-store';
 import { Router } from './components/router';
 import { MainNav } from './containers/main-nav';
-import { sizeApp, Responsive } from './utils/responsive';
+import { Responsive } from './utils/responsive';
 
 injectGlobal`
     @import url(//fonts.googleapis.com/css?family=Raleway);
@@ -29,40 +29,40 @@ injectGlobal`
     }
 `;
 
-const App = styled.div`
-    width: ${sizeApp.max + 40}px;
-    max-width: 100%;
-    margin: 20px auto;
-    padding: 0 20px;
-    box-sizing: border-box;
-
-    * {
-        box-sizing: border-box;
-    }
-
-    input {
-        font-family: Raleway, Arial, sans-serif;
-        font-size: 14px;
-    }
-
-    a,
-    a:link {
-        color: #337ab7;
-        text-decoration: none;
-
-        &:hover {
-            text-decoration: underline;
-        }
-    }
-`;
-
 function main() {
     const tsdi = new TSDI();
 
     tsdi.enableComponentScanner();
     tsdi.get(AppStore);
     tsdi.get(YoutubeStore);
-    tsdi.get(Responsive);
+    const responsive = tsdi.get(Responsive);
+
+    const App = styled.div`
+        width: ${responsive.sizeApp.max + 40}px;
+        max-width: 100%;
+        margin: 20px auto;
+        padding: 0 20px;
+        box-sizing: border-box;
+
+        * {
+            box-sizing: border-box;
+        }
+
+        input {
+            font-family: Raleway, Arial, sans-serif;
+            font-size: 14px;
+        }
+
+        a,
+        a:link {
+            color: #337ab7;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    `;
 
     render(
         <App>
