@@ -10,7 +10,7 @@ const channelMap = {
     [channel.LP]: 'Let`s Play',
     [channel.G2]: 'Game Two',
     [channel.INSIDE_PS]: 'Inside Playstation'
-}
+};
 
 export function getChannelName(channel: channel): string {    
     return channelMap[channel];

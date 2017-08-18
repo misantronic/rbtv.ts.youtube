@@ -26,11 +26,19 @@ const parseHTMLLinks = (html: string): string =>
 const parseLines = (html: string): string => html.replace(/\n/g, '<br/>');
 
 export class Caption extends React.Component<CaptionProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children, lineClamp, className, parseLinks, innerRef } = this.props;
         const html = children as string;
+        // tslint:disable-next-line:variable-name
         const __html = parseLines(parseLinks ? parseHTMLLinks(html) : html);
 
-        return <Text innerRef={innerRef} lineClamp={lineClamp} className={className} dangerouslySetInnerHTML={{ __html }} />;
+        return (
+            <Text
+                innerRef={innerRef}
+                lineClamp={lineClamp}
+                className={className}
+                dangerouslySetInnerHTML={{ __html }}
+            />
+        );
     }
 }

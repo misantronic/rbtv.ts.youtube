@@ -3,9 +3,9 @@ import { fetchUtil } from '../../utils/ajax';
 import { parseComment } from '../../utils/api';
 
 export class RepliesStore {
-    @observable comments: youtube.Comment[] = [];
-    @observable commentLoading = false;
-    @observable parentId: string | undefined;
+    @observable public comments: youtube.Comment[] = [];
+    @observable public commentLoading = false;
+    @observable public parentId: string | undefined;
 
     public async loadReplies(parentId: string) {
         this.parentId = parentId;

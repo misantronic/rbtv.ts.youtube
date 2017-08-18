@@ -4,8 +4,6 @@ import * as addDays from 'date-fns/add_days';
 import styled from 'styled-components';
 import { DateFormat } from '../../components/date-format';
 
-interface TimetableProps {}
-
 const Wrapper = styled.div`display: flex;`;
 
 const DayWrapper = styled.div`
@@ -64,8 +62,8 @@ const DAYS = [
 //     '23:59'
 // ];
 
-export class Timetable extends React.PureComponent<TimetableProps> {
-    render() {
+export class Timetable extends React.PureComponent<{}> {
+    public render() {
         return (
             <Wrapper>
                 {DAYS.map(day => {

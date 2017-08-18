@@ -16,7 +16,7 @@ interface ColumnProps {
 export class Column extends React.PureComponent<ColumnProps> {
     @inject private sizes: Responsive;
 
-    render() {
+    public render() {
         const { children, className, sm, md, lg } = this.props;
         const Col = styled.div`${this.calcSizes};`;
 

@@ -5,7 +5,7 @@ interface ChatProps {
 }
 
 export class Chat extends React.PureComponent<ChatProps> {
-    render() {
+    public render() {
         return (
             <iframe
                 frameBorder={0}

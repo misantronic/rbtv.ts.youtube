@@ -28,19 +28,19 @@ const BtnToTop = styled(Button)`
 export class Playlists extends React.Component {
     @inject private appStore: AppStore;
 
-    componentDidMount() {
+    public componentDidMount() {
         addEventListener('scroll', this.onScroll);
 
         store.loadPlaylists();
     }
 
-    componentWillUnmount() {
+    public componentWillUnmount() {
         removeEventListener('scroll', this.onScroll);
 
         store.reset();
     }
 
-    render(): any {
+    public render(): any {
         return [this.renderSearch(), this.renderColumns(), this.renderSpinner(), this.renderBtnToTop()];
     }
 
@@ -132,17 +132,17 @@ export class Playlists extends React.Component {
 
     private onClickPlaylist = (id: string) => {
         this.appStore.navigate(`/playlist/${id}`);
-    };
+    }
 
     private onChangeSearch = (val: string): void => {
         store.typedQ = val;
-    };
+    }
 
     private onKeyDown = (e: any): void => {
         if (e.keyCode === 13) {
             store.commitedQ = store.typedQ;
         }
-    };
+    }
 
     private onChangeChannel = (val: channel) => (store.channelId = val);
 
@@ -152,7 +152,7 @@ export class Playlists extends React.Component {
 
     private onScroll = () => {
         store.showBtnToTop = scrollY > innerHeight;
-    };
+    }
 }
 
 export default Playlists;

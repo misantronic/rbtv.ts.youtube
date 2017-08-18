@@ -43,15 +43,15 @@ const StyledDate = styled(DateFormat)`
 `;
 
 export class CommentItem extends React.PureComponent<CommentItemProps> {
-    captionEl: HTMLSpanElement;
+    public captionEl: HTMLSpanElement;
 
-    componentWillUnmount() {
+    public componentWillUnmount() {
         if (this.captionEl) {
             this.captionEl.querySelectorAll('a').forEach(link => link.removeEventListener('click', this.onClickLink));
         }
     }
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children, date, authorImage, likes, author, authorUrl } = this.props;
 
         return (
@@ -86,7 +86,7 @@ export class CommentItem extends React.PureComponent<CommentItemProps> {
         if (this.captionEl) {
             this.captionEl.querySelectorAll('a').forEach(link => link.addEventListener('click', this.onClickLink));
         }
-    };
+    }
 
     private onClickLink = (e: MouseEvent) => {
         const { onSeek } = this.props;
@@ -102,5 +102,5 @@ export class CommentItem extends React.PureComponent<CommentItemProps> {
 
             e.preventDefault();
         }
-    };
+    }
 }

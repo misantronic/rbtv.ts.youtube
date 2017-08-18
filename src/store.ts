@@ -6,7 +6,7 @@ import { fetchUtil } from './utils/ajax';
 import { parseActivities } from './utils/api';
 
 export type Route = '/activities' | '/video/:id' | '/playlists' | '/activities/:search' | '/timetable';
-type RouteObj = { id: string; route: Route };
+interface RouteObj { id: string; route: Route; }
 
 export const routes: RouteObj[] = [
     { id: 'activities', route: '/activities' },
@@ -18,9 +18,9 @@ export const routes: RouteObj[] = [
 
 @injectable
 export class AppStore {
-    @observable route: Route;
-    @observable params: { [key: string]: string } = {};
-    @observable liveId = '';
+    @observable public route: Route;
+    @observable public params: { [key: string]: string } = {};
+    @observable public liveId = '';
 
     private router: Router;
 

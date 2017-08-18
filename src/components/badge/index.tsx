@@ -31,7 +31,7 @@ const Span = styled.span`
 `;
 
 export class Badge extends React.PureComponent<BadgeProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children, className, onClick = noop } = this.props;
 
         return (

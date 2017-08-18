@@ -8,17 +8,17 @@ import { AppStore } from '../../store';
 
 @canInject
 export class PlaylistsStore {
-    @inject private appStore: AppStore;
+    @observable public channelId?: channel;
+    @observable public typedQ = '';
+    @observable public commitedQ = '';
+    @observable public nextPageToken = '';
+    @observable public items: youtube.PlaylistItem[] = [];
+    @observable public loading = false;
+    @observable public hideItemsWhenLoading = true;
+    @observable public showBtnToTop = false;
+    @observable public error?: ErrorEvent;
 
-    @observable channelId?: channel;
-    @observable typedQ = '';
-    @observable commitedQ = '';
-    @observable nextPageToken = '';
-    @observable items: youtube.PlaylistItem[] = [];
-    @observable loading = false;
-    @observable hideItemsWhenLoading = true;
-    @observable showBtnToTop = false;
-    @observable error?: ErrorEvent;
+    @inject private appStore: AppStore;
 
     @computed
     public get filteredItems(): youtube.PlaylistItem[] {
@@ -33,7 +33,7 @@ export class PlaylistsStore {
     }
 
     @constructor
-    init() {
+    public init() {
         const { search } = this.appStore.params;
 
         if (search) {

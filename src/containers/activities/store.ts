@@ -9,20 +9,20 @@ import { AppStore } from '../../store';
 
 @canInject
 export class ActivitiesStore {
+    @observable public channelId?: channel;
+    @observable public typedQ = '';
+    @observable public fetchedQ = '';
+    @observable public nextPageToken = '';
+    @observable public items: youtube.ActivitiyItem[] = [];
+    @observable public isLoading = false;
+    @observable public hideItemsWhenLoading = true;
+    @observable public showBtnToTop = false;
+    @observable public error?: ErrorEvent;
+
     @inject private appStore: AppStore;
 
-    @observable channelId?: channel;
-    @observable typedQ = '';
-    @observable fetchedQ = '';
-    @observable nextPageToken = '';
-    @observable items: youtube.ActivitiyItem[] = [];
-    @observable isLoading = false;
-    @observable hideItemsWhenLoading = true;
-    @observable showBtnToTop = false;
-    @observable error?: ErrorEvent;
-
     @constructor
-    init() {
+    public init() {
         const { search } = this.appStore.params;
 
         if (search) {

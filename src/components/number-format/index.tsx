@@ -7,7 +7,7 @@ interface NumberFormatProps {
 }
 
 export class NumberFormat extends React.PureComponent<NumberFormatProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children } = this.props;
 
         return (

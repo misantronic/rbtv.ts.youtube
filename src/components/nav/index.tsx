@@ -8,7 +8,7 @@ interface NavProps {
 
 const StyledNav = styled.nav`
     display: flex;
-`
+`;
 
 const Ul = styled.ul`
     list-style-type: none;
@@ -19,7 +19,7 @@ const Ul = styled.ul`
 `;
 
 export class Nav extends React.PureComponent<NavProps> {
-    render() {
+    public render() {
         const { className, children } = this.props;
 
         return (
@@ -48,7 +48,7 @@ const A = styled.a`
 `;
 
 export class NavItem extends React.PureComponent<NavItemProps> {
-    render() {
+    public render() {
         const { href, children, active = false } = this.props;
 
         return (
@@ -66,5 +66,5 @@ export class NavItem extends React.PureComponent<NavItemProps> {
         const { href, onClick } = this.props;
         
         onClick(href);
-    };
+    }
 }

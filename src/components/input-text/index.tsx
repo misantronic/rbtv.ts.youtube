@@ -46,11 +46,11 @@ const Input = styled.input`
 `;
 
 export class InputText extends React.PureComponent<InputTextProps> {
-    static defaultProps = {
+    public static defaultProps = {
         border: 'default'
     };
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { value, onKeyDown, className, placeholder, padding, autofocus } = this.props;
 
         return (
@@ -69,5 +69,5 @@ export class InputText extends React.PureComponent<InputTextProps> {
 
     private onChange = (e: any) => {
         this.props.onChange(e.currentTarget.value);
-    };
+    }
 }

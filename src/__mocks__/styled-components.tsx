@@ -1,9 +1,7 @@
 import * as React from 'react';
 import domElements from './utils/dom-elements';
 
-interface StyledInterface {
-    (Component: React.ReactNode): () => React.ReactNode;
-}
+type StyledInterface = (Component: React.ReactNode) => () => React.ReactNode;
 
 const styled: StyledInterface = (Component: React.ReactNode) => {
     return () => Component;

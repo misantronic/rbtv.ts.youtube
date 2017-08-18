@@ -15,7 +15,7 @@ const Div = styled.div`position: relative;`;
 export class CaptionImage extends React.PureComponent<CaptionImageProps> {
     @inject private sizes: Responsive;
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { image, load, children } = this.props;        
 
         const Link = styled.a`
@@ -43,8 +43,8 @@ export class CaptionImage extends React.PureComponent<CaptionImageProps> {
         );
     }
 
-    onClick = (e: any) => {
+    public onClick = (e: any) => {
         e.preventDefault();
         this.props.onClick();
-    };
+    }
 }

@@ -3,14 +3,12 @@ import { external as canInject, inject } from 'tsdi';
 import { AppStore, Route } from '../../store';
 import { reaction } from 'mobx';
 
-interface RouterProps {}
-
 interface RouterState {
     Component: React.ComponentClass<{}> | null;
 }
 
 @canInject
-export class Router extends React.Component<RouterProps, RouterState> {
+export class Router extends React.Component<{}, RouterState> {
     @inject private appStore: AppStore;
 
     constructor(props) {
@@ -21,7 +19,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
         };
     }
 
-    componentDidMount() {
+    public componentDidMount() {
         reaction(
             () => this.appStore.route,
             async (name: Route) => {
@@ -35,7 +33,7 @@ export class Router extends React.Component<RouterProps, RouterState> {
         );
     }
 
-    render(): JSX.Element | null {
+    public render(): JSX.Element | null {
         const { Component } = this.state;
 
         if (Component) {

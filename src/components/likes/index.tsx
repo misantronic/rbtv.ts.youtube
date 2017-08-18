@@ -40,7 +40,7 @@ const Icon = styled.span`
 `;
 
 class IconText extends React.PureComponent<IconTextProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children, className, type, active = false, onClick } = this.props;
 
         return (
@@ -56,13 +56,13 @@ class IconText extends React.PureComponent<IconTextProps> {
 }
 
 export class Likes extends React.PureComponent<LikesProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return <IconText {...this.props} type="like" />;
     }
 }
 
 export class Dislikes extends React.PureComponent<LikesProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         return <IconText {...this.props} type="dislike" />;
     }
 }

@@ -7,7 +7,8 @@
     "dev": "concurrently \"node fuse\" \"node www/index.js\"",
     "dist": "concurrently \"node fuse dist\" \"node www/index.js\"",
     "start": "npm run dist & node www/keepalive.js",
-    "test": "echo \"No tests specified\";"
+    "test": "echo \"No tests specified\";",
+    "tslint": "tslint --project ./tsconfig.json -c tslint.json 'src/**/*.{ts,tsx}'"
   },
   "author": "David Schkalee <david.schkalee@magicline.de>",
   "license": "MIT",

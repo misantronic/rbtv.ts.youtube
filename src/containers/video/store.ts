@@ -6,21 +6,21 @@ import { parseActivities, rejectLiveItems, parseVideo, parseCommentThread } from
 import { AppStore } from '../../store';
 
 @canInject
-export class VideoStore {
+export class VideoStore { 
+    @observable public id: string | null;
+    @observable public video: youtube.VideoItem | null;
+    @observable public videoLoading = false;
+    @observable public relatedLoading = false;
+    @observable public related: youtube.ActivitiyItem[] = [];
+    @observable public commentThreadLoading = false;
+    @observable public commentThread: youtube.CommentThread[] = [];
+    @observable public nextPageToken = '';
+    @observable public showBtnToTop = false;
+    
     @inject private appStore: AppStore;
 
-    @observable id: string | null;
-    @observable video: youtube.VideoItem | null;
-    @observable videoLoading = false;
-    @observable relatedLoading = false;
-    @observable related: youtube.ActivitiyItem[] = [];
-    @observable commentThreadLoading = false;
-    @observable commentThread: youtube.CommentThread[] = [];
-    @observable nextPageToken = '';
-    @observable showBtnToTop = false;
-
     @constructor
-    init() {
+    public init() {
         // when id changes...
         reaction(
             () => this.id,
@@ -58,24 +58,6 @@ export class VideoStore {
         return !!this.video && this.appStore.liveId === this.video.id;
     }
 
-    private async loadVideo() {
-        this.videoLoading = true;
-
-        try {
-            const items: youtube.VideoItem[] = await fetchUtil.get('/api/videos', {
-                id: this.id
-            });
-
-            if (items && items.length) {
-                this.video = parseVideo(items[0]);
-            }
-        } catch (e) {
-            console.log(e);
-        } finally {
-            this.videoLoading = false;
-        }
-    }
-
     public async loadCommentThread(nextPageToken = '') {
         this.commentThreadLoading = true;
 
@@ -106,6 +88,24 @@ export class VideoStore {
         this.related = [];
         this.relatedLoading = false;
         this.showBtnToTop = false;
+    }
+
+    private async loadVideo() {
+        this.videoLoading = true;
+
+        try {
+            const items: youtube.VideoItem[] = await fetchUtil.get('/api/videos', {
+                id: this.id
+            });
+
+            if (items && items.length) {
+                this.video = parseVideo(items[0]);
+            }
+        } catch (e) {
+            console.log(e);
+        } finally {
+            this.videoLoading = false;
+        }
     }
 
     private async loadRelated() {

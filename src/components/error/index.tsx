@@ -1,11 +1,11 @@
 import * as React from 'react';
 
 interface ErrorProps {
-    children: ErrorEvent
+    children: ErrorEvent;
 }
 
 export class Error extends React.PureComponent<ErrorProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const {children} = this.props;
         
         return (

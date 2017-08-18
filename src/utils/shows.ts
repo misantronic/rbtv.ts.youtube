@@ -1,10 +1,10 @@
-import {channel} from './channels'
+import {channel} from './channels';
 
 export interface Show {
     title: string;
-    channel?: channel,
-    playlistId?: string
-};
+    channel?: channel;
+    playlistId?: string;
+}
 
 export const shows: Show[] = [
     {

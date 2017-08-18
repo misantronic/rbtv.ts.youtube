@@ -31,7 +31,7 @@ const StyledButton = styled.button`
 `;
 
 export class Button extends React.PureComponent<ButtonProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children, className, gradient, onClick } = this.props;
 
         return (

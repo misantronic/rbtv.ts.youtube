@@ -8,11 +8,11 @@ interface DateFormatProps {
 }
 
 export class DateFormat extends React.Component<DateFormatProps> {
-    shouldComponentUpdate(nextProps: DateFormatProps) {
+    public shouldComponentUpdate(nextProps: DateFormatProps) {
         return nextProps.children !== this.props.children;
     }
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children, className, format = 'YYYY-MM-DD' } = this.props;
 
         return (

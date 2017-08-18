@@ -1,7 +1,7 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { observer } from 'mobx-react';
-import { external as canInject, Inject, Initialize as constructor } from 'tsdi';
+import { external as canInject, inject, initialize as constructor } from 'tsdi';
 import { AppStore } from '../../store';
 import { Nav, NavItem } from '../../components/nav';
 
@@ -25,14 +25,14 @@ const Logo = styled.div`
 @observer
 @canInject
 export class MainNav extends React.Component {
-    @Inject private appStore: AppStore;
+    @inject private appStore: AppStore;
 
     @constructor
-    init() {
+    public init() {
         this.appStore.loadLiveId();
     }
 
-    render() {
+    public render() {
         const { isRouteActivities, isRouteVideo, isRoutePlaylists, isRouteLive, isRouteTimetable } = this.appStore;
 
         return (

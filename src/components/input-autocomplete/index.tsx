@@ -53,7 +53,7 @@ const Clearer = styled.button`
 `;
 
 export class InputAutocomplete extends React.PureComponent<InputAutocompleteProps, InputAutocompleteState> {
-    el: HTMLCanvasElement;
+    private el: HTMLCanvasElement;
 
     constructor(props: InputAutocompleteProps) {
         super(props);
@@ -98,7 +98,7 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
 
     private onCanvas = (el: HTMLCanvasElement): void => {
         this.el = el;
-    };
+    }
 
     private onChange = (value: string): void => {
         if (this.el) {
@@ -121,14 +121,14 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
         }
 
         this.props.onChange(value);
-    };
+    }
 
     private onClear = (): void => {
         const { onClear } = this.props;
 
         this.setState({ valueWidth: 0, filteredItems: [], filteredIndex: 0 });
         onClear && onClear();
-    };
+    }
 
     private onKeyDown = (e: any): void => {
         const { onKeyDown, onChange } = this.props;
@@ -168,5 +168,5 @@ export class InputAutocomplete extends React.PureComponent<InputAutocompleteProp
         if (onKeyDown) {
             onKeyDown(e);
         }
-    };
+    }
 }

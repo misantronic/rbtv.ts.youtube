@@ -6,7 +6,7 @@ interface LazyLoadingState {
 
 export function lazyLoading(Component: React.ComponentClass<LazyLoadingState>): any {
     return class LazyLoading extends React.PureComponent<{}, LazyLoadingState> {
-        el: HTMLElement | null;
+        private el: HTMLElement | null;
 
         constructor(props) {
             super(props);
@@ -16,15 +16,15 @@ export function lazyLoading(Component: React.ComponentClass<LazyLoadingState>): 
             };
         }
 
-        componentDidMount() {
+        public componentDidMount() {
             addEventListener('scroll', this.onScroll);
         }
 
-        componentWillUnmount() {
+        public componentWillUnmount() {
             removeEventListener('scroll', this.onScroll);
         }
 
-        render(): JSX.Element {
+        public render(): JSX.Element {
             return (
                 <div ref={this.onEl}>
                     <Component lazyLoad={this.state.lazyLoad} {...this.props} />
@@ -44,7 +44,7 @@ export function lazyLoading(Component: React.ComponentClass<LazyLoadingState>): 
             this.el = el;
 
             this.checkScrolling();
-        };
+        }
 
         private onScroll = () => this.checkScrolling();
     };

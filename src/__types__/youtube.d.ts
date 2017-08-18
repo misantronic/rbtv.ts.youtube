@@ -1,11 +1,11 @@
 declare class Player {
     constructor(id: string, options: any);
-    seekTo(seconds: number): void;
-    playVideo(): void;
-    getCurrentTime(): number;
-    loadVideoById(id: string, seconds?: number): void;
-    cueVideoById(id: string, seconds?: number): void;
-    getVideoData(): { author: string; title: string; video_id: string };
+    public seekTo(seconds: number): void;
+    public playVideo(): void;
+    public getCurrentTime(): number;
+    public loadVideoById(id: string, seconds?: number): void;
+    public cueVideoById(id: string, seconds?: number): void;
+    public getVideoData(): { author: string; title: string; video_id: string };
 }
 
 declare namespace youtube {

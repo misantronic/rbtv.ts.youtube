@@ -91,7 +91,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
         };
     }
 
-    componentDidMount() {
+    public componentDidMount() {
         store.id = this.props.id;
 
         addEventListener('scroll', this.onScroll);
@@ -99,13 +99,13 @@ export class Video extends React.Component<VideoProps, VideoState> {
         this.loadRating();
     }
 
-    componentWillUnmount() {
+    public componentWillUnmount() {
         removeEventListener('scroll', this.onScroll);
 
         store.reset();
     }
 
-    render(): JSX.Element | null {
+    public render(): JSX.Element | null {
         const { video, isLive } = store;
 
         if (!video) {
@@ -268,7 +268,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
         } else {
             repliesStore.loadReplies(parentId);
         }
-    };
+    }
 
     private onClickLike = async () => {
         const { rating } = this.state;
@@ -276,7 +276,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
 
         await this.youtubeStore.addRating(newRating, store.id);
         this.setState({ rating: newRating });
-    };
+    }
 
     private onClickDislike = async () => {
         const { rating } = this.state;
@@ -284,7 +284,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
 
         await this.youtubeStore.addRating(newRating, store.id);
         this.setState({ rating: newRating });
-    };
+    }
 
     private onClickCommentSeek = (seekTo: number) => this.setState({ seekTo });
 
@@ -299,7 +299,7 @@ export class Video extends React.Component<VideoProps, VideoState> {
         }
 
         store.showBtnToTop = scrollY > innerHeight;
-    };
+    }
 }
 
 export default Video;

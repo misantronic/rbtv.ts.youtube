@@ -38,11 +38,11 @@ export class YoutubeStore {
         setStorage('ytAccess', val);
     }
 
-    async addRating(rating: YoutubeRating, videoId) {
+    public async addRating(rating: YoutubeRating, videoId) {
         return await this.request(endpoints.rate, 'POST', {}, { id: videoId, rating });
     }
 
-    async getRating(videoId, askForPermission = true): Promise<YoutubeRating> {
+    public async getRating(videoId, askForPermission = true): Promise<YoutubeRating> {
         if (!askForPermission && !this.accessData) {
             return Promise.reject('none');
         }
@@ -52,7 +52,7 @@ export class YoutubeStore {
         return data.items[0].rating;
     }
 
-    async getChannelInfo() {
+    public async getChannelInfo() {
         const { YT_KEY } = process.env;
         const data = await this.request(endpoints.channels, 'GET', {
             part: 'id',
@@ -67,23 +67,23 @@ export class YoutubeStore {
         return myChannelInfo;
     }
 
-    async addComment(commentModel) {
+    public async addComment(commentModel) {
         const data = commentModel.getPayload();
 
         return await this.request(commentModel.urlRoot, 'POST', { part: 'snippet' }, data);
     }
 
-    async updateComment(commentModel) {
+    public async updateComment(commentModel) {
         const data = commentModel.getPayload();
 
         return await this.request(endpoints.comments, 'PUT', { part: 'snippet' }, data);
     }
 
-    async removeComment(commentModel) {
+    public async removeComment(commentModel) {
         return await this.request(endpoints.comments, 'DELETE', { id: commentModel.id });
     }
 
-    async invalidateComments(key) {
+    public async invalidateComments(key) {
         return await this.request(endpointCacheInvalidate, 'GET', { key });
     }
 

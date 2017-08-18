@@ -18,4 +18,4 @@ export const Select = styled(ReactSelect)`
         box-shadow: none;
         border-color: #d9d9d9;
     }
-`
+`;

@@ -19,8 +19,8 @@ export const sizeApp = {
 
 @injectable
 export class Responsive {
-    sizeSm = sizeSm;
-    sizeMd = sizeMd;
-    sizeLg = sizeLg;
-    sizeApp = sizeApp;
+    public sizeSm = sizeSm;
+    public sizeMd = sizeMd;
+    public sizeLg = sizeLg;
+    public sizeApp = sizeApp;
 }

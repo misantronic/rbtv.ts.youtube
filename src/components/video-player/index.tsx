@@ -23,10 +23,6 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
     private player: Player;
     private el: HTMLDivElement | null;
 
-    static defaultProps = {
-        autoplay: false
-    };
-
     constructor(props) {
         super(props);
 
@@ -35,7 +31,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         };
     }
 
-    render() {
+    public render() {
         const { className } = this.props;
 
         return (
@@ -45,7 +41,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         );
     }
 
-    componentDidMount() {
+    public componentDidMount() {
         YT = (window as any).YT;
 
         if (typeof YT === 'undefined' || !YT.Player) {
@@ -57,7 +53,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         addEventListener('resize', this.onResize);
     }
 
-    componentDidUpdate(prevProps: VideoPlayerProps) {
+    public componentDidUpdate(prevProps: VideoPlayerProps) {
         const { id, autoplay, seekTo } = this.props;
 
         if (id !== prevProps.id || autoplay !== prevProps.autoplay) {
@@ -69,7 +65,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         }
     }
 
-    componentWillUnmount() {
+    public componentWillUnmount() {
         removeEventListener('resize', this.onResize);
     }
 
@@ -125,11 +121,11 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
 
     private onYT = () => {
         this.createPlayer();
-    };
+    }
 
     private onReady = () => {
         this.setState({ isReady: true }, () => this.updatePlayer());
-    };
+    }
 
     private onStateChange = (e: any) => {
         switch (e.data) {
@@ -137,7 +133,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
                 this.onEnded();
                 break;
         }
-    };
+    }
 
     private onResize = () => {
         const iframe = document.getElementById(containerId);
@@ -150,7 +146,7 @@ export class VideoPlayer extends React.PureComponent<VideoPlayerProps, VideoPlay
         if (this.el) {
             this.el.style.height = String(height) + 'px';
         }
-    };
+    }
 
     private onEnded() {
         const { id, onEnded } = this.props;

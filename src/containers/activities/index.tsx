@@ -30,7 +30,7 @@ const BtnToTop = styled(Button)`
 export class Activities extends React.Component {
     @inject private appStore: AppStore;
 
-    componentDidMount() {
+    public componentDidMount() {
         addEventListener('scroll', this.onScroll);
 
         if (store.typedQ) {
@@ -40,13 +40,13 @@ export class Activities extends React.Component {
         }
     }
 
-    componentWillUnmount() {
+    public componentWillUnmount() {
         removeEventListener('scroll', this.onScroll);
 
         store.reset();
     }
 
-    render(): any {
+    public render(): any {
         return [
             this.renderSearch(),
             this.renderColumns(),
@@ -162,29 +162,29 @@ export class Activities extends React.Component {
         }
 
         store.typedQ = val;
-    };
+    }
 
     private onKeyDown = (e: any): void => {
         if (e.keyCode === 13) {
             this.appStore.navigate(`/activities/${store.typedQ}`);
         }
-    };
+    }
 
     private onChangeChannel = (val: channel): void => {
         store.channelId = val;
-    };
+    }
 
     private onClickActivity = (id: string) => {
         this.appStore.navigate(`/video/${id}`);
-    };
+    }
 
     private onAutocompleteClear = () => {
         store.typedQ = '';
-    };
+    }
 
     private onClickTag = (tag: string): void => {
         this.appStore.navigate(`/activities/${tag}`);
-    };
+    }
 
     private onScrollToTop = () => scrollTo(0, 0);
 
@@ -203,7 +203,7 @@ export class Activities extends React.Component {
         }
 
         store.showBtnToTop = scrollY > innerHeight;
-    };
+    }
 }
 
 export default Activities;

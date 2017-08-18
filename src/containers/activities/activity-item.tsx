@@ -46,7 +46,7 @@ interface ActivityItemProps {
 
 @lazyLoading
 export class ActivityItem extends React.PureComponent<ActivityItemProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { title, description, className, image, publishedAt, duration, tags = [], lazyLoad } = this.props;
 
         return (
@@ -82,7 +82,7 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps> {
         const { id, onClick } = this.props;
 
         onClick(id);
-    };
+    }
 
     private onClickTag = (e: React.SyntheticEvent<HTMLSpanElement>) => {
         const tag = e.currentTarget.textContent;
@@ -90,5 +90,5 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps> {
         if (tag) {
             this.props.onClickTag(tag);
         }
-    };
+    }
 }

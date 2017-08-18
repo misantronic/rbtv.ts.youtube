@@ -33,7 +33,7 @@ const Title = styled(Caption)`
 export class RelatedItem extends React.PureComponent<RelatedItemProps> {
     @inject private appStore: AppStore;
 
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { image, videoId, children } = this.props;
 
         return (
@@ -54,5 +54,5 @@ export class RelatedItem extends React.PureComponent<RelatedItemProps> {
         const href = e.currentTarget.getAttribute('href') as string;
 
         this.appStore.navigate(href);
-    };
+    }
 }

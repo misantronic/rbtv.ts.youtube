@@ -25,7 +25,7 @@ const NumBadge = styled(Badge)`
 
 @lazyLoading
 export class PlaylistItem extends React.PureComponent<PlaylistItemProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { title, description, className, image, count, lazyLoad } = this.props;
 
         return (
@@ -49,5 +49,5 @@ export class PlaylistItem extends React.PureComponent<PlaylistItemProps> {
         const { id, onClick } = this.props;
 
         onClick(id);
-    };
+    }
 }

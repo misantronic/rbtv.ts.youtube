@@ -15,8 +15,16 @@ interface SearchProps {
 }
 
 export class Search extends React.PureComponent<SearchProps> {
-    render() {
-        const {autocompleteItems, channelId, value, onKeyDown, onChannelChange, onSearchChange, onAutocompleteClear} = this.props;
+    public render() {
+        const {
+            autocompleteItems,
+            channelId,
+            value,
+            onKeyDown,
+            onChannelChange,
+            onSearchChange,
+            onAutocompleteClear
+        } = this.props;
         const placeholder = `Search ${getChannelName(channelId || channel.RBTV)}...`;
         const options = Object.keys(channel).map((key: channel) => ({
             value: channel[key],

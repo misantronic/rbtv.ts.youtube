@@ -14,7 +14,7 @@ const Link = styled.a`
 `;
 
 export class CaptionTitle extends React.Component<CaptionTitleProps> {
-    render(): JSX.Element {
+    public render(): JSX.Element {
         const { children } = this.props;
 
         return (
@@ -26,8 +26,8 @@ export class CaptionTitle extends React.Component<CaptionTitleProps> {
         );
     }
 
-    onClick = (e: any) => {
+    public onClick = (e: any) => {
         e.preventDefault();
         this.props.onClick();
-    };
+    }
 }
