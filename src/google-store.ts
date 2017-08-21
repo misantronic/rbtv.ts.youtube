@@ -1,11 +1,17 @@
 import { component as injectable } from 'tsdi';
+import { computed, observable } from 'mobx';
+import * as startOfWeek from 'date-fns/start_of_week';
+import * as addDays from 'date-fns/add_days';
 import { getStorage, setStorage } from './utils/storage';
 import { baseUrl, fetchUtil } from './utils/ajax';
+import { parseCalendarEvent } from './utils/api';
 
 export type YoutubeRating = 'like' | 'dislike' | 'none';
 
 const ytBaseURL = 'https://www.googleapis.com/youtube/v3';
 const calBaseURL = 'https://www.googleapis.com/calendar/v3';
+const calId = '5aj6musne0k96vbqlu43p8lgs0@group.calendar.google.com';
+const clientId = '41722713665-rmnr2sd8u0g5s2ait1el7ec36fgm50mq.apps.googleusercontent.com';
 const endpointCacheInvalidate = baseUrl + '/cache.invalidate';
 
 const endpoints = {
@@ -15,21 +21,22 @@ const endpoints = {
     comments: ytBaseURL + '/comments',
     commentThreads: ytBaseURL + '/commentThreads',
     channels: ytBaseURL + '/channels',
-    calendar: calBaseURL + '/calendars'
+    calendar: `${calBaseURL}/calendars/${calId}/events`
 };
-
-const clientId = '41722713665-rmnr2sd8u0g5s2ait1el7ec36fgm50mq.apps.googleusercontent.com';
 
 const scope = [
     'https://www.googleapis.com/auth/youtube.force-ssl',
-    'https://www.googleapis.com/auth/youtube.readonly'
+    'https://www.googleapis.com/auth/youtube.readonly',
+    'https://www.googleapis.com/auth/calendar'
     // 'https://www.googleapis.com/auth/youtubepartner',
     // 'https://www.googleapis.com/auth/youtube',
     // 'https://www.googleapis.com/auth/youtubepartner-channel-audit'
 ];
 
 @injectable
-export class YoutubeStore {
+export class GoogleStore {
+    @observable private calendarItems: gcalendar.Event[] = [];
+
     private get accessData(): GoogleApiOAuth2TokenObject | null {
         return getStorage('ytAccess') as GoogleApiOAuth2TokenObject | null;
     }
@@ -85,6 +92,67 @@ export class YoutubeStore {
 
     public async invalidateComments(key) {
         return await this.request(endpointCacheInvalidate, 'GET', { key });
+    }
+
+    public async loadCalendarDates() {
+        const { YT_KEY } = process.env;
+
+        const calendarObj: gcalendar.CalendarRequest = await this.request(endpoints.calendar, 'GET', {
+            singleEvents: true,
+            key: YT_KEY
+        });
+
+        this.calendarItems = calendarObj.items.map(parseCalendarEvent);
+    }
+
+    @computed
+    public get mondayItems() {
+        return this.calendarItems.filter(item => item.start.dateTime.getDay() === 1);
+    }
+
+    @computed
+    public get tuesdayItems() {
+        return this.calendarItems.filter(item => item.start.dateTime.getDay() === 2);
+    }
+
+    @computed
+    public get wednesdayItems() {
+        return this.calendarItems.filter(item => item.start.dateTime.getDay() === 3);
+    }
+
+    @computed
+    public get thursdayItems() {
+        return this.calendarItems.filter(item => item.start.dateTime.getDay() === 4);
+    }
+
+    @computed
+    public get fridayItems() {
+        return this.calendarItems.filter(item => item.start.dateTime.getDay() === 5);
+    }
+
+    @computed
+    public get saturdayItems() {
+        return this.calendarItems.filter(item => item.start.dateTime.getDay() === 6);
+    }
+
+    @computed
+    public get sundayItems() {
+        return this.calendarItems.filter(item => item.start.dateTime.getDay() === 0);
+    }
+
+    @computed
+    public get DAYS() {
+        const startOfWeekDate = startOfWeek(new Date(), { weekStartsOn: 1 });
+
+        return [
+            { title: 'Mon.', date: addDays(startOfWeekDate, 0), items: this.mondayItems },
+            { title: 'Tue.', date: addDays(startOfWeekDate, 1), items: this.tuesdayItems },
+            { title: 'Wed.', date: addDays(startOfWeekDate, 2), items: this.wednesdayItems },
+            { title: 'Thu.', date: addDays(startOfWeekDate, 3), items: this.thursdayItems },
+            { title: 'Fri.', date: addDays(startOfWeekDate, 4), items: this.fridayItems },
+            // { title: 'Sat.', date: addDays(startOfWeekDate, 5), items: this.saturdayItems },
+            // { title: 'Sun.', date: addDays(startOfWeekDate, 6), items: this.sundayItems }
+        ];
     }
 
     /**

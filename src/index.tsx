@@ -3,7 +3,7 @@ import { render } from 'react-dom';
 import { TSDI } from 'tsdi';
 import styled, { injectGlobal } from 'styled-components';
 import { AppStore } from './store';
-import { YoutubeStore } from './youtube-store';
+import { GoogleStore } from './google-store';
 import { Router } from './components/router';
 import { MainNav } from './containers/main-nav';
 import { Responsive } from './utils/responsive';
@@ -34,7 +34,7 @@ function main() {
 
     tsdi.enableComponentScanner();
     tsdi.get(AppStore);
-    tsdi.get(YoutubeStore);
+    tsdi.get(GoogleStore);
     const responsive = tsdi.get(Responsive);
 
     const App = styled.div`

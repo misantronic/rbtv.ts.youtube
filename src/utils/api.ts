@@ -68,3 +68,21 @@ export function parsePlaylists(items: youtube.PlaylistItem[]): youtube.PlaylistI
             return 0;
         });
 }
+
+export function parseCalendarEvent(item: gcalendar.Event): gcalendar.Event {
+    item = Object.assign({}, item, {
+        start: Object.assign({
+            dateTime: new Date(item.start.dateTime)
+        }),
+        end: Object.assign({
+            dateTime: new Date(item.end.dateTime)
+        }),
+        created: new Date(item.created),
+        updated: new Date(item.updated),
+        isLive: /^\[L\]/.test(item.summary),
+        isNew: /^\[N\]/.test(item.summary),
+        summary: item.summary.replace(/^\[(?:L|N)]/, '')
+    });
+
+    return item;
+}

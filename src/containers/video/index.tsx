@@ -2,7 +2,7 @@ import * as React from 'react';
 import { observer } from 'mobx-react';
 import { external as canInject, inject } from 'tsdi';
 import styled from 'styled-components';
-import { YoutubeStore, YoutubeRating } from '../../youtube-store';
+import { GoogleStore, YoutubeRating } from '../../google-store';
 import { VideoStore } from './store';
 import { RepliesStore } from './replies-store';
 import { VideoPlayer } from '../../components/video-player';
@@ -80,7 +80,7 @@ const BtnToTop = styled(Button)`
 @canInject
 @observer
 export class Video extends React.Component<VideoProps, VideoState> {
-    @inject private youtubeStore: YoutubeStore;
+    @inject private youtubeStore: GoogleStore;
 
     constructor(props) {
         super(props);

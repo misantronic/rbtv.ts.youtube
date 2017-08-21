@@ -1,8 +1,12 @@
 import * as React from 'react';
-import * as startOfWeek from 'date-fns/start_of_week';
-import * as addDays from 'date-fns/add_days';
+import { observer } from 'mobx-react';
+import { external as canInject, inject } from 'tsdi';
+import * as startOfDay from 'date-fns/start_of_day';
 import styled from 'styled-components';
 import { DateFormat } from '../../components/date-format';
+import { Badge } from '../../components/badge';
+import { Caption } from '../../components/caption';
+import { GoogleStore } from '../../google-store';
 
 const Wrapper = styled.div`display: flex;`;
 
@@ -14,67 +18,113 @@ const DayWrapper = styled.div`
 
 const DayHeader = styled.header`
     display: flex;
-    flex: 1;
+    flex: 0 0 30px;
+    margin: 5px 0;
     align-items: center;
     justify-content: center;
+    font-weight: bold;
+    background: ${(props: { isToday: boolean }) => (props.isToday ? '#ff217c' : '#1893b2')};
+    color: #fff;
 `;
 
-const startOfWeekDate = startOfWeek(new Date());
+const DayContent = styled.div`
+    position: relative;
+    flex: 1;
+`;
 
-const DAYS = [
-    { title: 'Mon.', date: addDays(startOfWeekDate, 0) },
-    { title: 'Tue.', date: addDays(startOfWeekDate, 1) },
-    { title: 'Wed.', date: addDays(startOfWeekDate, 2) },
-    { title: 'Thu.', date: addDays(startOfWeekDate, 3) },
-    { title: 'Fri.', date: addDays(startOfWeekDate, 4) },
-    { title: 'Sat.', date: addDays(startOfWeekDate, 5) },
-    { title: 'Sun.', date: addDays(startOfWeekDate, 6) }
-];
+const Event = styled.div`
+    padding: 5px;
+    margin: 0;
+    height: ${(props: { duration: number; pauseAfter: number }) => props.duration * 5}px;
+    margin-bottom: ${(props: { duration: number; pauseAfter: number }) => props.pauseAfter * 5}px;
+    overflow: hidden;
+    background: #F8F8F8;
+`;
 
-// const HOURS = [
-//     '10:30',
-//     '11:00',
-//     '11:30',
-//     '12:00',
-//     '12:30',
-//     '13:00',
-//     '13:30',
-//     '14:00',
-//     '14:30',
-//     '15:00',
-//     '15:30',
-//     '16:00',
-//     '16:30',
-//     '17:00',
-//     '17:30',
-//     '18:00',
-//     '18:30',
-//     '19:00',
-//     '19:30',
-//     '20:00',
-//     '20:30',
-//     '21:00',
-//     '21:30',
-//     '22:00',
-//     '22:30',
-//     '23:00',
-//     '23:30',
-//     '23:59'
-// ];
+const EventImage = styled.div`
+    width: 100%;
+    height: 94px;
+    margin-bottom: 5px;
+    background-image: url('${(props: any) => props.src}');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100%;
+    position: relative;
+`;
 
-export class Timetable extends React.PureComponent<{}> {
+const EventInfo = styled(Caption)`
+    margin-bottom: 0;
+`;
+
+const EventTime = styled.div`
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    width: 100%;
+    padding: 2px;
+`;
+
+const TypeBadge = styled(Badge)`
+    background: ${(props: { color: string }) => props.color};
+    transform: scale(0.75);
+    margin-right: 3px;
+`;
+
+const today = startOfDay(new Date());
+
+@observer
+@canInject
+export class Timetable extends React.Component<{}> {
+    @inject private store: GoogleStore;
+
+    public componentDidMount() {
+        this.store.loadCalendarDates();
+    }
+
     public render() {
         return (
             <Wrapper>
-                {DAYS.map(day => {
-                    return (
-                        <DayWrapper key={day.title}>
-                            <DayHeader>
-                                {day.title}, <DateFormat format="DD.MM.">{day.date}</DateFormat>
-                            </DayHeader>
-                        </DayWrapper>
-                    );
-                })}
+                {this.store.DAYS.map(day =>
+                    <DayWrapper key={day.title}>
+                        <DayHeader isToday={day.date.getTime() === today.getTime()}>
+                            {day.title},&nbsp;<DateFormat format="DD.MM.">{day.date}</DateFormat>
+                        </DayHeader>
+                        <DayContent>
+                            {day.items.map((item, i) => {
+                                const duration =
+                                    (item.end.dateTime.getTime() - item.start.dateTime.getTime()) / 1000 / 60;
+                                const nextItem: gcalendar.Event | undefined = day.items[i + 1];
+                                const lineClamp = duration <= 15 ? 1 : duration <= 30 ? 2 : undefined;
+                                let pauseAfter = 0;
+
+                                if (nextItem) {
+                                    pauseAfter = Math.max(
+                                        0,
+                                        (nextItem.start.dateTime.getTime() - item.end.dateTime.getTime()) / 1000 / 60
+                                    );
+                                }
+
+                                return (
+                                    <Event key={item.id} duration={duration} pauseAfter={pauseAfter}>
+                                        <EventImage src={item.source.url}>
+                                            <EventTime>
+                                                {item.isLive
+                                                    ? <TypeBadge color="#ff217c">Live</TypeBadge>
+                                                    : <TypeBadge color="#1893b2">New</TypeBadge>}
+                                                <DateFormat format="HH:mm">{item.start.dateTime}</DateFormat> -
+                                                <DateFormat format="HH:mm">{item.end.dateTime}</DateFormat>
+                                            </EventTime>
+                                        </EventImage>
+                                        <EventInfo lineClamp={lineClamp}>
+                                            {item.summary}
+                                        </EventInfo>
+                                    </Event>
+                                );
+                            })}
+                        </DayContent>
+                    </DayWrapper>
+                )}
             </Wrapper>
         );
     }
