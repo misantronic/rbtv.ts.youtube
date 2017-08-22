@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { DateFormat } from '../../components/date-format';
 import { Badge } from '../../components/badge';
 import { Caption } from '../../components/caption';
+import { Spinner } from '../../components/spinner';
 import { GoogleStore } from '../../google-store';
 
 const Wrapper = styled.div`display: flex;`;
@@ -38,7 +39,7 @@ const Event = styled.div`
     height: ${(props: { duration: number; pauseAfter: number }) => props.duration * 5}px;
     margin-bottom: ${(props: { duration: number; pauseAfter: number }) => props.pauseAfter * 5}px;
     overflow: hidden;
-    background: #F8F8F8;
+    background: #f8f8f8;
 `;
 
 const EventImage = styled.div`
@@ -71,6 +72,10 @@ const TypeBadge = styled(Badge)`
     margin-right: 3px;
 `;
 
+const StyledSpinner = styled(Spinner)`
+    margin-top: 10px;
+`
+
 const today = startOfDay(new Date());
 
 @observer
@@ -82,10 +87,12 @@ export class Timetable extends React.Component<{}> {
         this.store.loadCalendarDates();
     }
 
-    public render() {
-        return (
-            <Wrapper>
-                {this.store.DAYS.map(day =>
+    public render(): any {
+        const { calendarDays, calendarIsLoading } = this.store;
+
+        return [
+            <Wrapper key="wrapper">
+                {calendarDays.map(day =>
                     <DayWrapper key={day.title}>
                         <DayHeader isToday={day.date.getTime() === today.getTime()}>
                             {day.title},&nbsp;<DateFormat format="DD.MM.">{day.date}</DateFormat>
@@ -125,8 +132,9 @@ export class Timetable extends React.Component<{}> {
                         </DayContent>
                     </DayWrapper>
                 )}
-            </Wrapper>
-        );
+            </Wrapper>,
+            calendarIsLoading && <StyledSpinner key="spinner" />
+        ];
     }
 }
 

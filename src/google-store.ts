@@ -35,6 +35,8 @@ const scope = [
 
 @injectable
 export class GoogleStore {
+    @observable public calendarIsLoading = false;
+    @observable public calendarError = null;
     @observable private calendarItems: gcalendar.Event[] = [];
 
     private get accessData(): GoogleApiOAuth2TokenObject | null {
@@ -97,12 +99,22 @@ export class GoogleStore {
     public async loadCalendarDates() {
         const { YT_KEY } = process.env;
 
-        const calendarObj: gcalendar.CalendarRequest = await this.request(endpoints.calendar, 'GET', {
-            singleEvents: true,
-            key: YT_KEY
-        });
+        try {
+            this.calendarIsLoading = true;
 
-        this.calendarItems = calendarObj.items.map(parseCalendarEvent);
+            const calendarObj: gcalendar.CalendarRequest = await this.request(endpoints.calendar, 'GET', {
+                singleEvents: true,
+                key: YT_KEY
+            });
+
+            this.calendarItems = calendarObj.items.map(parseCalendarEvent);
+        } catch (e) {
+            this.calendarError = e;
+
+            console.error(e);
+        } finally {
+            this.calendarIsLoading = false;
+        }
     }
 
     @computed
@@ -141,7 +153,7 @@ export class GoogleStore {
     }
 
     @computed
-    public get DAYS() {
+    public get calendarDays() {
         const startOfWeekDate = startOfWeek(new Date(), { weekStartsOn: 1 });
 
         return [
@@ -149,7 +161,7 @@ export class GoogleStore {
             { title: 'Tue.', date: addDays(startOfWeekDate, 1), items: this.tuesdayItems },
             { title: 'Wed.', date: addDays(startOfWeekDate, 2), items: this.wednesdayItems },
             { title: 'Thu.', date: addDays(startOfWeekDate, 3), items: this.thursdayItems },
-            { title: 'Fri.', date: addDays(startOfWeekDate, 4), items: this.fridayItems },
+            { title: 'Fri.', date: addDays(startOfWeekDate, 4), items: this.fridayItems }
             // { title: 'Sat.', date: addDays(startOfWeekDate, 5), items: this.saturdayItems },
             // { title: 'Sun.', date: addDays(startOfWeekDate, 6), items: this.sundayItems }
         ];
