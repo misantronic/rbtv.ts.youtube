@@ -32,7 +32,7 @@ export class CaptionImage extends React.PureComponent<CaptionImageProps> {
             ${load ? `background-image: url('${image}');` : ''} @media (max-width: ${this.sizes.sizeSm.max}px) {
                 height: 250px;
             }
-        `;
+        `;      
 
         return (
             <Div>

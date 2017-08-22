@@ -54,7 +54,7 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps> {
             <div className={className}>
                 <CaptionImage load={lazyLoad} image={image} href={href} onClick={this.onClick}>
                     <DurationBadge>
-                        {humanizeDuration(duration)}
+                        {humanizeDuration(duration) || '00:00'}
                     </DurationBadge>
                     <DateBadge>
                         <DateFormat>
