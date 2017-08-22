@@ -35,6 +35,7 @@ interface ActivityItemProps {
     publishedAt: Date;
     duration?: string;
     image: string;
+    href: string;
     title: string;
     description: string;
     className?: string;
@@ -47,11 +48,11 @@ interface ActivityItemProps {
 @lazyLoading
 export class ActivityItem extends React.PureComponent<ActivityItemProps> {
     public render(): JSX.Element {
-        const { title, description, className, image, publishedAt, duration, tags = [], lazyLoad } = this.props;
+        const { title, description, className, image, publishedAt, duration, href, tags = [], lazyLoad } = this.props;
 
         return (
             <div className={className}>
-                <CaptionImage load={lazyLoad} image={image} onClick={this.onClick}>
+                <CaptionImage load={lazyLoad} image={image} href={href} onClick={this.onClick}>
                     <DurationBadge>
                         {humanizeDuration(duration)}
                     </DurationBadge>
@@ -61,7 +62,7 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps> {
                         </DateFormat>
                     </DateBadge>
                 </CaptionImage>
-                <CaptionTitle onClick={this.onClick}>
+                <CaptionTitle href={href} onClick={this.onClick}>
                     {title}
                 </CaptionTitle>
                 <Caption lineClamp={3}>
@@ -82,7 +83,7 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps> {
         const { id, onClick } = this.props;
 
         onClick(id);
-    }
+    };
 
     private onClickTag = (e: React.SyntheticEvent<HTMLSpanElement>) => {
         const tag = e.currentTarget.textContent;
@@ -90,5 +91,5 @@ export class ActivityItem extends React.PureComponent<ActivityItemProps> {
         if (tag) {
             this.props.onClickTag(tag);
         }
-    }
+    };
 }

@@ -4,6 +4,7 @@ import { H3 } from '../headline';
 
 interface CaptionTitleProps {
     children: string;
+    href: string;
     onClick(): void;
 }
 
@@ -15,11 +16,11 @@ const Link = styled.a`
 
 export class CaptionTitle extends React.Component<CaptionTitleProps> {
     public render(): JSX.Element {
-        const { children } = this.props;
+        const { children, href } = this.props;
 
         return (
             <H3>
-                <Link href="#" title={children} onClick={this.onClick}>
+                <Link href={href} title={children} onClick={this.onClick}>
                     {children}
                 </Link>
             </H3>
@@ -29,5 +30,5 @@ export class CaptionTitle extends React.Component<CaptionTitleProps> {
     public onClick = (e: any) => {
         e.preventDefault();
         this.props.onClick();
-    }
+    };
 }

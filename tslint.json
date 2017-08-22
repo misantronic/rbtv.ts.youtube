@@ -16,7 +16,8 @@
         "object-literal-sort-keys": [false],
         "no-shadowed-variable": false,
         "no-console": [false],
-        "no-namespace": [false]
+        "no-namespace": [false],
+        "semicolon": [false]
     },
     "rulesDirectory": []
 }

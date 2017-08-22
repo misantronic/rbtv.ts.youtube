@@ -5,6 +5,7 @@ import { Responsive } from '../../utils/responsive';
 
 interface CaptionImageProps {
     image: string;
+    href: string;
     load?: boolean;
     onClick(): void;
 }
@@ -16,28 +17,26 @@ export class CaptionImage extends React.PureComponent<CaptionImageProps> {
     @inject private sizes: Responsive;
 
     public render(): JSX.Element {
-        const { image, load, children } = this.props;        
+        const { image, load, href, children } = this.props;
 
         const Link = styled.a`
             display: block;
             overflow: hidden;
-        
+
             background-position: center center;
             background-color: #eee;
             background-repeat: no-repeat;
             background-size: cover;
             width: 100%;
             height: 180px;
-            ${load ? `background-image: url('${image}');` : ''} 
-        
-            @media (max-width: ${this.sizes.sizeSm.max}px) {
+            ${load ? `background-image: url('${image}');` : ''} @media (max-width: ${this.sizes.sizeSm.max}px) {
                 height: 250px;
             }
         `;
 
         return (
             <Div>
-                <Link href="#" onClick={this.onClick} />
+                <Link href={href} onClick={this.onClick} />
                 {children}
             </Div>
         );
@@ -46,5 +45,5 @@ export class CaptionImage extends React.PureComponent<CaptionImageProps> {
     public onClick = (e: any) => {
         e.preventDefault();
         this.props.onClick();
-    }
+    };
 }

@@ -25,6 +25,8 @@ const BtnToTop = styled(Button)`
     bottom: 10px;
 `;
 
+const getVideoLink = (id: string) => `/video/${id}`;
+
 @observer
 @canInject
 export class Activities extends React.Component {
@@ -90,7 +92,7 @@ export class Activities extends React.Component {
                         `name=${item.id}.jpg`,
                         thumbnails.standard ? '' : 'small=true'
                     ];
-                    
+
                     const image = path + '?' + query.join('&');
 
                     return (
@@ -102,6 +104,7 @@ export class Activities extends React.Component {
                                 duration={item.duration}
                                 publishedAt={publishedAt}
                                 image={image}
+                                href={getVideoLink(item.id)}
                                 tags={item.tags}
                                 onClick={this.onClickActivity}
                                 onClickTag={this.onClickTag}
@@ -162,29 +165,29 @@ export class Activities extends React.Component {
         }
 
         store.typedQ = val;
-    }
+    };
 
     private onKeyDown = (e: any): void => {
         if (e.keyCode === 13) {
             this.appStore.navigate(`/activities/${store.typedQ}`);
         }
-    }
+    };
 
     private onChangeChannel = (val: channel): void => {
         store.channelId = val;
-    }
+    };
 
     private onClickActivity = (id: string) => {
-        this.appStore.navigate(`/video/${id}`);
-    }
+        this.appStore.navigate(getVideoLink(id));
+    };
 
     private onAutocompleteClear = () => {
         store.typedQ = '';
-    }
+    };
 
     private onClickTag = (tag: string): void => {
         this.appStore.navigate(`/activities/${tag}`);
-    }
+    };
 
     private onScrollToTop = () => scrollTo(0, 0);
 
@@ -203,7 +206,7 @@ export class Activities extends React.Component {
         }
 
         store.showBtnToTop = scrollY > innerHeight;
-    }
+    };
 }
 
 export default Activities;
