@@ -12,44 +12,49 @@ interface ColumnProps {
     className?: string;
 }
 
+interface ColumnPropsWithResponsive extends ColumnProps {
+    responsiveSizes: Responsive
+}
+
+function calcSizes(props: ColumnPropsWithResponsive) {
+    const { sizeSm, sizeMd, sizeLg } = props.responsiveSizes;
+
+    const sm = props.sm || props.md || props.lg || 12;
+    const md = props.md || sm;
+    const lg = props.lg || md;
+
+    return css`
+        padding: 0 10px;
+        margin-bottom: 20px;
+
+        @media (max-width: ${sizeSm.max}px) {
+            width: ${100 / 12 * sm}%;
+        }
+
+        @media (min-width: ${sizeMd.min}px) AND (max-width: ${sizeMd.max}px) {
+            width: ${100 / 12 * md}%;
+        }
+
+        @media (min-width: ${sizeLg.min}px) {
+            width: ${100 / 12 * lg}%;
+        }
+    `;
+}
+
+const Col = styled.div`${(props: ColumnPropsWithResponsive) => calcSizes(props)};`;
+
 @canInject
 export class Column extends React.PureComponent<ColumnProps> {
     @inject private sizes: Responsive;
 
     public render() {
-        const { children, className, sm, md, lg } = this.props;
-        const Col = styled.div`${this.calcSizes};`;
+        const { children } = this.props;
 
         return (
-            <Col sm={sm} md={md} lg={lg} className={className}>
+            <Col {...this.props} responsiveSizes={this.sizes}>
                 {children}
             </Col>
         );
-    }
-
-    private calcSizes = (props: ColumnProps) => {
-        const { sizeSm, sizeMd, sizeLg } = this.sizes;
-
-        const sm = props.sm || props.md || props.lg || 12;
-        const md = props.md || sm;
-        const lg = props.lg || md;
-
-        return css`
-            padding: 0 10px;
-            margin-bottom: 20px;
-    
-            @media (max-width: ${sizeSm.max}px) {
-                width: ${100 / 12 * sm}%;
-            }
-    
-            @media (min-width: ${sizeMd.min}px) AND (max-width: ${sizeMd.max}px) {
-                width: ${100 / 12 * md}%;
-            }
-    
-            @media (min-width: ${sizeLg.min}px) {
-                width: ${100 / 12 * lg}%;
-            }
-        `;
     }
 }
 
